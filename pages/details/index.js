@@ -6,32 +6,6 @@ import logo from '../../images/logo.png'
 import styled from '@emotion/styled'
 import { Box, Button, Fab, Typography } from '@mui/material'
 
-export default function Index() {
-  return (
-    <FullBackground>
-      <ImageContainer>
-        <Image src={logo} alt='background' />
-      </ImageContainer>
-      <DetailHeader>Add Details</DetailHeader>
-
-      <LogoSection>
-        <LogoHeading>Select any png.svg or jpg file</LogoHeading>
-        <LogoInputSection>
-          <LogoAddButton color='primary' variant='contained'>
-            <Typography fontSize={28}>+</Typography>
-          </LogoAddButton>
-          <Typography fontSize={18} color={'#0a23fb'}>
-            Add Logo
-          </Typography>
-        </LogoInputSection>
-      </LogoSection>
-      <NextSection>
-        <NextButton variant='contained'> next</NextButton>
-      </NextSection>
-    </FullBackground>
-  )
-}
-
 const FullBackground = styled(Box)({
   height: '100vh',
 })
@@ -102,3 +76,29 @@ const NextButton = styled(Button)({
     background: 'linear-gradient(to left, #3932be, #556df2)',
   },
 })
+
+export default function Index() {
+  return (
+    <FullBackground>
+      <ImageContainer>
+        <Image src={logo} alt='background' />
+      </ImageContainer>
+      <DetailHeader>Add Details</DetailHeader>
+
+      <LogoSection>
+        <LogoHeading>Select any png.svg or jpg file</LogoHeading>
+        <LogoInputSection>
+          <LogoAddButton color='primary' variant='contained'>
+            <Typography fontSize={28}>+</Typography>
+          </LogoAddButton>
+          <Typography fontSize={18} color={'#0a23fb'}>
+            Add Logo
+          </Typography>
+        </LogoInputSection>
+      </LogoSection>
+      <NextSection>
+        <NextButton variant='contained'> next</NextButton>
+      </NextSection>
+    </FullBackground>
+  )
+}
