@@ -11,11 +11,17 @@ import Typography from "@mui/material/Typography";
 
 import styled from "@emotion/styled";
 
+
+import logo from '../../images/logo.png'
+import bck from '../../images/bck.png'
+
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(1),
   textAlign: "center",
-  margin: "30px",
+  marginLeft: "30px",
+  marginRight: "30px",
+  marginTop: "125px",
   width: "450px",
   boxShadow: "0 3px 6px 0 rgba(0, 0, 0, 0.16",
   padding: "28px 30px 27px",
@@ -28,9 +34,12 @@ const FullBackground = styled(Box)(({ theme }) => ({
 
 const GridItem = styled(Grid)(({ theme }) => ({
   display: "flex",
-  alignItems: "center",
+  alignItems: "flex-start",
   flexDirection: "column",
-  justifyContent: "center",
+  justifyContent: "left",
+  marginLeft: "50px",
+  marginBottom: "50px",
+  marginTop: "125px",
 }));
 
 const GridLeftImage = styled(Grid)(({ theme }) => ({
@@ -53,15 +62,15 @@ export default function Index() {
         <Grid item lg={6} md={6}>
           <GridItem>
             <Image
-              src="/images/logo.png"
+              src={logo}
               width={142}
-              height={61}
+              height={50}
               alt="background"
             />
           </GridItem>
           <GridLeftImage>
             <Image
-              src="/images/bck.png"
+              src={bck}
               width={625}
               height={369}
               alt="background"
