@@ -29,7 +29,21 @@ const theme = createTheme({
       fontWeight: 600,
     },
     button: {
-      fontSize: 16,
+      fontSize: 14,
+      fontWeight: 400,
+    },
+  },
+  overrides: {
+    MuiAppBar: {
+      colorInherit: {
+        backgroundColor: "#fff",
+        color: "#707070",
+      },
+    },
+  },
+  props: {
+    MuiAppBar: {
+      color: "inherit",
     },
   },
 });

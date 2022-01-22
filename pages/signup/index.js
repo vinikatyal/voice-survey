@@ -20,10 +20,11 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   marginLeft: "30px",
   marginRight: "30px",
-  marginTop: "125px",
+  marginTop: "50px",
   width: "450px",
   boxShadow: "0 3px 6px 0 rgba(0, 0, 0, 0.16",
   padding: "28px 30px 27px",
+  borderRadius: "20px",
 }));
 
 const FullBackground = styled(Box)(({ theme }) => ({
@@ -38,7 +39,7 @@ const GridItem = styled(Grid)(({ theme }) => ({
   justifyContent: "left",
   marginLeft: "50px",
   marginBottom: "50px",
-  marginTop: "125px",
+  marginTop: "50px",
 }));
 
 const GridLeftImage = styled(Grid)(({ theme }) => ({
@@ -61,10 +62,22 @@ export default function Index() {
       <Grid container spacing={2}>
         <Grid item lg={6} md={6}>
           <GridItem>
-            <Image src={logo} width={142} height={50} alt="background" />
+            <Image
+              src={logo}
+              width={142}
+              height={50}
+              alt="background"
+              loading="lazy"
+            />
           </GridItem>
           <GridLeftImage>
-            <Image src={bck} width={625} height={369} alt="background" />
+            <Image
+              src={bck}
+              width={625}
+              height={369}
+              alt="background"
+              loading="lazy"
+            />
           </GridLeftImage>
         </Grid>
         <Grid item md={6} lg={6}>
@@ -90,6 +103,7 @@ export default function Index() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                variant="standard"
               />
               <TextField
                 margin="normal"
@@ -100,6 +114,7 @@ export default function Index() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                variant="standard"
               />
               <TextField
                 margin="normal"
@@ -109,6 +124,7 @@ export default function Index() {
                 label="Phone number"
                 name="phone"
                 autoFocus
+                variant="standard"
               />
               <LoginButton
                 type="submit"
