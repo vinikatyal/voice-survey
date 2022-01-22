@@ -32,6 +32,19 @@ const theme = createTheme({
       fontSize: 16,
     },
   },
+  overrides: {
+    MuiAppBar: {
+      colorInherit: {
+        backgroundColor: "#fff",
+        color: "#707070",
+      },
+    },
+  },
+  props: {
+    MuiAppBar: {
+      color: "inherit",
+    },
+  },
 });
 
 export default theme;
