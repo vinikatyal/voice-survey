@@ -9,8 +9,16 @@ import Grid from "@mui/material/Grid";
 import styled from "@emotion/styled";
 
 const Nav = styled("div")(({}) => ({
+  width: "100%",
   display: "flex",
 }));
+
+
+const NavLink = styled(Link)(({}) => ({
+    color: "#fff",
+    marginLeft: "10px",
+    marginRight: "10px",
+  }));
 
 export default function Index() {
   return (
@@ -19,10 +27,11 @@ export default function Index() {
         <Toolbar>
           <Typography variant="h4">Armour365</Typography>
           <Nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-            <Link to="/contact">Contact</Link>
-            <Link to="/faq">FAQ</Link>
+            <NavLink to="/">All Surveys</NavLink>
+            <NavLink to="/about">My Surveys</NavLink>
+            <NavLink to="/contact">Shared with me</NavLink>
+            <NavLink to="/faq">Billing</NavLink>
+            <NavLink to="/faq">Settings</NavLink>
           </Nav>
         </Toolbar>
       </AppBar>
