@@ -21,7 +21,7 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   marginLeft: "30px",
   marginRight: "30px",
-  marginTop: "125px",
+  marginTop: "50px",
   width: "450px",
   boxShadow: "0 3px 6px 0 rgba(0, 0, 0, 0.16",
   padding: "28px 30px 27px",
@@ -39,7 +39,7 @@ const GridItem = styled(Grid)(({ theme }) => ({
   justifyContent: "left",
   marginLeft: "50px",
   marginBottom: "50px",
-  marginTop: "125px",
+  marginTop: "50px",
 }));
 
 const GridLeftImage = styled(Grid)(({ theme }) => ({
