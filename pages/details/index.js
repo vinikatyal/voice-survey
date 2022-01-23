@@ -6,11 +6,11 @@ import logo from '../../images/logo.png'
 import styled from '@emotion/styled'
 import Layout from '../../components/Layout'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import Fab from '@mui/material/Fab'
 import Typography from '@mui/material/Typography'
 
 import Limiter from '../../components/Limiter'
+import StyledButton from '../../components/StyledButton'
 
 const ImageContainer = styled(Box)({
   paddingTop: '30px',
@@ -66,19 +66,6 @@ const NextSection = styled('div')({
   justifyContent: 'center',
 })
 
-const NextButton = styled(Button)({
-  width: '160px',
-  height: '46px',
-  margin: '30px 620px 0',
-  padding: '10.9px 60px 10.1px',
-  objectFit: 'contain',
-  borderRadius: '4px',
-  background: 'linear-gradient(to left, #556df2, #3932be)',
-  '&:hover': {
-    background: 'linear-gradient(to left, #3932be, #556df2)',
-  },
-})
-
 export default function Index() {
   return (
     <Layout>
@@ -102,7 +89,7 @@ export default function Index() {
           </LogoInputSection>
         </LogoSection>
         <NextSection>
-          <NextButton variant='contained'> next</NextButton>
+          <StyledButton>Next</StyledButton>
         </NextSection>
       </Limiter>
     </Layout>
