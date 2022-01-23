@@ -4,11 +4,13 @@ import Image from 'next/image'
 
 import logo from '../../images/logo.png'
 import styled from '@emotion/styled'
-import { Box, Button, Fab, Typography } from '@mui/material'
+import Layout from '../../components/Layout'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Fab from '@mui/material/Fab'
+import Typography from '@mui/material/Typography'
 
-const FullBackground = styled(Box)({
-  height: '100vh',
-})
+import Limiter from '../../components/Limiter'
 
 const ImageContainer = styled(Box)({
   paddingTop: '30px',
@@ -79,26 +81,30 @@ const NextButton = styled(Button)({
 
 export default function Index() {
   return (
-    <FullBackground>
-      <ImageContainer>
-        <Image src={logo} alt='background' />
-      </ImageContainer>
+    <Layout>
+      <Limiter>
+        <ImageContainer>
+          <Image src={logo} alt='background' />
+        </ImageContainer>
+      </Limiter>
       <DetailHeader>Add Details</DetailHeader>
 
-      <LogoSection>
-        <LogoHeading>Select any png.svg or jpg file</LogoHeading>
-        <LogoInputSection>
-          <LogoAddButton color='primary' variant='contained'>
-            <Typography fontSize={28}>+</Typography>
-          </LogoAddButton>
-          <Typography fontSize={18} color={'#0a23fb'}>
-            Add Logo
-          </Typography>
-        </LogoInputSection>
-      </LogoSection>
-      <NextSection>
-        <NextButton variant='contained'> next</NextButton>
-      </NextSection>
-    </FullBackground>
+      <Limiter>
+        <LogoSection>
+          <LogoHeading>Select any png.svg or jpg file</LogoHeading>
+          <LogoInputSection>
+            <LogoAddButton color='primary' variant='contained'>
+              <Typography fontSize={28}>+</Typography>
+            </LogoAddButton>
+            <Typography fontSize={18} color={'#0a23fb'}>
+              Add Logo
+            </Typography>
+          </LogoInputSection>
+        </LogoSection>
+        <NextSection>
+          <NextButton variant='contained'> next</NextButton>
+        </NextSection>
+      </Limiter>
+    </Layout>
   )
 }
