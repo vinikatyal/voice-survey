@@ -4,11 +4,13 @@ import Image from 'next/image'
 
 import logo from '../../images/logo.png'
 import styled from '@emotion/styled'
-import { Box, Button, Fab, Typography } from '@mui/material'
+import Layout from '../../components/Layout'
+import Box from '@mui/material/Box'
+import Fab from '@mui/material/Fab'
+import Typography from '@mui/material/Typography'
 
-const FullBackground = styled(Box)({
-  height: '100vh',
-})
+import Limiter from '../../components/Limiter'
+import StyledButton from '../../components/StyledButton'
 
 const ImageContainer = styled(Box)({
   paddingTop: '30px',
@@ -62,43 +64,35 @@ const NextSection = styled('div')({
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-})
-
-const NextButton = styled(Button)({
-  width: '160px',
-  height: '46px',
-  margin: '30px 620px 0',
-  padding: '10.9px 60px 10.1px',
-  objectFit: 'contain',
-  borderRadius: '4px',
-  background: 'linear-gradient(to left, #556df2, #3932be)',
-  '&:hover': {
-    background: 'linear-gradient(to left, #3932be, #556df2)',
-  },
+  paddingTop: '30px',
 })
 
 export default function Index() {
   return (
-    <FullBackground>
-      <ImageContainer>
-        <Image src={logo} alt='background' />
-      </ImageContainer>
+    <Layout>
+      <Limiter>
+        <ImageContainer>
+          <Image src={logo} alt='background' />
+        </ImageContainer>
+      </Limiter>
       <DetailHeader>Add Details</DetailHeader>
 
-      <LogoSection>
-        <LogoHeading>Select any png.svg or jpg file</LogoHeading>
-        <LogoInputSection>
-          <LogoAddButton color='primary' variant='contained'>
-            <Typography fontSize={28}>+</Typography>
-          </LogoAddButton>
-          <Typography fontSize={18} color={'#0a23fb'}>
-            Add Logo
-          </Typography>
-        </LogoInputSection>
-      </LogoSection>
-      <NextSection>
-        <NextButton variant='contained'> next</NextButton>
-      </NextSection>
-    </FullBackground>
+      <Limiter>
+        <LogoSection>
+          <LogoHeading>Select any png.svg or jpg file</LogoHeading>
+          <LogoInputSection>
+            <LogoAddButton color='primary' variant='contained'>
+              <Typography fontSize={28}>+</Typography>
+            </LogoAddButton>
+            <Typography fontSize={18} color={'#0a23fb'}>
+              Add Logo
+            </Typography>
+          </LogoInputSection>
+        </LogoSection>
+        <NextSection>
+          <StyledButton>Next</StyledButton>
+        </NextSection>
+      </Limiter>
+    </Layout>
   )
 }

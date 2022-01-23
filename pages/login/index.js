@@ -6,7 +6,6 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 
 import styled from "@emotion/styled";
@@ -14,6 +13,10 @@ import styled from "@emotion/styled";
 
 import logo from '../../images/logo.png'
 import bck from '../../images/bck.png'
+import Layout from '../../components/Layout'
+import Limiter from '../../components/Limiter'
+import Link from 'next/link'
+import StyledButton from '../../components/StyledButton'
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -50,87 +53,64 @@ const GridLeftImage = styled(Grid)(({ theme }) => ({
   flexGrow: 1,
 }));
 
-const LoginButton = styled(Button)(({ theme }) => ({
-  height: "60px",
-}));
 
 export default function Index() {
   const handleSubmit = () => {};
   return (
-    <FullBackground>
-      <Grid container spacing={2}>
-        <Grid item lg={6} md={6}>
-          <GridItem>
-            <Image
-              src={logo}
-              width={142}
-              height={50}
-              alt="background"
-            />
-          </GridItem>
-          <GridLeftImage>
-            <Image
-              src={bck}
-              width={625}
-              height={369}
-              alt="background"
-            />
-          </GridLeftImage>
-        </Grid>
-        <Grid item md={6} lg={6}>
-          <Item>
-            <Typography align="left" variant="h4">
-              Welcome back!
-            </Typography>
-            <Typography align="left" variant="h6">
-              Sign in to continue
-            </Typography>
-            <Box
-              component="form"
-              noValidate
-              onSubmit={handleSubmit}
-              sx={{ mt: 1 }}
-            >
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Create Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
-              <LoginButton
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Sign in
-              </LoginButton>
-              <Grid container>
-                <Grid item xs>
-                  Don't have an account{" "}
-                  <Link href="/signup" variant="body2">
-                    Sign up
-                  </Link>
+    <Layout bgColor='#f7fafc'>
+      <Limiter>
+        <Grid container spacing={2}>
+          <Grid item lg={6} md={6}>
+            <GridItem>
+              <Image src={logo} width={142} height={50} alt='background' />
+            </GridItem>
+            <GridLeftImage>
+              <Image src={bck} width={625} height={369} alt='background' />
+            </GridLeftImage>
+          </Grid>
+          <Grid item md={6} lg={6}>
+            <Item>
+              <Typography align='left' variant='h4'>
+                Welcome back!
+              </Typography>
+              <Typography align='left' variant='h6'>
+                Sign in to continue
+              </Typography>
+              <Box component='form' noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                <TextField
+                  margin='normal'
+                  required
+                  fullWidth
+                  id='email'
+                  label='Email Address'
+                  name='email'
+                  autoComplete='email'
+                  autoFocus
+                />
+                <TextField
+                  margin='normal'
+                  required
+                  fullWidth
+                  name='password'
+                  label='Create Password'
+                  type='password'
+                  id='password'
+                  autoComplete='current-password'
+                />
+				<StyledButton fullWidth sx={{ mt: 3, mb: 2 }}> Sign In </StyledButton>
+                <Grid container>
+                  <Grid item xs>
+                    Don't have an account{' '}
+                    <Link href='/signup' variant='body2'>
+                      Sign up
+                    </Link>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Box>
-          </Item>
+              </Box>
+            </Item>
+          </Grid>
         </Grid>
-      </Grid>
-    </FullBackground>
-  );
+      </Limiter>
+    </Layout>
+  )
 }
