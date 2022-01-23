@@ -64,6 +64,7 @@ const NextSection = styled('div')({
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
+  paddingTop: '30px',
 })
 
 export default function Index() {
