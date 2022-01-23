@@ -16,6 +16,7 @@ import bck from '../../images/bck.png'
 import Layout from '../../components/Layout'
 import Limiter from '../../components/Limiter'
 import Link from 'next/link'
+import StyledButton from '../../components/StyledButton'
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -52,9 +53,6 @@ const GridLeftImage = styled(Grid)(({ theme }) => ({
   flexGrow: 1,
 }));
 
-const LoginButton = styled(Button)(({ theme }) => ({
-  height: "60px",
-}));
 
 export default function Index() {
   const handleSubmit = () => {};
@@ -99,9 +97,7 @@ export default function Index() {
                   id='password'
                   autoComplete='current-password'
                 />
-                <LoginButton type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-                  Sign in
-                </LoginButton>
+				<StyledButton fullWidth sx={{ mt: 3, mb: 2 }}> Sign In </StyledButton>
                 <Grid container>
                   <Grid item xs>
                     Don't have an account{' '}

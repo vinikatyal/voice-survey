@@ -15,6 +15,7 @@ import bck from "../../images/bck.png";
 import Layout from '../../components/Layout'
 import Limiter from '../../components/Limiter'
 import Link from 'next/link'
+import StyledButton from '../../components/StyledButton'
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -52,10 +53,6 @@ const GridLeftImage = styled(Grid)(({ theme }) => ({
   flexGrow: 1,
 }));
 
-const LoginButton = styled(Button)(({ theme }) => ({
-  height: "60px",
-  padding: "18px",
-}));
 
 export default function Index() {
   const handleSubmit = () => {};
@@ -112,9 +109,9 @@ export default function Index() {
                   autoFocus
                   variant='standard'
                 />
-                <LoginButton type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
+                <StyledButton type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
                   Submit
-                </LoginButton>
+                </StyledButton>
                 <Grid container>
                   <Grid item xs>
                     If you already have account,

@@ -2,8 +2,8 @@ import * as React from 'react'
 import styled from '@emotion/styled'
 import Button from '@mui/material/Button'
 
-const PrimaryButton = styled(Button)(({ width, bgColor, bgHoverColor }) => ({
-  width: width ? width + 'px' : '160px',
+const PrimaryButton = styled(Button)(({ width, bgColor, bgHoverColor, fullWidth }) => ({
+  width: fullWidth ? '' : width ? width + 'px' : '160px',
   height: '46px',
   borderRadius: '4px',
   background: bgColor ? bgColor : 'linear-gradient(to left, #556df2, #3932be)',
