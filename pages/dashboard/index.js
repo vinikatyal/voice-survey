@@ -1,41 +1,32 @@
 import * as React from "react";
 
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
+import Container from "@mui/material/Container";
 
+import Header from "../../components/Header";
 import styled from "@emotion/styled";
+import { Typography } from "@mui/material";
 
-const Nav = styled("div")(({}) => ({
-  width: "100%",
-  display: "flex",
+const FullBackground = styled(Container)(({ theme }) => ({
+  height: "100vh",
 }));
 
-
-const NavLink = styled(Link)(({}) => ({
-    color: "#fff",
-    marginLeft: "10px",
-    marginRight: "10px",
-  }));
+const DashboardHeader = styled("div")(({ theme }) => ({
+  height: "60px",
+  padding: theme.spacing(2),
+  backgroundColor: "#f5f8ff",
+  marginTop: "30px"
+}));
 
 export default function Index() {
   return (
     <>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h4">Armour365</Typography>
-          <Nav>
-            <NavLink to="/">All Surveys</NavLink>
-            <NavLink to="/about">My Surveys</NavLink>
-            <NavLink to="/contact">Shared with me</NavLink>
-            <NavLink to="/faq">Billing</NavLink>
-            <NavLink to="/faq">Settings</NavLink>
-          </Nav>
-        </Toolbar>
-      </AppBar>
-      <Grid container spacing={2}></Grid>
+      <Header />
+      <FullBackground maxWidth="lg">
+        <DashboardHeader>
+            <Typography variant="h4">All Surveys</Typography>
+        </DashboardHeader>
+      </FullBackground>
     </>
   );
 }

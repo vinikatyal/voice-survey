@@ -38,6 +38,7 @@ const theme = createTheme({
       colorInherit: {
         backgroundColor: "#fff",
         color: "#707070",
+        boxShadow: "0 3px 6px 0 rgba(0, 0, 0, 0.16)",
       },
     },
   },
