@@ -29,8 +29,8 @@ const theme = createTheme({
       fontWeight: 600,
     },
     button: {
-      fontSize: 14,
-      fontWeight: 400,
+      fontSize: 12,
+      fontWeight: 500,
     },
   },
   overrides: {

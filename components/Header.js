@@ -7,6 +7,8 @@ import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
 
+import StyledButton from "../components/StyledButton";
+
 import logo from "../images/logo.png";
 
 import styled from "@emotion/styled";
@@ -25,7 +27,8 @@ const BoxCustom = styled(Container)(({}) => ({
 const Nav = styled("div")(({}) => ({
   display: "flex",
   justifyContent: "flex-end",
-  width: "90%"
+  width: "90%",
+  alignItems: "center"
 }));
 
 const NavLink = styled(Link)(({}) => ({
@@ -64,6 +67,7 @@ export default function Index() {
             <NavLink to="/faq" underline="hover">
               Settings
             </NavLink>
+            <StyledButton>New Survey</StyledButton>
           </Nav>
         </BoxCustom>
       </Toolbar>
