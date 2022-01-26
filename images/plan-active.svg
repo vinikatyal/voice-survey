@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="364.822" height="534.139" viewBox="0 0 364.822 534.139">
+    <defs>
+        <linearGradient id="b0atcuegtb" x1=".917" y1=".059" x2=".102" y2=".922" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#556cf1"/>
+            <stop offset="1" stop-color="#3933bf"/>
+        </linearGradient>
+        <filter id="b6ozo64hma" x="0" y="0" width="364.822" height="534.139" filterUnits="userSpaceOnUse">
+            <feOffset dy="3"/>
+            <feGaussianBlur stdDeviation="5" result="blur"/>
+            <feFlood flood-color="#405c77" flood-opacity=".161"/>
+            <feComposite operator="in" in2="blur"/>
+            <feComposite in="SourceGraphic"/>
+        </filter>
+    </defs>
+    <g style="filter:url(#b6ozo64hma)">
+        <path data-name="Path 3" d="M470.589 408.628a20.584 20.584 0 0 0 20.583 20.583v365.107a17.712 17.712 0 0 1-17.718 17.71H176.068a17.712 17.712 0 0 1-17.718-17.71V429.211a20.579 20.579 0 1 0 0-41.159v-60.444a17.718 17.718 0 0 1 17.718-17.718h297.386a17.718 17.718 0 0 1 17.718 17.718v60.444a20.578 20.578 0 0 0-20.583 20.576z" transform="translate(-142.35 -296.89)" style="stroke:#e6e6e6;stroke-miterlimit:10;stroke-width:2px;fill:url(#b0atcuegtb)"/>
+    </g>
+</svg>
