@@ -12,6 +12,7 @@ import styled from "@emotion/styled";
 
 import logo from "../../images/logo.png";
 import bck from "../../images/bck.png";
+import google from "../../images/svg/google.svg";
 import Layout from "../../components/Layout";
 import Limiter from "../../components/Limiter";
 import Link from "next/link";
@@ -27,11 +28,6 @@ const Item = styled(Paper)(({ theme }) => ({
   width: "450px",
   boxShadow: "0 3px 6px 0 rgba(0, 0, 0, 0.16",
   padding: "28px 30px 27px",
-}));
-
-const FullBackground = styled(Box)(({ theme }) => ({
-  height: "100vh",
-  backgroundColor: "#f7fafc",
 }));
 
 const GridItem = styled(Grid)(({ theme }) => ({
@@ -54,7 +50,8 @@ const GridLeftImage = styled(Grid)(({ theme }) => ({
 
 const GoogleSignin = styled(Button)(({ theme }) => ({
   border: "1px solid #00063e",
-  borderRadius: "8px"
+  borderRadius: "8px",
+  color: "#00063e",
 }));
 
 export default function Index() {
@@ -123,6 +120,14 @@ export default function Index() {
                       type="submit"
                       variant="outlined"
                       fullWidth
+                      startIcon={
+                        <Image
+                          src={google}
+                          width={30}
+                          height={30}
+                          alt="google"
+                        />
+                      }
                       sx={{ mt: 3, mb: 2 }}
                     >
                       Signin with google

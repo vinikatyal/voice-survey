@@ -1,6 +1,9 @@
 import * as React from "react";
 
 import Image from "next/image";
+import Link from "next/link";
+
+// components
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -8,14 +11,17 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
-import styled from "@emotion/styled";
-
-import logo from "../../images/logo.png";
-import bck from "../../images/bck.png";
+// custom components
 import Layout from "../../components/Layout";
 import Limiter from "../../components/Limiter";
-import Link from "next/link";
 import StyledButton from "../../components/StyledButton";
+
+// images
+import logo from "../../images/logo.png";
+import bck from "../../images/bck.png";
+import google from "../../images/svg/google.svg";
+
+import styled from "@emotion/styled";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -49,8 +55,9 @@ const GridLeftImage = styled(Grid)(({ theme }) => ({
 }));
 
 const GoogleSignin = styled(Button)(({ theme }) => ({
-    border: "1px solid #00063e",
-    borderRadius: "8px"
+  border: "1px solid #00063e",
+  borderRadius: "8px",
+  color: "#00063e",
 }));
 
 export default function Index() {
@@ -135,7 +142,7 @@ export default function Index() {
                 </StyledButton>
                 <Grid container>
                   <Grid item xs>
-                    If you already have account,
+                    If you already have account,{" "}
                     <Link href="/login" variant="body2">
                       Login
                     </Link>
@@ -147,6 +154,14 @@ export default function Index() {
                       type="submit"
                       variant="outlined"
                       fullWidth
+                      startIcon={
+                        <Image
+                          src={google}
+                          width={30}
+                          height={30}
+                          alt="google"
+                        />
+                      }
                       sx={{ mt: 3, mb: 2 }}
                     >
                       Signin with google
