@@ -13,7 +13,7 @@ const Title = styled(DialogTitle)({
   background: "linear-gradient(to left, #556df2, #3932be)",
   color: "#fff",
   fontWeight: "600",
-  fontSize: "24px",
+  fontSize: "20px",
 });
 
 export default function ModalDialog({ title, isOpen, handleClose, children }) {
