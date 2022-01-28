@@ -1,18 +1,18 @@
-import * as React from 'react'
+import * as React from "react";
 
-import Layout from '../components/Layout'
-import { Button } from '@mui/material'
-import Limiter from '../components/Limiter'
-import Link from 'next/link'
+import Layout from "../components/Layout";
+import { Button } from "@mui/material";
+import Limiter from "../components/Limiter";
+import Link from "next/link";
 
 export default function Index() {
   return (
     <Layout H1={1}>
       <Limiter>
-        <Link href='/login' passHref>
-          <Button variant='contained'>Take me to Login Page</Button>
+        <Link href="/login" passHref>
+          <Button variant="contained">Take me to Login Page</Button>
         </Link>
       </Limiter>
     </Layout>
-  )
+  );
 }
