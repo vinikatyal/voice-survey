@@ -46,7 +46,7 @@ const NavItem = styled("div")(({ active }) => ({
   },
 }));
 
-export default function Index() {
+export default function Index({ currentTab, children }) {
   return (
     <>
       <AppBarCustom position="sticky">
@@ -58,14 +58,15 @@ export default function Index() {
             </Typography>
           </SurveyNameWrapped>
           <Nav>
-            <NavItem active={true}>Create</NavItem>
+            <NavItem active={currentTab === "CREATE"}>Create</NavItem>
             <KeyboardDoubleArrowRightIcon />
-            <NavItem>Share</NavItem>
+            <NavItem active={currentTab === "SHARE"}>Share</NavItem>
             <KeyboardDoubleArrowRightIcon />
-            <NavItem>Report</NavItem>
+            <NavItem active={currentTab === "REPORT"}>Report</NavItem>
           </Nav>
         </HeaderContainer>
       </AppBarCustom>
+      {children}
     </>
   );
 }
