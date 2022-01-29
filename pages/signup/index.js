@@ -12,6 +12,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
+import PhoneInput from "react-phone-input-2";
 
 // custom components
 import Layout from "../../components/Layout";
@@ -24,6 +25,7 @@ import bck from "../../images/bck.png";
 import google from "../../images/svg/google.svg";
 
 import styled from "@emotion/styled";
+import 'react-phone-input-2/lib/material.css'
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -62,9 +64,24 @@ const GoogleSignin = styled(Button)(({ theme }) => ({
 }));
 
 const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
-    marginBottom: "10px",
-    marginTop: "10px",
-  }));
+  marginBottom: "10px",
+  marginTop: "10px",
+}));
+
+const PhoneFormControl = styled(FormControl)`
+  font-size: 16px!important;
+  .special-label {
+    display: none!important;
+  }
+
+  .form-control {
+    width: 100%!important;
+  }
+`;
+
+const Phone = styled(PhoneInput)`
+
+`;
 
 export default function Index() {
   const handleSubmit = () => {};
@@ -106,7 +123,7 @@ export default function Index() {
                 onSubmit={handleSubmit}
                 sx={{ mt: 1 }}
               >
-               <FormControl fullWidth>
+                <FormControl fullWidth>
                   <LoginFormLabel>Email</LoginFormLabel>
                   <TextField
                     required
@@ -114,6 +131,7 @@ export default function Index() {
                     id="email"
                     name="email"
                     autoComplete="email"
+                    placeholder="Enter your email"
                   />
                 </FormControl>
                 <FormControl fullWidth>
@@ -121,21 +139,16 @@ export default function Index() {
                   <TextField
                     required
                     fullWidth
-                    id="email"
-                    name="email"
-                    autoComplete="email"
+                    id="password"
+                    name="password"
+                    autoComplete="password"
+                    placeholder="Set your password"
                   />
                 </FormControl>
-                <FormControl fullWidth>
+                <PhoneFormControl fullWidth>
                   <LoginFormLabel>Phone Number</LoginFormLabel>
-                  <TextField
-                    required
-                    fullWidth
-                    id="email"
-                    name="email"
-                    autoComplete="email"
-                  />
-                </FormControl>
+                  <Phone onlyCountries={['in']} country={"in"}></Phone>
+                </PhoneFormControl>
                 <StyledButton
                   type="submit"
                   fullWidth
