@@ -10,6 +10,8 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 
 // custom components
 import Layout from "../../components/Layout";
@@ -26,7 +28,6 @@ import styled from "@emotion/styled";
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(1),
-  textAlign: "center",
   marginLeft: "30px",
   marginRight: "30px",
   marginTop: "50px",
@@ -59,6 +60,11 @@ const GoogleSignin = styled(Button)(({ theme }) => ({
   borderRadius: "8px",
   color: "#00063e",
 }));
+
+const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
+    marginBottom: "10px",
+    marginTop: "10px",
+  }));
 
 export default function Index() {
   const handleSubmit = () => {};
@@ -100,38 +106,36 @@ export default function Index() {
                 onSubmit={handleSubmit}
                 sx={{ mt: 1 }}
               >
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  autoFocus
-                  variant="standard"
-                />
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Create Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                  variant="standard"
-                />
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="phone"
-                  label="Phone number"
-                  name="phone"
-                  autoFocus
-                  variant="standard"
-                />
+               <FormControl fullWidth>
+                  <LoginFormLabel>Email</LoginFormLabel>
+                  <TextField
+                    required
+                    fullWidth
+                    id="email"
+                    name="email"
+                    autoComplete="email"
+                  />
+                </FormControl>
+                <FormControl fullWidth>
+                  <LoginFormLabel>Create Password</LoginFormLabel>
+                  <TextField
+                    required
+                    fullWidth
+                    id="email"
+                    name="email"
+                    autoComplete="email"
+                  />
+                </FormControl>
+                <FormControl fullWidth>
+                  <LoginFormLabel>Phone Number</LoginFormLabel>
+                  <TextField
+                    required
+                    fullWidth
+                    id="email"
+                    name="email"
+                    autoComplete="email"
+                  />
+                </FormControl>
                 <StyledButton
                   type="submit"
                   fullWidth
