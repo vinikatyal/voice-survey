@@ -147,7 +147,7 @@ export default function Index() {
                 </FormControl>
                 <PhoneFormControl fullWidth>
                   <LoginFormLabel>Phone Number</LoginFormLabel>
-                  <Phone country={"in"}></Phone>
+                  <Phone onlyCountries={['in']} country={"in"}></Phone>
                 </PhoneFormControl>
                 <StyledButton
                   type="submit"
