@@ -82,7 +82,6 @@ export default function Index() {
         expandStatus: true,
       },
     ];
-    console.log(newArr);
     setQuestionList(newArr);
   };
 
