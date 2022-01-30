@@ -7,10 +7,14 @@ import Typography from "@mui/material/Typography";
 
 import Layout from "../../components/Layout";
 import SurveyHeader from "../../components/SurveyHeader";
+import SurveyQuestion from "../../components/SurveyQuestion";
 
 // icons
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
+
+// Button
+import StyledButton from "../../components/StyledButton";
 
 import styled from "@emotion/styled";
 
@@ -52,46 +56,97 @@ const Label = styled("span")({
   fontWeight: "500",
 });
 
+const AddQuestionSection = styled(Container)({
+  display: "flex",
+  width: "100%",
+  justifyContent: "flex-end",
+  marginTop: "30px",
+});
+
 export default function Index() {
+  const [questionList, setQuestionList] = React.useState([
+    { id: 1, questionNumber: 1, expandStatus: true },
+  ]);
+
+  const handleAddQuestion = () => {
+    let newArr = questionList.map((element) => ({
+      id: element.id,
+      questionNumber: element.questionNumber,
+      expandStatus: false,
+    }));
+    newArr = [
+      ...newArr,
+      {
+        id: newArr.length + 1,
+        questionNumber: newArr.length + 1,
+        expandStatus: true,
+      },
+    ];
+    setQuestionList(newArr);
+  };
+
+  const handleExpanded = (id, expandStatus) => {
+    const newArr = questionList.map((element) => {
+      if (element.id === id) {
+        return {
+          id: element.id,
+          questionNumber: element.questionNumber,
+          expandStatus: expandStatus,
+        };
+      }
+      return {
+        id: element.id,
+        questionNumber: element.questionNumber,
+        expandStatus: false,
+      };
+    });
+    setQuestionList(newArr);
+  };
+
+  const deleteQuestion = (id) => {
+    const newArr = questionList.filter((element) => element.id !== id);
+    setQuestionList(newArr);
+  };
+
   return (
     <Layout>
-      <SurveyHeader></SurveyHeader>
-      <SurveyHeadSection>
-        <HeaderContainer maxWidth="lg">
-          <SurveyHeadSelectionWrapper>
-            <TabButton active={true}>
-              <QuestionMarkIcon sx={{ fontSize: 20 }} />
-              <div>
-                <Typography
-                  variant="button"
-                  sx={{ textTransform: "initial", fontSize: "16px" }}
-                >
-                  Questions
-                </Typography>
-              </div>
-            </TabButton>
-            <TabButton>
-              <ColorLensIcon mr={10} sx={{ fontSize: 20 }} />
-              <div>
-                <Typography
-                  variant="button"
-                  sx={{ textTransform: "initial", fontSize: "16px" }}
-                >
-                  Design
-                </Typography>
-              </div>
-            </TabButton>
-          </SurveyHeadSelectionWrapper>
-          <Button variant="outlined" sx={{ margin: "10px 0" }}>
-            <Typography
-              variant="button"
-              sx={{ textTransform: "initial", fontSize: "16px" }}
-            >
-              Preview
-            </Typography>
-          </Button>
-        </HeaderContainer>
-
+      <SurveyHeader currentTab="CREATE">
+        <SurveyHeadSection>
+          <HeaderContainer maxWidth="lg">
+            <SurveyHeadSelectionWrapper>
+              <TabButton active={true}>
+                <QuestionMarkIcon sx={{ fontSize: 20 }} />
+                <div>
+                  <Typography
+                    variant="button"
+                    sx={{ textTransform: "initial", fontSize: "16px" }}
+                  >
+                    Questions
+                  </Typography>
+                </div>
+              </TabButton>
+              <TabButton>
+                <ColorLensIcon mr={10} sx={{ fontSize: 20 }} />
+                <div>
+                  <Typography
+                    variant="button"
+                    sx={{ textTransform: "initial", fontSize: "16px" }}
+                  >
+                    Design
+                  </Typography>
+                </div>
+              </TabButton>
+            </SurveyHeadSelectionWrapper>
+            <Button variant="outlined" sx={{ margin: "10px 0" }}>
+              <Typography
+                variant="button"
+                sx={{ textTransform: "initial", fontSize: "16px" }}
+              >
+                Preview
+              </Typography>
+            </Button>
+          </HeaderContainer>
+        </SurveyHeadSection>
         <Container maxWidth="lg" sx={{ marginTop: "30px" }}>
           <Label>Welcome Text</Label>
           <TextField
@@ -101,7 +156,23 @@ export default function Index() {
             variant="outlined"
           />
         </Container>
-      </SurveyHeadSection>
+        <Container maxWidth="lg" sx={{ marginTop: "30px" }}>
+          <Label>Add Questions</Label>
+          {questionList.map((question) => (
+            <SurveyQuestion
+              key={question.id}
+              id={question.id}
+              questionNumber={question.questionNumber}
+              expandStatus={question.expandStatus}
+              handleExpanded={handleExpanded}
+              deleteQuestion={deleteQuestion}
+            />
+          ))}
+        </Container>
+        <AddQuestionSection maxWidth="lg">
+          <StyledButton onClick={handleAddQuestion}>Add Question</StyledButton>
+        </AddQuestionSection>
+      </SurveyHeader>
     </Layout>
   );
 }
