@@ -4,6 +4,8 @@ import Image from "next/image";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -21,7 +23,6 @@ import StyledButton from "../../components/StyledButton";
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(1),
-  textAlign: "center",
   marginLeft: "30px",
   marginRight: "30px",
   marginTop: "50px",
@@ -54,6 +55,11 @@ const GoogleSignin = styled(Button)(({ theme }) => ({
   color: "#00063e",
 }));
 
+const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
+  marginBottom: "10px",
+  marginTop: "10px",
+}));
+
 export default function Index() {
   const handleSubmit = () => {};
   return (
@@ -82,26 +88,27 @@ export default function Index() {
                 onSubmit={handleSubmit}
                 sx={{ mt: 1 }}
               >
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  autoFocus
-                />
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Create Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                />
+                <FormControl fullWidth>
+                  <LoginFormLabel>Email Address</LoginFormLabel>
+                  <TextField
+                    required
+                    fullWidth
+                    id="email"
+                    name="email"
+                    autoComplete="email"
+                  />
+                </FormControl>
+
+                <FormControl fullWidth>
+                  <LoginFormLabel>Password</LoginFormLabel>
+                  <TextField
+                    required
+                    fullWidth
+                    id="password"
+                    name="password"
+                    autoComplete="password"
+                  />
+                </FormControl>
                 <StyledButton fullWidth sx={{ mt: 3, mb: 2 }}>
                   {" "}
                   Sign In{" "}

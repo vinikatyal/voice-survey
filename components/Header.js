@@ -10,13 +10,10 @@ const AppBarCustom = styled(AppBar)(({}) => ({
   color: "#707070",
 }));
 
-
-export default function Index({children}) {
+export default function Index({ children }) {
   return (
     <AppBarCustom position="static">
-      <Toolbar>
-        {children}
-      </Toolbar>
+      <Toolbar>{children}</Toolbar>
     </AppBarCustom>
   );
 }
