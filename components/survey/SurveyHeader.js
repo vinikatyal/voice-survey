@@ -1,10 +1,7 @@
 import * as React from "react";
 
-import Image from "next/image";
-
 import AppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 // icons
