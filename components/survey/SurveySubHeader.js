@@ -23,7 +23,7 @@ const HeaderContainer = styled(Container)(({ theme }) => ({
   width: "90%",
   display: "flex",
   alignItems: "center",
-  paddingLeft: "120px!important",
+  paddingLeft: "88px!important",
 }));
 
 const RightImageContainer = styled("div")(({ theme }) => ({
