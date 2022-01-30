@@ -37,6 +37,7 @@ const NavItem = styled("div")(({ active }) => ({
   color: active ? "#0a23fb" : "#707070",
   marginLeft: "20px",
   marginRight: "20px",
+  fontWeight: 500,
   cursor: "pointer",
   "&:hover": {
     color: "#0a23fb",
