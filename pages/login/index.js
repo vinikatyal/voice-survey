@@ -12,9 +12,11 @@ import Typography from "@mui/material/Typography";
 
 import styled from "@emotion/styled";
 
+// image
 import logo from "../../images/logo.png";
 import bck from "../../images/bck.png";
 import google from "../../images/svg/google.svg";
+
 import Layout from "../../components/Layout";
 import Limiter from "../../components/Limiter";
 import Link from "next/link";
