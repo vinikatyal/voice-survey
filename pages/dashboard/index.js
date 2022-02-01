@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { useRouter } from 'next/router';
+
 import Image from "next/image";
 
 import Box from "@mui/material/Box";
@@ -95,10 +97,11 @@ const card = (
 );
 
 export default function Index() {
+  const router = useRouter();
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
-    setOpen(!open);
+    router.push('/survey/create');
   };
 
   const handleSubmit = () => {};
