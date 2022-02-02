@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 import Image from "next/image";
 
@@ -19,11 +19,13 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
+import IconButton from "@mui/material/IconButton";
 
 import ModalDialog from "../../components/ModalDialog";
 import StyledButton from "../../components/StyledButton";
 import Header from "../../components/Header";
 
+import Delete from "@mui/icons-material/Delete";
 import logo from "../../images/logo.png";
 
 import styled from "@emotion/styled";
@@ -79,12 +81,40 @@ const SurveyFormLabel = styled(FormLabel)(({ theme }) => ({
   marginTop: "10px",
 }));
 
+const CardTitle = styled("div")({
+  width: "100%",
+  fontSize: "16px",
+  fontWeight: 600,
+  display: "flex",
+  alignItems: "center",
+});
+
+const CardHead = styled("div")({
+  width: "90%",
+});
+
+const CardIconContainer = styled("div")({
+  width: "10%",
+  display: "flex",
+  alignItems: "start",
+  justifyContent: "flex-end",
+});
+
+const CardIcon = styled(IconButton)({
+  color: "#9a9cb5",
+});
+
 const card = (
   <React.Fragment>
     <CardContent>
-      <Typography variant="h4" component="div">
-        Slack Usability Testing Survey 2021
-      </Typography>
+      <CardTitle>
+      <CardHead>Slack Usability Testing Survey 2021</CardHead>
+      <CardIconContainer>
+        <CardIcon>
+          <Delete />
+        </CardIcon>
+      </CardIconContainer>
+      </CardTitle>
       <Typography variant="body2">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et
         dolore magna aliqua. Amet facilisis magna etiam tempor orci.
@@ -101,7 +131,7 @@ export default function Index() {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
-    router.push('/survey/create');
+    router.push("/survey/create");
   };
 
   const handleSubmit = () => {};
