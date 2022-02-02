@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { useForm } from "react-hook-form";
+
 import Image from "next/image";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -62,8 +64,20 @@ const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
   marginTop: "10px",
 }));
 
+const ErrorLabel = styled("p")({
+  color: "red",
+});
+
 export default function Index() {
-  const handleSubmit = () => {};
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = async (data) => {
+    alert(JSON.stringify(data));
+  };
   return (
     <Layout bgColor="#f7fafc">
       <Limiter>
@@ -87,7 +101,7 @@ export default function Index() {
               <Box
                 component="form"
                 noValidate
-                onSubmit={handleSubmit}
+                onSubmit={(e) => e.preventDefault()}
                 sx={{ mt: 1 }}
               >
                 <FormControl fullWidth>
@@ -97,8 +111,20 @@ export default function Index() {
                     fullWidth
                     id="email"
                     name="email"
+                    {...register("email", {
+                      required: "Email is required",
+                      pattern: {
+                        value:
+                          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                        message: "Please enter a valid email",
+                      },
+                    })}
                     autoComplete="email"
+                    placeholder="Enter your email"
                   />
+                  {errors.email && (
+                    <ErrorLabel>{errors.email.message}</ErrorLabel>
+                  )}
                 </FormControl>
 
                 <FormControl fullWidth>
@@ -109,9 +135,25 @@ export default function Index() {
                     id="password"
                     name="password"
                     autoComplete="password"
+                    {...register("password", {
+                      required: "You must specify a password",
+                      minLength: {
+                        value: 5,
+                        message: "Password must have at least 5 characters",
+                      },
+                    })}
+                    type="password"
+                    placeholder="Enter your password"
                   />
+                  {errors.password && (
+                    <ErrorLabel>{errors.password.message}</ErrorLabel>
+                  )}
                 </FormControl>
-                <StyledButton fullWidth sx={{ mt: 3, mb: 2 }}>
+                <StyledButton
+                  onClick={handleSubmit(onSubmit)}
+                  fullWidth
+                  sx={{ mt: 3, mb: 2 }}
+                >
                   {" "}
                   Sign In{" "}
                 </StyledButton>
