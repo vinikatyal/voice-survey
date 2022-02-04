@@ -14,10 +14,8 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
-import FormLabel from "@mui/material/FormLabel";
 import IconButton from "@mui/material/IconButton";
 
-import ModalDialog from "../../components/ModalDialog";
 import StyledButton from "../../components/StyledButton";
 import Header from "../../components/Header";
 
@@ -68,14 +66,6 @@ const Logo = styled(Image)(({}) => ({
   justifyContent: "flex-start",
 }));
 
-const SurveyDialog = styled(ModalDialog)(({}) => ({
-  width: "760px",
-}));
-
-const SurveyFormLabel = styled(FormLabel)(({ theme }) => ({
-  marginBottom: "10px",
-  marginTop: "10px",
-}));
 
 const CardTitle = styled("div")({
   width: "100%",
