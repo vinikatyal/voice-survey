@@ -76,6 +76,7 @@ const QuestionNumber = styled("div")({
   fontSize: "14px",
   fontWeight: 600,
   color: "#00063e",
+  marginTop: "16px",
 });
 
 const CustomSelect = styled(Select)({});
@@ -88,7 +89,12 @@ const emailOptions = [
 
 const card = (
   <React.Fragment>
-    <CustomCardMedia height="90" component="img" alt="bck" src={bck}></CustomCardMedia>
+    <CustomCardMedia
+      height="90"
+      component="img"
+      alt="bck"
+      src={bck}
+    ></CustomCardMedia>
     <CardContent>
       <CardTitle>
         <CardHead>
@@ -101,10 +107,8 @@ const card = (
       <Typography variant="body2">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et
       </Typography>
-    </CardContent>
-    <CardActions>
       <QuestionNumber>12 questions</QuestionNumber>
-    </CardActions>
+    </CardContent>
   </React.Fragment>
 );
 
