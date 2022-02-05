@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 
 import Limiter from "../../components/Limiter";
 import StyledButton from "../../components/StyledButton";
+import AddLogo from "../../components/AddLogo";
 
 const ImageContainer = styled(Box)({
   paddingTop: "30px",
@@ -80,14 +81,7 @@ export default function Index() {
       <Limiter>
         <LogoSection>
           <LogoHeading>Select any png.svg or jpg file</LogoHeading>
-          <LogoInputSection>
-            <LogoAddButton color="primary" variant="contained">
-              <Typography fontSize={28}>+</Typography>
-            </LogoAddButton>
-            <Typography fontSize={18} color={"#0a23fb"}>
-              Add Logo
-            </Typography>
-          </LogoInputSection>
+          <AddLogo />
         </LogoSection>
         <NextSection>
           <StyledButton>Next</StyledButton>
