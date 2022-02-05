@@ -1,6 +1,13 @@
 import * as React from "react";
 
+
+
+import Link from "next/link";
 import Image from "next/image";
+
+import { useForm } from "react-hook-form";
+// import useSWR from 'swr'
+
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -10,15 +17,18 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
-import styled from "@emotion/styled";
-
+// image
 import logo from "../../images/logo.png";
 import bck from "../../images/bck.png";
 import google from "../../images/svg/google.svg";
+
+// internal components
 import Layout from "../../components/Layout";
 import Limiter from "../../components/Limiter";
-import Link from "next/link";
 import StyledButton from "../../components/StyledButton";
+
+
+import styled from "@emotion/styled";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -60,8 +70,20 @@ const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
   marginTop: "10px",
 }));
 
+const ErrorLabel = styled("p")({
+  color: "red",
+});
+
 export default function Index() {
-  const handleSubmit = () => {};
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = async (data) => {
+    alert(JSON.stringify(data));
+  };
   return (
     <Layout bgColor="#f7fafc">
       <Limiter>
@@ -85,7 +107,7 @@ export default function Index() {
               <Box
                 component="form"
                 noValidate
-                onSubmit={handleSubmit}
+                onSubmit={(e) => e.preventDefault()}
                 sx={{ mt: 1 }}
               >
                 <FormControl fullWidth>
@@ -95,8 +117,20 @@ export default function Index() {
                     fullWidth
                     id="email"
                     name="email"
+                    {...register("email", {
+                      required: "Email is required",
+                      pattern: {
+                        value:
+                          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                        message: "Please enter a valid email",
+                      },
+                    })}
                     autoComplete="email"
+                    placeholder="Enter your email"
                   />
+                  {errors.email && (
+                    <ErrorLabel>{errors.email.message}</ErrorLabel>
+                  )}
                 </FormControl>
 
                 <FormControl fullWidth>
@@ -107,9 +141,25 @@ export default function Index() {
                     id="password"
                     name="password"
                     autoComplete="password"
+                    {...register("password", {
+                      required: "You must specify a password",
+                      minLength: {
+                        value: 5,
+                        message: "Password must have at least 5 characters",
+                      },
+                    })}
+                    type="password"
+                    placeholder="Enter your password"
                   />
+                  {errors.password && (
+                    <ErrorLabel>{errors.password.message}</ErrorLabel>
+                  )}
                 </FormControl>
-                <StyledButton fullWidth sx={{ mt: 3, mb: 2 }}>
+                <StyledButton
+                  onClick={handleSubmit(onSubmit)}
+                  fullWidth
+                  sx={{ mt: 3, mb: 2 }}
+                >
                   {" "}
                   Sign In{" "}
                 </StyledButton>

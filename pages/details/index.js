@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { useForm } from "react-hook-form";
+
 import Image from "next/image";
 
 import logo from "../../images/logo.png";
@@ -8,6 +10,9 @@ import Layout from "../../components/Layout";
 import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
 import Typography from "@mui/material/Typography";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import TextField from "@mui/material/TextField";
 
 import Limiter from "../../components/Limiter";
 import StyledButton from "../../components/StyledButton";
@@ -59,6 +64,7 @@ const LogoInputSection = styled(Box)({
 const LogoAddButton = styled(Fab)({
   height: "10px",
   width: "36px",
+  backgroundColor: "#0a23fb",
 });
 const NextSection = styled("div")({
   display: " flex",
@@ -68,7 +74,40 @@ const NextSection = styled("div")({
   paddingTop: "30px",
 });
 
+const DetailsForm = styled("div")({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+});
+
+const FormSection = styled("div")({
+  width: "370px",
+});
+
+const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
+  marginBottom: "5px",
+  marginTop: "5px",
+}));
+
+const ErrorLabel = styled("p")({
+  color: "red",
+});
+
+const Input = styled("input")({
+  display: "none",
+});
+
 export default function Index() {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = async (data) => {
+    alert(JSON.stringify(data));
+  };
   return (
     <Layout>
       <Limiter>
