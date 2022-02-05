@@ -16,6 +16,7 @@ import TextField from "@mui/material/TextField";
 
 import Limiter from "../../components/Limiter";
 import StyledButton from "../../components/StyledButton";
+import AddLogo from "../../components/AddLogo";
 
 const ImageContainer = styled(Box)({
   paddingTop: "30px",
@@ -117,43 +118,13 @@ export default function Index() {
       <DetailHeader>Add Details</DetailHeader>
 
       <Limiter>
-        <DetailsForm>
-          <Box component="form" noValidate onSubmit={(e) => e.preventDefault()}>
-            <LogoSection>
-              <LogoHeading>Select any png, svg or jpg file</LogoHeading>
-              <LogoInputSection>
-                <LogoAddButton color="primary" variant="contained">
-                  <Input accept="image/*" id="icon-button-file" type="file" />
-                  <Typography fontSize={28}>+</Typography>
-                </LogoAddButton>
-                <Typography fontSize={18} color={"#0a23fb"}>
-                  Add Logo
-                </Typography>
-              </LogoInputSection>
-            </LogoSection>
-            <FormSection>
-              <FormControl fullWidth>
-                <LoginFormLabel>Add Company Name</LoginFormLabel>
-                <TextField
-                  required
-                  {...register("company_name", {
-                    required: "Company Name is required",
-                  })}
-                  id="company_name"
-                  name="company_name"
-                  placeholder="Your Company Name"
-                />
-                {errors.company_name && (
-                  <ErrorLabel>{errors.company_name.message}</ErrorLabel>
-                )}
-              </FormControl>
-            </FormSection>
-
-            <NextSection>
-              <StyledButton onClick={handleSubmit(onSubmit)}>Next</StyledButton>
-            </NextSection>
-          </Box>
-        </DetailsForm>
+        <LogoSection>
+          <LogoHeading>Select any png.svg or jpg file</LogoHeading>
+          <AddLogo />
+        </LogoSection>
+        <NextSection>
+          <StyledButton>Next</StyledButton>
+        </NextSection>
       </Limiter>
     </Layout>
   );
