@@ -1,9 +1,12 @@
-import styled from "@emotion/styled";
-import { Container, Grid } from "@mui/material";
-import { Box } from "@mui/system";
 import React from "react";
+
+import Container from "@mui/materialContainer";
+import Grid from "@mui/Grid";
+
 import Layout from "../../components/Layout";
 import SurveyHeader from "../../components/survey/SurveyHeader";
+
+import styled from "@emotion/styled";
 
 const StyledCompletionRate = styled("div")({
   width: "100%",
