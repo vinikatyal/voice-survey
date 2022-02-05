@@ -85,8 +85,8 @@ const FormSection = styled("div")({
 });
 
 const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
-  marginBottom: "10px",
-  marginTop: "10px",
+  marginBottom: "5px",
+  marginTop: "5px",
 }));
 
 const ErrorLabel = styled("p")({
