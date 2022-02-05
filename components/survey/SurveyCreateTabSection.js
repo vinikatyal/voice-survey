@@ -55,8 +55,8 @@ export default function SurveyCreateTabSection({
         <HeaderContainer maxWidth="lg">
           <SurveyHeadSelectionWrapper>
             <TabButton
-              active={currentTab === "QUESTIONS"}
-              onClick={() => handleChangeTab("QUESTIONS")}
+              active={currentTab === "questions"}
+              onClick={() => handleChangeTab("questions")}
             >
               <QuestionMarkIcon sx={{ fontSize: 20 }} />
               <div>
@@ -69,8 +69,8 @@ export default function SurveyCreateTabSection({
               </div>
             </TabButton>
             <TabButton
-              active={currentTab === "DESIGN"}
-              onClick={() => handleChangeTab("DESIGN")}
+              active={currentTab === "themes"}
+              onClick={() => handleChangeTab("themes")}
             >
               <ColorLensIcon mr={10} sx={{ fontSize: 20 }} />
               <div>

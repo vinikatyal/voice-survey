@@ -1,6 +1,5 @@
 import * as React from "react";
 
-import Image from "next/image";
 import { useForm } from "react-hook-form";
 import Select from "react-select";
 
@@ -8,7 +7,6 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
@@ -17,11 +15,11 @@ import Radio from "@mui/material/Radio";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
-import Layout from "../../components/Layout";
-import SurveyHeader from "../../components/survey/SurveyHeader";
-import StyledButton from "../../components/StyledButton";
+import Layout from "../../../components/Layout";
+import SurveyHeader from "../../../components/survey/SurveyHeader";
+import StyledButton from "../../../components/StyledButton";
 
-const bck = require("../../images/bck.png");
+const bck = require("../../../images/bck.png");
 
 import styled from "@emotion/styled";
 
@@ -124,69 +122,70 @@ export default function Create() {
   };
   return (
     <Layout>
-      <SurveyHeader currentTab="CREATE"></SurveyHeader>
-      <CreateSection
-        component="form"
-        noValidate
-        onSubmit={(e) => e.preventDefault()}
-        fullWidth
-      >
-        <CustomFormControl fullWidth>
-          <FormLabel>Survey Title</FormLabel>
-          <TextField
-            required
-            fullWidth
-            id="title"
-            name="title"
-            placeholder="Please name your survey"
-          />
-        </CustomFormControl>
-        <CustomFormControl fullWidth>
-          <FormLabel>Who has access</FormLabel>
-          <CustomSelect
-            styles={{
-              control: (base) => ({
-                ...base,
-                height: "56px",
-              }),
-            }}
-            isMulti
-            options={emailOptions}
-          />
-        </CustomFormControl>
-        <GridContainer container spacing={5}>
-          <Grid item md={4}>
-            <Card variant="outlined">{card}</Card>
-          </Grid>
-          <Grid item md={4}>
-            <Card variant="outlined">{card}</Card>
-          </Grid>
-          <Grid item md={4}>
-            <Card variant="outlined">{card}</Card>
-          </Grid>
-        </GridContainer>
-        <GridContainer container spacing={5}>
-          <Grid item md={4}>
-            <Card variant="outlined">{card}</Card>
-          </Grid>
-          <Grid item md={4}>
-            <Card variant="outlined">{card}</Card>
-          </Grid>
-          <Grid item md={4}>
-            <Card variant="outlined">{card}</Card>
-          </Grid>
-        </GridContainer>
-        <ButtonContainer>
-          <StyledButton
-            type="submit"
-            variant="contained"
-            onClick={handleSubmit(onSubmit)}
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Next
-          </StyledButton>
-        </ButtonContainer>
-      </CreateSection>
+      <SurveyHeader currentTab="CREATE">
+        <CreateSection
+          component="form"
+          noValidate
+          onSubmit={(e) => e.preventDefault()}
+          fullWidth
+        >
+          <CustomFormControl fullWidth>
+            <FormLabel>Survey Title</FormLabel>
+            <TextField
+              required
+              fullWidth
+              id="title"
+              name="title"
+              placeholder="Please name your survey"
+            />
+          </CustomFormControl>
+          <CustomFormControl fullWidth>
+            <FormLabel>Who has access</FormLabel>
+            <CustomSelect
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  height: "56px",
+                }),
+              }}
+              isMulti
+              options={emailOptions}
+            />
+          </CustomFormControl>
+          <GridContainer container spacing={5}>
+            <Grid item md={4}>
+              <Card variant="outlined">{card}</Card>
+            </Grid>
+            <Grid item md={4}>
+              <Card variant="outlined">{card}</Card>
+            </Grid>
+            <Grid item md={4}>
+              <Card variant="outlined">{card}</Card>
+            </Grid>
+          </GridContainer>
+          <GridContainer container spacing={5}>
+            <Grid item md={4}>
+              <Card variant="outlined">{card}</Card>
+            </Grid>
+            <Grid item md={4}>
+              <Card variant="outlined">{card}</Card>
+            </Grid>
+            <Grid item md={4}>
+              <Card variant="outlined">{card}</Card>
+            </Grid>
+          </GridContainer>
+          <ButtonContainer>
+            <StyledButton
+              type="submit"
+              variant="contained"
+              onClick={handleSubmit(onSubmit)}
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Next
+            </StyledButton>
+          </ButtonContainer>
+        </CreateSection>
+      </SurveyHeader>
     </Layout>
   );
 }
