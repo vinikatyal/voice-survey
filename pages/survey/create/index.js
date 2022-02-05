@@ -6,7 +6,6 @@ import Select from "react-select";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
@@ -19,9 +18,10 @@ import Layout from "../../../components/Layout";
 import SurveyHeader from "../../../components/survey/SurveyHeader";
 import StyledButton from "../../../components/StyledButton";
 
-const bck = require("../../../images/bck.png");
+import bck from "../../../images/bck.png";
 
 import styled from "@emotion/styled";
+import Image from "next/image";
 
 const GridContainer = styled(Grid)(({ theme }) => ({
   marginBottom: theme.spacing(2),
@@ -55,11 +55,6 @@ const RadioButtonSection = styled("div")({
   alignItems: "center",
 });
 
-const CustomCardMedia = styled(CardMedia)(({ theme }) => ({
-  height: "90px",
-  borderRadius: theme.spacing(1),
-}));
-
 const ButtonContainer = styled("div")({
   display: "flex",
   justifyContent: "flex-end",
@@ -87,12 +82,7 @@ const emailOptions = [
 
 const card = (
   <React.Fragment>
-    <CustomCardMedia
-      height="90"
-      component="img"
-      alt="bck"
-      src={bck}
-    ></CustomCardMedia>
+    <Image height="90" objectFit="cover" src={bck} />
     <CardContent>
       <CardTitle>
         <CardHead>
