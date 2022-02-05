@@ -9,6 +9,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 
 import styled from "@emotion/styled";
+import Link from "next/link";
 
 const AppBarCustom = styled(AppBar)(({}) => ({
   backgroundColor: "#fff",
@@ -37,6 +38,7 @@ const NavItem = styled("div")(({ active }) => ({
   color: active ? "#0a23fb" : "#707070",
   marginLeft: "20px",
   marginRight: "20px",
+  fontWeight: 500,
   cursor: "pointer",
   "&:hover": {
     color: "#0a23fb",
@@ -55,11 +57,17 @@ export default function Index({ currentTab, children }) {
             </Typography>
           </SurveyNameWrapped>
           <Nav>
-            <NavItem active={currentTab === "CREATE"}>Create</NavItem>
+            <Link href="/survey" passHref>
+              <NavItem active={currentTab === "CREATE"}>Create</NavItem>
+            </Link>
             <KeyboardDoubleArrowRightIcon />
-            <NavItem active={currentTab === "SHARE"}>Share</NavItem>
+            <Link href="/survey/share" passHref>
+              <NavItem active={currentTab === "SHARE"}>Share</NavItem>
+            </Link>
             <KeyboardDoubleArrowRightIcon />
-            <NavItem active={currentTab === "REPORT"}>Report</NavItem>
+            <Link href="/survey/report" passHref>
+              <NavItem active={currentTab === "REPORT"}>Report</NavItem>
+            </Link>
           </Nav>
         </HeaderContainer>
       </AppBarCustom>

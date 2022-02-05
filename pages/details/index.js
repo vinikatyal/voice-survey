@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { useForm } from "react-hook-form";
+
 import Image from "next/image";
 
 import logo from "../../images/logo.png";
@@ -8,9 +10,13 @@ import Layout from "../../components/Layout";
 import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
 import Typography from "@mui/material/Typography";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import TextField from "@mui/material/TextField";
 
 import Limiter from "../../components/Limiter";
 import StyledButton from "../../components/StyledButton";
+import AddLogo from "../../components/AddLogo";
 
 const ImageContainer = styled(Box)({
   paddingTop: "30px",
@@ -58,6 +64,7 @@ const LogoInputSection = styled(Box)({
 const LogoAddButton = styled(Fab)({
   height: "10px",
   width: "36px",
+  backgroundColor: "#0a23fb",
 });
 const NextSection = styled("div")({
   display: " flex",
@@ -67,7 +74,40 @@ const NextSection = styled("div")({
   paddingTop: "30px",
 });
 
+const DetailsForm = styled("div")({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+});
+
+const FormSection = styled("div")({
+  width: "370px",
+});
+
+const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
+  marginBottom: "5px",
+  marginTop: "5px",
+}));
+
+const ErrorLabel = styled("p")({
+  color: "red",
+});
+
+const Input = styled("input")({
+  display: "none",
+});
+
 export default function Index() {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = async (data) => {
+    alert(JSON.stringify(data));
+  };
   return (
     <Layout>
       <Limiter>
@@ -80,14 +120,7 @@ export default function Index() {
       <Limiter>
         <LogoSection>
           <LogoHeading>Select any png.svg or jpg file</LogoHeading>
-          <LogoInputSection>
-            <LogoAddButton color="primary" variant="contained">
-              <Typography fontSize={28}>+</Typography>
-            </LogoAddButton>
-            <Typography fontSize={18} color={"#0a23fb"}>
-              Add Logo
-            </Typography>
-          </LogoInputSection>
+          <AddLogo />
         </LogoSection>
         <NextSection>
           <StyledButton>Next</StyledButton>

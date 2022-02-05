@@ -1,4 +1,5 @@
-import * as React from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -25,7 +26,7 @@ import bck from "../../images/bck.png";
 import google from "../../images/svg/google.svg";
 
 import styled from "@emotion/styled";
-import 'react-phone-input-2/lib/material.css'
+import "react-phone-input-2/lib/material.css";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -68,23 +69,33 @@ const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
   marginTop: "10px",
 }));
 
+const ErrorLabel = styled("p")({
+  color: "red",
+});
+
 const PhoneFormControl = styled(FormControl)`
-  font-size: 16px!important;
+  font-size: 16px !important;
   .special-label {
-    display: none!important;
+    display: none !important;
   }
 
   .form-control {
-    width: 100%!important;
+    width: 100% !important;
   }
 `;
 
-const Phone = styled(PhoneInput)`
-
-`;
+const Phone = styled(PhoneInput)``;
 
 export default function Index() {
-  const handleSubmit = () => {};
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = async (data) => {
+    alert(JSON.stringify(data));
+  };
   return (
     <Layout bgColor="#f7fafc">
       <Limiter>
@@ -120,7 +131,7 @@ export default function Index() {
               <Box
                 component="form"
                 noValidate
-                onSubmit={handleSubmit}
+                onSubmit={(e) => e.preventDefault()}
                 sx={{ mt: 1 }}
               >
                 <FormControl fullWidth>
@@ -128,31 +139,72 @@ export default function Index() {
                   <TextField
                     required
                     fullWidth
+                    {...register("email", {
+                      required: "Email is required",
+                      pattern: {
+                        value:
+                          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                        message: "Please enter a valid email",
+                      },
+                    })}
                     id="email"
                     name="email"
                     autoComplete="email"
                     placeholder="Enter your email"
                   />
+                  {errors.email && (
+                    <ErrorLabel>{errors.email.message}</ErrorLabel>
+                  )}
                 </FormControl>
                 <FormControl fullWidth>
                   <LoginFormLabel>Create Password</LoginFormLabel>
                   <TextField
-                    required
                     fullWidth
                     id="password"
                     name="password"
+                    type="password"
+                    {...register("password", {
+                      required: "You must specify a password",
+                      minLength: {
+                        value: 5,
+                        message: "Password must have at least 5 characters",
+                      },
+                    })}
                     autoComplete="password"
                     placeholder="Set your password"
                   />
+                  {errors.password && (
+                    <ErrorLabel>{errors.password.message}</ErrorLabel>
+                  )}
+                </FormControl>
+                <FormControl fullWidth>
+                  <LoginFormLabel>Confirm Password</LoginFormLabel>
+                  <TextField
+                    fullWidth
+                    id="confirmpassword"
+                    name="confirmpassword"
+                    type="password"
+                    {...register("confirmpassword", {
+                      validate: (value) =>
+                        value === password.current ||
+                        "The passwords do not match",
+                    })}
+                    autoComplete="password"
+                    placeholder="Confirm your password"
+                  />
+                  {errors.confirmpassword && (
+                    <ErrorLabel>{errors.confirmpassword.message}</ErrorLabel>
+                  )}
                 </FormControl>
                 <PhoneFormControl fullWidth>
                   <LoginFormLabel>Phone Number</LoginFormLabel>
-                  <Phone onlyCountries={['in']} country={"in"}></Phone>
+                  <Phone onlyCountries={["in"]} country={"in"}></Phone>
                 </PhoneFormControl>
                 <StyledButton
                   type="submit"
                   fullWidth
                   variant="contained"
+                  onClick={handleSubmit(onSubmit)}
                   sx={{ mt: 3, mb: 2 }}
                 >
                   Submit

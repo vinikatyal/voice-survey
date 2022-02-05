@@ -1,8 +1,11 @@
 import * as React from "react";
 
+// import fetcher from '../../hooks/api/fetcher'
+
+import { useRouter } from "next/router";
+
 import Image from "next/image";
 
-import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -11,17 +14,12 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
-import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormLabel from "@mui/material/FormLabel";
-import RadioGroup from "@mui/material/RadioGroup";
-import Radio from "@mui/material/Radio";
+import IconButton from "@mui/material/IconButton";
 
-import ModalDialog from "../../components/ModalDialog";
 import StyledButton from "../../components/StyledButton";
 import Header from "../../components/Header";
 
+import Delete from "@mui/icons-material/Delete";
 import logo from "../../images/logo.png";
 
 import styled from "@emotion/styled";
@@ -68,21 +66,41 @@ const Logo = styled(Image)(({}) => ({
   justifyContent: "flex-start",
 }));
 
-const SurveyDialog = styled(ModalDialog)(({}) => ({
-  width: "760px",
-}));
 
-const SurveyFormLabel = styled(FormLabel)(({ theme }) => ({
-  marginBottom: "10px",
-  marginTop: "10px",
-}));
+const CardTitle = styled("div")({
+  width: "100%",
+  fontSize: "16px",
+  fontWeight: 600,
+  display: "flex",
+  alignItems: "center",
+});
+
+const CardHead = styled("div")({
+  width: "90%",
+});
+
+const CardIconContainer = styled("div")({
+  width: "10%",
+  display: "flex",
+  alignItems: "start",
+  justifyContent: "flex-end",
+});
+
+const CardIcon = styled(IconButton)({
+  color: "#9a9cb5",
+});
 
 const card = (
   <React.Fragment>
     <CardContent>
-      <Typography variant="h4" component="div">
-        Slack Usability Testing Survey 2021
-      </Typography>
+      <CardTitle>
+        <CardHead>Slack Usability Testing Survey 2021</CardHead>
+        <CardIconContainer>
+          <CardIcon>
+            <Delete />
+          </CardIcon>
+        </CardIconContainer>
+      </CardTitle>
       <Typography variant="body2">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et
         dolore magna aliqua. Amet facilisis magna etiam tempor orci.
@@ -95,10 +113,12 @@ const card = (
 );
 
 export default function Index() {
-  const [open, setOpen] = React.useState(false);
+  const router = useRouter();
+
+  // const { data, error } = useSWR('/login', fetcher)
 
   const handleClickOpen = () => {
-    setOpen(!open);
+    router.push("/survey/create");
   };
 
   const handleSubmit = () => {};
@@ -165,70 +185,6 @@ export default function Index() {
           </Grid>
         </GridContainer>
       </FullBackground>
-      <SurveyDialog
-        title="Create a New Survey"
-        isOpen={open}
-        handleClose={handleClickOpen}
-      >
-        <Box component="form" noValidate onSubmit={handleSubmit}>
-          <FormControl fullWidth>
-            <SurveyFormLabel>Survey Title</SurveyFormLabel>
-            <TextField
-              multiline
-              rows={4}
-              placeholder="Please enter Survey Title"
-            />
-          </FormControl>
-          <FormControl>
-            <SurveyFormLabel id="demo-row-radio-buttons-group-label">
-              Survey Type
-            </SurveyFormLabel>
-            <RadioGroup
-              row
-              aria-labelledby="demo-row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
-            >
-              <FormControlLabel
-                value="female"
-                control={<Radio />}
-                label="CSAT"
-              />
-              <FormControlLabel
-                value="other"
-                control={<Radio />}
-                label="Teachers Feedback"
-              />
-              <FormControlLabel
-                value="disabled"
-                control={<Radio />}
-                label="PMF Survey"
-              />
-            </RadioGroup>
-            <RadioGroup
-              row
-              aria-labelledby="demo-row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
-            >
-              <FormControlLabel
-                value="female"
-                control={<Radio />}
-                label="CSAT"
-              />
-              <FormControlLabel
-                value="other"
-                control={<Radio />}
-                label="Teachers Feedback"
-              />
-              <FormControlLabel
-                value="disabled"
-                control={<Radio />}
-                label="PMF Survey"
-              />
-            </RadioGroup>
-          </FormControl>
-          <StyledButton>Create Survey</StyledButton>
-        </Box>
-      </SurveyDialog>
     </>
   );
 }
