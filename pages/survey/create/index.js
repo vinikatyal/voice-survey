@@ -6,6 +6,7 @@ import Select from "react-select";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
+import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
@@ -44,16 +45,21 @@ const CardTitle = styled("div")({
 const CardHead = styled("div")({
   display: "flex",
   justifyContent: "space-between",
-  width: "90%",
+  width: "100%",
   fontWeight: 600,
   color: "#00063e",
 });
 
-const RadioButtonSection = styled("div")({
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
+const Title = styled("div")({
+  width: "90%",
 });
+
+const RadioButtonSection = styled("div")({});
+
+const CustomCardMedia = styled(CardMedia)(({ theme }) => ({
+  height: "90px",
+  borderRadius: theme.spacing(1),
+}));
 
 const ButtonContainer = styled("div")({
   display: "flex",
@@ -86,9 +92,13 @@ const card = (
     <CardContent>
       <CardTitle>
         <CardHead>
-          CSAT
+          <Title>CSAT</Title>
           <RadioButtonSection>
-            <FormControlLabel value="CSAT" control={<Radio />} label="" />
+            <FormControlLabel
+              value="CSAT"
+              control={<Radio />}
+              label=""
+            />
           </RadioButtonSection>
         </CardHead>
       </CardTitle>

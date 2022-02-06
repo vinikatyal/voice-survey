@@ -1,7 +1,7 @@
 import React from "react";
 
-import Container from "@mui/materialContainer";
-import Grid from "@mui/Grid";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
 
 import Layout from "../../components/Layout";
 import SurveyHeader from "../../components/survey/SurveyHeader";
