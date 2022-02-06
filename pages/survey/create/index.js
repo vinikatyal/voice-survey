@@ -1,8 +1,12 @@
 import * as React from "react";
 
+import { useRouter } from "next/router";
+import Image from "next/image";
+
 import { useForm } from "react-hook-form";
 import Select from "react-select";
 
+// material components
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -10,21 +14,17 @@ import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
+// custom
 import Layout from "../../../components/Layout";
 import SurveyHeader from "../../../components/survey/SurveyHeader";
 import StyledButton from "../../../components/StyledButton";
 
-import bck from "../../../images/bck.png";
 
 import styled from "@emotion/styled";
-import Image from "next/image";
-import { useRouter } from "next/router";
-
 const GridContainer = styled(Grid)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
@@ -87,25 +87,50 @@ const emailOptions = [
   { value: "3", label: "bfbnf@gmail.com" },
 ];
 
-const card = (
-  <React.Fragment>
-    <Image height="90" objectFit="cover" src={bck} />
-    <CardContent>
-      <CardTitle>
-        <CardHead>
-          <Title>CSAT</Title>
-          <RadioButtonSection>
-            <FormControlLabel value="CSAT" control={<Radio />} label="" />
-          </RadioButtonSection>
-        </CardHead>
-      </CardTitle>
-      <Typography variant="body2">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et
-      </Typography>
-      <QuestionNumber>12 questions</QuestionNumber>
-    </CardContent>
-  </React.Fragment>
-);
+const surveyTypes = [
+  {
+    name: "CSAT",
+    title: "CSAT",
+    img: "/survey/csat.png",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+  },
+  {
+    name: "TEACHER_FEEDBACK",
+    title: "Teacher Feedback",
+    img: "/survey/teachers.png",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+  },
+  {
+    name: "PMF",
+    title: "PMF Survey",
+    img: "/survey/pmf.png",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+  },
+  {
+    name: "COURSE",
+    title: "Course feedback",
+    img: "/survey/course.png",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+  },
+  {
+    name: "CUSTOMER",
+    title: "Customer feedback",
+    img: "/survey/customer.png",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+  },
+  {
+    name: "CUSTOM",
+    title: "Custom",
+    img: "/survey/csat.png",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+  },
+];
 
 export default function Create() {
   const {
@@ -153,26 +178,37 @@ export default function Create() {
             />
           </CustomFormControl>
           <GridContainer container spacing={5}>
-            <Grid item md={4}>
-              <Card variant="outlined">{card}</Card>
-            </Grid>
-            <Grid item md={4}>
-              <Card variant="outlined">{card}</Card>
-            </Grid>
-            <Grid item md={4}>
-              <Card variant="outlined">{card}</Card>
-            </Grid>
-          </GridContainer>
-          <GridContainer container spacing={5}>
-            <Grid item md={4}>
-              <Card variant="outlined">{card}</Card>
-            </Grid>
-            <Grid item md={4}>
-              <Card variant="outlined">{card}</Card>
-            </Grid>
-            <Grid item md={4}>
-              <Card variant="outlined">{card}</Card>
-            </Grid>
+            {surveyTypes.map((survey, index) => (
+              <Grid key={index} item md={4}>
+                <Card variant="outlined">
+                  <CardMedia>
+                    <div
+                      style={{
+                        position: "relative",
+                        width: "100%",
+                        height: "90px",
+                      }}
+                    >
+                      <Image src={survey.img} layout="fill" objectFit="cover" />
+                    </div>
+                  </CardMedia>
+                  <CardContent>
+                    <CardTitle>
+                      <CardHead>
+                        <Title>{survey.title}</Title>
+                        <RadioButtonSection>
+                          <Radio name="survey-type" value={survey.name} />
+                        </RadioButtonSection>
+                      </CardHead>
+                    </CardTitle>
+                    <Typography variant="body2">
+                      {survey.description}
+                    </Typography>
+                    <QuestionNumber>12 questions</QuestionNumber>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
           </GridContainer>
           <ButtonContainer>
             <StyledButton

@@ -49,6 +49,10 @@ export default function SurveyCreateTabSection({
   handleChangeTab,
   children,
 }) {
+
+  const goToPreview = () => {
+    router.push("/survey");
+  }
   return (
     <>
       <SurveyHeadSection>
@@ -83,7 +87,7 @@ export default function SurveyCreateTabSection({
               </div>
             </TabButton>
           </SurveyHeadSelectionWrapper>
-          <Button variant="outlined" sx={{ margin: "10px 0" }}>
+          <Button variant="outlined" sx={{ margin: "10px 0" }} onClick={goToPreview}>
             <Typography
               variant="button"
               sx={{ textTransform: "initial", fontSize: "16px" }}
