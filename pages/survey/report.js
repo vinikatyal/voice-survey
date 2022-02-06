@@ -1,7 +1,7 @@
 import React from "react";
 
-import Container from "@mui/materialContainer";
-import Grid from "@mui/Grid";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
 
 import Layout from "../../components/Layout";
 import SurveyHeader from "../../components/survey/SurveyHeader";
@@ -21,7 +21,7 @@ const StyledCompletionRate = styled("div")({
 export default function report() {
   return (
     <Layout>
-      <SurveyHeader currentTab="REPORT">
+      <SurveyHeader headerTitle="Survey's Name Here" currentTab="REPORT">
         <Container maxWidth="lg">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>

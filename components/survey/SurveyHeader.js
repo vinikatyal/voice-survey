@@ -10,6 +10,7 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 
 import styled from "@emotion/styled";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const AppBarCustom = styled(AppBar)(({}) => ({
   backgroundColor: "#fff",
@@ -25,6 +26,12 @@ const SurveyNameWrapped = styled("div")({
   alignItems: "center",
   margin: "19px 0",
   width: "40%",
+  cursor: "pointer",
+  transform: "scale(1)",
+  transition: "0.2s ease",
+  "&:active": {
+    transform: "scale(0.95)",
+  },
 });
 
 const Nav = styled("div")(({}) => ({
@@ -45,19 +52,23 @@ const NavItem = styled("div")(({ active }) => ({
   },
 }));
 
-export default function Index({ currentTab, children }) {
+export default function Index({ headerTitle, currentTab, children }) {
+  const router = useRouter();
+  const handleBack = () => {
+    router.back();
+  };
   return (
     <>
       <AppBarCustom position="sticky">
         <HeaderContainer maxWidth="lg">
-          <SurveyNameWrapped>
+          <SurveyNameWrapped onClick={handleBack}>
             <ArrowBackIcon />
             <Typography variant="h4" ml={2} color="#00063e">
-              Survey's Name Here
+              {headerTitle}
             </Typography>
           </SurveyNameWrapped>
           <Nav>
-            <Link href="/survey" passHref>
+            <Link href="/survey/create" passHref>
               <NavItem active={currentTab === "CREATE"}>Create</NavItem>
             </Link>
             <KeyboardDoubleArrowRightIcon />
