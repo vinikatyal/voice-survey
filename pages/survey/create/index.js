@@ -23,6 +23,7 @@ import bck from "../../../images/bck.png";
 
 import styled from "@emotion/styled";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 const GridContainer = styled(Grid)(({ theme }) => ({
   marginBottom: theme.spacing(2),
@@ -113,8 +114,11 @@ export default function Create() {
     watch,
     formState: { errors },
   } = useForm();
+
+  const router = useRouter();
   const onSubmit = async (data) => {
-    alert(JSON.stringify(data));
+    console.log(data);
+    router.push("/survey/create/questions");
   };
   return (
     <Layout>
