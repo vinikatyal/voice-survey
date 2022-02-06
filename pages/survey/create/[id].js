@@ -33,7 +33,7 @@ export default function create({ currentTab }) {
   };
   return (
     <Layout>
-      <SurveyHeader currentTab="CREATE">
+      <SurveyHeader headerTitle="Survey's Name Here" currentTab="CREATE">
         <SurveyCreateTabSection
           currentTab={currentTab}
           handleChangeTab={handleChangeTab}

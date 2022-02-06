@@ -52,7 +52,7 @@ const NavItem = styled("div")(({ active }) => ({
   },
 }));
 
-export default function Index({ currentTab, children }) {
+export default function Index({ headerTitle, currentTab, children }) {
   const router = useRouter();
   const handleBack = () => {
     router.back();
@@ -64,11 +64,11 @@ export default function Index({ currentTab, children }) {
           <SurveyNameWrapped onClick={handleBack}>
             <ArrowBackIcon />
             <Typography variant="h4" ml={2} color="#00063e">
-              Survey's Name Here
+              {headerTitle}
             </Typography>
           </SurveyNameWrapped>
           <Nav>
-            <Link href="/survey" passHref>
+            <Link href="/survey/create" passHref>
               <NavItem active={currentTab === "CREATE"}>Create</NavItem>
             </Link>
             <KeyboardDoubleArrowRightIcon />

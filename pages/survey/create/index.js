@@ -94,11 +94,7 @@ const card = (
         <CardHead>
           <Title>CSAT</Title>
           <RadioButtonSection>
-            <FormControlLabel
-              value="CSAT"
-              control={<Radio />}
-              label=""
-            />
+            <FormControlLabel value="CSAT" control={<Radio />} label="" />
           </RadioButtonSection>
         </CardHead>
       </CardTitle>
@@ -122,7 +118,7 @@ export default function Create() {
   };
   return (
     <Layout>
-      <SurveyHeader currentTab="CREATE">
+      <SurveyHeader headerTitle="Create a New Survey" currentTab="CREATE">
         <CreateSection
           component="form"
           noValidate

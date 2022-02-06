@@ -48,38 +48,39 @@ const IconSection = styled("div")(({ theme }) => ({
 export default function Share() {
   return (
     <Layout>
-      <SurveyHeader currentTab="SHARE"></SurveyHeader>
-      <SurveySubHeader title={"Welcome Back, Harsha!"} />
-      <ShareSection>
-        <FormSection>
-          <FormLabel>Share via link</FormLabel>
-          <ShareTextField
-            fullWidth
-            disabled
-            value="https://app.lorem/ipsum.consectetur/adipiscing"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment>
-                  <IconButton>
-                    <ContentCopy />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-        </FormSection>
-        <IconSection>
-          <IconButton>
-            <Image src={twitter} alt="twitter" />
-          </IconButton>
-          <IconButton>
-            <Image src={facebook} alt="facebook" />
-          </IconButton>
-          <IconButton>
-            <Image src={linkedin} alt="linkedin" />
-          </IconButton>
-        </IconSection>
-      </ShareSection>
+      <SurveyHeader headerTitle="Survey's Name Here" currentTab="SHARE">
+        <SurveySubHeader title={"Welcome Back, Harsha!"} />
+        <ShareSection>
+          <FormSection>
+            <FormLabel>Share via link</FormLabel>
+            <ShareTextField
+              fullWidth
+              disabled
+              value="https://app.lorem/ipsum.consectetur/adipiscing"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment>
+                    <IconButton>
+                      <ContentCopy />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </FormSection>
+          <IconSection>
+            <IconButton>
+              <Image src={twitter} alt="twitter" />
+            </IconButton>
+            <IconButton>
+              <Image src={facebook} alt="facebook" />
+            </IconButton>
+            <IconButton>
+              <Image src={linkedin} alt="linkedin" />
+            </IconButton>
+          </IconSection>
+        </ShareSection>
+      </SurveyHeader>
     </Layout>
   );
 }

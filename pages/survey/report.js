@@ -21,7 +21,7 @@ const StyledCompletionRate = styled("div")({
 export default function report() {
   return (
     <Layout>
-      <SurveyHeader currentTab="REPORT">
+      <SurveyHeader headerTitle="Survey's Name Here" currentTab="REPORT">
         <Container maxWidth="lg">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
