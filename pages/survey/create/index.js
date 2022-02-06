@@ -23,7 +23,6 @@ import Layout from "../../../components/Layout";
 import SurveyHeader from "../../../components/survey/SurveyHeader";
 import StyledButton from "../../../components/StyledButton";
 
-
 import styled from "@emotion/styled";
 const GridContainer = styled(Grid)(({ theme }) => ({
   marginBottom: theme.spacing(2),
@@ -57,10 +56,7 @@ const Title = styled("div")({
 
 const RadioButtonSection = styled("div")({});
 
-const CustomCardMedia = styled(CardMedia)(({ theme }) => ({
-  height: "90px",
-  borderRadius: theme.spacing(1),
-}));
+
 
 const ButtonContainer = styled("div")({
   display: "flex",
@@ -94,6 +90,7 @@ const surveyTypes = [
     img: "/survey/csat.png",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+    qNo: 12,
   },
   {
     name: "TEACHER_FEEDBACK",
@@ -101,6 +98,7 @@ const surveyTypes = [
     img: "/survey/teachers.png",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+    qNo: 12,
   },
   {
     name: "PMF",
@@ -108,6 +106,7 @@ const surveyTypes = [
     img: "/survey/pmf.png",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+    qNo: 12,
   },
   {
     name: "COURSE",
@@ -115,6 +114,7 @@ const surveyTypes = [
     img: "/survey/course.png",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+    qNo: 5,
   },
   {
     name: "CUSTOMER",
@@ -122,6 +122,7 @@ const surveyTypes = [
     img: "/survey/customer.png",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+    qNo: 12,
   },
   {
     name: "CUSTOM",
@@ -129,6 +130,7 @@ const surveyTypes = [
     img: "/survey/csat.png",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+    qNo: 0,
   },
 ];
 
@@ -139,11 +141,16 @@ export default function Create() {
     watch,
     formState: { errors },
   } = useForm();
+  const [selectedValue, setSelectedValue] = React.useState("CSAT");
 
   const router = useRouter();
   const onSubmit = async (data) => {
     console.log(data);
     router.push("/survey/create/questions");
+  };
+
+  const handleChange = (event) => {
+    setSelectedValue(event.target.value);
   };
   return (
     <Layout>
@@ -197,14 +204,19 @@ export default function Create() {
                       <CardHead>
                         <Title>{survey.title}</Title>
                         <RadioButtonSection>
-                          <Radio name="survey-type" value={survey.name} />
+                          <Radio
+                            name="survey-type"
+                            onChange={handleChange}
+                            value={survey.name}
+                            checked={selectedValue === survey.name}
+                          />
                         </RadioButtonSection>
                       </CardHead>
                     </CardTitle>
                     <Typography variant="body2">
                       {survey.description}
                     </Typography>
-                    <QuestionNumber>12 questions</QuestionNumber>
+                    <QuestionNumber>{survey.qNo} questions</QuestionNumber>
                   </CardContent>
                 </Card>
               </Grid>

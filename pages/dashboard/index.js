@@ -11,7 +11,7 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
+import ButtonBase from "@mui/material/ButtonBase";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import IconButton from "@mui/material/IconButton";
@@ -66,7 +66,6 @@ const Logo = styled(Image)(({}) => ({
   justifyContent: "flex-start",
 }));
 
-
 const CardTitle = styled("div")({
   width: "100%",
   fontSize: "16px",
@@ -90,27 +89,61 @@ const CardIcon = styled(IconButton)({
   color: "#9a9cb5",
 });
 
-const card = (
-  <React.Fragment>
-    <CardContent>
-      <CardTitle>
-        <CardHead>Slack Usability Testing Survey 2021</CardHead>
-        <CardIconContainer>
-          <CardIcon>
-            <Delete />
-          </CardIcon>
-        </CardIconContainer>
-      </CardTitle>
-      <Typography variant="body2">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et
-        dolore magna aliqua. Amet facilisis magna etiam tempor orci.
-      </Typography>
-    </CardContent>
-    <CardActions>
-      <Button size="small">Learn More</Button>
-    </CardActions>
-  </React.Fragment>
-);
+const Response = styled("div")({
+  fontSize: "14px",
+  fontWeight: 600,
+  color: "#00063e",
+  marginTop: "16px",
+});
+
+const SurveyCard = styled(Card)({
+  cursor: "pointer",
+});
+
+const surveyData = [
+  {
+    id: "1",
+    title: "CSAT",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+    responses: 12,
+  },
+  {
+    id: "2",
+    title: "Teacher Feedback",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+    responses: 12,
+  },
+  {
+    id: "3",
+    title: "PMF Survey",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+    responses: 12,
+  },
+  {
+    id: "4",
+    title: "Course feedback",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+    responses: 12,
+  },
+  {
+    id: "5",
+    title: "Customer feedback",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+    responses: 12,
+  },
+  {
+    id: "6",
+    title: "Course feedback",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+    responses: 12,
+  },
+];
 
 export default function Index() {
   const router = useRouter();
@@ -152,37 +185,26 @@ export default function Index() {
           <Typography variant="h4">All Surveys</Typography>
         </DashboardHeader>
         <GridContainer container spacing={5}>
-          <Grid item md={4}>
-            <Card variant="outlined">{card}</Card>
-          </Grid>
-          <Grid item md={4}>
-            <Card variant="outlined">{card}</Card>
-          </Grid>
-          <Grid item md={4}>
-            <Card variant="outlined">{card}</Card>
-          </Grid>
-        </GridContainer>
-        <GridContainer container spacing={5}>
-          <Grid item md={4}>
-            <Card variant="outlined">{card}</Card>
-          </Grid>
-          <Grid item md={4}>
-            <Card variant="outlined">{card}</Card>
-          </Grid>
-          <Grid item md={4}>
-            <Card variant="outlined">{card}</Card>
-          </Grid>
-        </GridContainer>
-        <GridContainer container spacing={5}>
-          <Grid item md={4}>
-            <Card variant="outlined">{card}</Card>
-          </Grid>
-          <Grid item md={4}>
-            <Card variant="outlined">{card}</Card>
-          </Grid>
-          <Grid item md={4}>
-            <Card variant="outlined">{card}</Card>
-          </Grid>
+          {surveyData.map((survey, index) => (
+            <Grid key={index} item md={4}>
+                <SurveyCard variant="outlined">
+                  <CardContent>
+                    <CardTitle>
+                      <CardHead>{survey.title}</CardHead>
+                      <CardIconContainer>
+                        <CardIcon>
+                          <Delete />
+                        </CardIcon>
+                      </CardIconContainer>
+                    </CardTitle>
+                    <Typography variant="body2">
+                      {survey.description}
+                    </Typography>
+                    <Response>{survey.responses} responses</Response>
+                  </CardContent>
+                </SurveyCard>
+            </Grid>
+          ))}
         </GridContainer>
       </FullBackground>
     </>

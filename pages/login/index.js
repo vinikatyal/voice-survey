@@ -1,7 +1,5 @@
 import * as React from "react";
 
-
-
 import Link from "next/link";
 import Image from "next/image";
 
@@ -26,7 +24,6 @@ import google from "../../images/svg/google.svg";
 import Layout from "../../components/Layout";
 import Limiter from "../../components/Limiter";
 import StyledButton from "../../components/StyledButton";
-
 
 import styled from "@emotion/styled";
 
@@ -74,6 +71,10 @@ const ErrorLabel = styled("p")({
   color: "red",
 });
 
+const SignInText = styled(Typography)({
+  marginBottom: "40px",
+});
+
 export default function Index() {
   const {
     register,
@@ -101,9 +102,9 @@ export default function Index() {
               <Typography align="left" variant="h4">
                 Welcome back!
               </Typography>
-              <Typography align="left" variant="h6">
+              <SignInText align="left" variant="h6">
                 Sign in to continue
-              </Typography>
+              </SignInText>
               <Box
                 component="form"
                 noValidate
@@ -187,7 +188,7 @@ export default function Index() {
                       }
                       sx={{ mt: 3, mb: 2 }}
                     >
-                      Signin with google
+                      Login with google
                     </GoogleSignin>
                   </Grid>
                 </Grid>
