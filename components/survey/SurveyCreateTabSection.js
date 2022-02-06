@@ -1,5 +1,7 @@
 import React from "react";
 
+import router from "next/router";
+
 // UI
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -49,10 +51,9 @@ export default function SurveyCreateTabSection({
   handleChangeTab,
   children,
 }) {
-
   const goToPreview = () => {
     router.push("/survey");
-  }
+  };
   return (
     <>
       <SurveyHeadSection>
@@ -64,10 +65,7 @@ export default function SurveyCreateTabSection({
             >
               <QuestionMarkIcon sx={{ fontSize: 20 }} />
               <div>
-                <Typography
-                  variant="button"
-                  sx={{ textTransform: "initial", fontSize: "16px" }}
-                >
+                <Typography variant="button" sx={{ textTransform: "initial" }}>
                   Questions
                 </Typography>
               </div>
@@ -78,20 +76,18 @@ export default function SurveyCreateTabSection({
             >
               <ColorLensIcon mr={10} sx={{ fontSize: 20 }} />
               <div>
-                <Typography
-                  variant="button"
-                  sx={{ textTransform: "initial", fontSize: "16px" }}
-                >
+                <Typography variant="button" sx={{ textTransform: "initial" }}>
                   Design
                 </Typography>
               </div>
             </TabButton>
           </SurveyHeadSelectionWrapper>
-          <Button variant="outlined" sx={{ margin: "10px 0" }} onClick={goToPreview}>
-            <Typography
-              variant="button"
-              sx={{ textTransform: "initial", fontSize: "16px" }}
-            >
+          <Button
+            variant="outlined"
+            sx={{ margin: "10px 0" }}
+            onClick={goToPreview}
+          >
+            <Typography variant="button" sx={{ textTransform: "initial" }}>
               Preview
             </Typography>
           </Button>

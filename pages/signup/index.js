@@ -86,6 +86,10 @@ const PhoneFormControl = styled(FormControl)`
 
 const Phone = styled(PhoneInput)``;
 
+const SignInText = styled(Typography)({
+  marginBottom: "16px",
+});
+
 export default function Index() {
   const {
     register,
@@ -125,9 +129,9 @@ export default function Index() {
               <Typography align="left" variant="h4">
                 Create Your Account!
               </Typography>
-              <Typography align="left" variant="h6">
+              <SignInText align="left" variant="h6">
                 Sign up to continue
-              </Typography>
+              </SignInText>
               <Box
                 component="form"
                 noValidate

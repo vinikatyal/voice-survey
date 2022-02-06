@@ -2,12 +2,6 @@ import { createTheme } from "@mui/material/styles";
 
 // Create a theme instance.
 const theme = createTheme({
-  root: {
-    "& .MuiFormLabel-root": {
-      color: "#707070",
-      fontSize: 16,
-    },
-  },
   palette: {
     type: "light",
     primary: {
@@ -25,22 +19,27 @@ const theme = createTheme({
     h4: {
       fontSize: 21,
       fontWeight: 600,
+      color: "#00063e",
     },
     h5: {
       fontSize: 18,
       fontWeight: 600,
+      color: "#00063e",
     },
     h3: {
       fontSize: 24,
       fontWeight: 600,
+      color: "#00063e",
     },
     h6: {
       fontSize: 14,
       fontWeight: 600,
+      color: "#00063e",
     },
     button: {
-      fontSize: 12,
+      fontSize: 16,
       fontWeight: 500,
+      textTransform: "none",
     },
     body2: {
       fontSize: 14,
@@ -54,6 +53,12 @@ const theme = createTheme({
         backgroundColor: "#fff",
         color: "#707070",
         boxShadow: "0 3px 6px 0 rgba(0, 0, 0, 0.16)",
+      },
+    },
+    MuiFormLabel: {
+      root: {
+        color: "#707070",
+        fontSize: 16,
       },
     },
   },
