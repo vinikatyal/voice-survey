@@ -56,8 +56,6 @@ const Title = styled("div")({
 
 const RadioButtonSection = styled("div")({});
 
-
-
 const ButtonContainer = styled("div")({
   display: "flex",
   justifyContent: "flex-end",
@@ -73,6 +71,10 @@ const QuestionNumber = styled("div")({
   fontWeight: 600,
   color: "#00063e",
   marginTop: "16px",
+});
+
+const ErrorLabel = styled("p")({
+  color: "red",
 });
 
 const CustomSelect = styled(Select)({});
@@ -127,7 +129,7 @@ const surveyTypes = [
   {
     name: "CUSTOM",
     title: "Custom",
-    img: "/survey/csat.png",
+    img: "/survey/custom.png",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
     qNo: 0,
@@ -168,8 +170,12 @@ export default function Create() {
               fullWidth
               id="title"
               name="title"
+              {...register("title", {
+                required: "Survey Name is required",
+              })}
               placeholder="Please name your survey"
             />
+            {errors.title && <ErrorLabel>{errors.title.message}</ErrorLabel>}
           </CustomFormControl>
           <CustomFormControl fullWidth>
             <FormLabel>Who has access</FormLabel>

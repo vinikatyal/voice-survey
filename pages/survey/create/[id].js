@@ -20,7 +20,7 @@ export async function getStaticProps({ params }) {
   const props = {};
   params.id === "questions" && (props["currentTab"] = "questions");
   params.id === "themes" && (props["currentTab"] = "themes");
-
+  console.log(params)
   return {
     props,
   };
