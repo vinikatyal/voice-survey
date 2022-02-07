@@ -1,0 +1,1 @@
+export const VOICE_API_BASE_URL = 'http://172.16.22.5:8086/'

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -24,6 +24,8 @@ import google from "../../images/svg/google.svg";
 import Layout from "../../components/Layout";
 import Limiter from "../../components/Limiter";
 import StyledButton from "../../components/StyledButton";
+
+import { authService } from "../../services/auth.service";
 
 import styled from "@emotion/styled";
 
@@ -82,6 +84,13 @@ export default function Index() {
     watch,
     formState: { errors },
   } = useForm();
+
+  useEffect(() => {
+    // redirect to home if already logged in
+    if (authService.userValue) {
+      router.push("/dashboard");
+    }
+  }, []);
   const onSubmit = async (data) => {
     alert(JSON.stringify(data));
   };
