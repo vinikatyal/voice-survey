@@ -21,14 +21,14 @@ export const authService = {
   getAll,
 };
 
-function login(username, password) {
+function login(email, password) {
   return fetchWrapper
-    .post(`${baseUrl}/login`, { username, password })
+    .post(`${baseUrl}/login`, { email, password })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
 
       if (res.code === 200) {
-        userSubject.next(res);
+        tokenSubject.next(res);
         localStorage.setItem("token", JSON.stringify(res.data.token));
 
         return res;

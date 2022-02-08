@@ -106,7 +106,7 @@ export default function Index() {
   useEffect(() => {
     // redirect to home if already logged in
     console.log(authService)
-    if (authService.userValue) {
+    if (authService.tokenValue) {
       router.push("/dashboard");
     }
   }, []);

@@ -23,6 +23,8 @@ import Layout from "../../../components/Layout";
 import SurveyHeader from "../../../components/survey/SurveyHeader";
 import StyledButton from "../../../components/StyledButton";
 
+import { surveyService } from "../../../services/survey.service";
+
 import styled from "@emotion/styled";
 const GridContainer = styled(Grid)(({ theme }) => ({
   marginBottom: theme.spacing(2),
@@ -141,14 +143,28 @@ export default function Create() {
     register,
     handleSubmit,
     watch,
+    setError,
     formState: { errors },
   } = useForm();
   const [selectedValue, setSelectedValue] = React.useState("CSAT");
 
   const router = useRouter();
   const onSubmit = async (data) => {
-    console.log(data);
-    router.push("/survey/create/questions");
+    const surveyData = {
+      survey_type: selectedValue,
+      access_list_emails: "",
+      ...data,
+    };
+    return surveyService
+      .create_survey(surveyData)
+      .then(() => {
+        // get return url from query parameters or default to '/'
+
+        router.push("/survey/create/questions");
+      })
+      .catch((error) => {
+        setError("apiError", { message: error });
+      });
   };
 
   const handleChange = (event) => {
@@ -168,9 +184,9 @@ export default function Create() {
             <TextField
               required
               fullWidth
-              id="title"
-              name="title"
-              {...register("title", {
+              id="survey_title"
+              name="survey_title"
+              {...register("survey_title", {
                 required: "Survey Name is required",
               })}
               placeholder="Please name your survey"
@@ -211,7 +227,7 @@ export default function Create() {
                         <Title>{survey.title}</Title>
                         <RadioButtonSection>
                           <Radio
-                            name="survey-type"
+                            name="survey_type"
                             onChange={handleChange}
                             value={survey.name}
                             checked={selectedValue === survey.name}

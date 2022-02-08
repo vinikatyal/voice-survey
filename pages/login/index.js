@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 
 import Link from "next/link";
 import Image from "next/image";
+import router from "next/router";
 
 import { useForm } from "react-hook-form";
 // import useSWR from 'swr'
@@ -82,17 +83,26 @@ export default function Index() {
     register,
     handleSubmit,
     watch,
+    setError,
     formState: { errors },
   } = useForm();
 
   useEffect(() => {
     // redirect to home if already logged in
-    if (authService.userValue) {
+    if (authService.tokenValue) {
       router.push("/dashboard");
     }
   }, []);
   const onSubmit = async (data) => {
-    alert(JSON.stringify(data));
+    return authService
+      .login(data.email, data.password)
+      .then(() => {
+        // get return url from query parameters or default to '/'
+        router.push("/dashboard");
+      })
+      .catch((error) => {
+        setError("apiError", { message: error });
+      });
   };
   return (
     <Layout bgColor="#f7fafc">
