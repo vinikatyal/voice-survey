@@ -23,6 +23,8 @@ import Layout from "../../../components/Layout";
 import SurveyHeader from "../../../components/survey/SurveyHeader";
 import StyledButton from "../../../components/StyledButton";
 
+import { surveyService } from "../../../services/survey.service";
+
 import styled from "@emotion/styled";
 const GridContainer = styled(Grid)(({ theme }) => ({
   marginBottom: theme.spacing(2),
@@ -56,8 +58,6 @@ const Title = styled("div")({
 
 const RadioButtonSection = styled("div")({});
 
-
-
 const ButtonContainer = styled("div")({
   display: "flex",
   justifyContent: "flex-end",
@@ -73,6 +73,10 @@ const QuestionNumber = styled("div")({
   fontWeight: 600,
   color: "#00063e",
   marginTop: "16px",
+});
+
+const ErrorLabel = styled("p")({
+  color: "red",
 });
 
 const CustomSelect = styled(Select)({});
@@ -127,7 +131,7 @@ const surveyTypes = [
   {
     name: "CUSTOM",
     title: "Custom",
-    img: "/survey/csat.png",
+    img: "/survey/custom.png",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
     qNo: 0,
@@ -139,14 +143,28 @@ export default function Create() {
     register,
     handleSubmit,
     watch,
+    setError,
     formState: { errors },
   } = useForm();
   const [selectedValue, setSelectedValue] = React.useState("CSAT");
 
   const router = useRouter();
   const onSubmit = async (data) => {
-    console.log(data);
-    router.push("/survey/create/questions");
+    const surveyData = {
+      survey_type: selectedValue,
+      access_list_emails: "",
+      ...data,
+    };
+    return surveyService
+      .create_survey(surveyData)
+      .then(() => {
+        // get return url from query parameters or default to '/'
+
+        router.push("/survey/create/questions");
+      })
+      .catch((error) => {
+        setError("apiError", { message: error });
+      });
   };
 
   const handleChange = (event) => {
@@ -166,10 +184,14 @@ export default function Create() {
             <TextField
               required
               fullWidth
-              id="title"
-              name="title"
+              id="survey_title"
+              name="survey_title"
+              {...register("survey_title", {
+                required: "Survey Name is required",
+              })}
               placeholder="Please name your survey"
             />
+            {errors.title && <ErrorLabel>{errors.title.message}</ErrorLabel>}
           </CustomFormControl>
           <CustomFormControl fullWidth>
             <FormLabel>Who has access</FormLabel>
@@ -205,7 +227,7 @@ export default function Create() {
                         <Title>{survey.title}</Title>
                         <RadioButtonSection>
                           <Radio
-                            name="survey-type"
+                            name="survey_type"
                             onChange={handleChange}
                             value={survey.name}
                             checked={selectedValue === survey.name}

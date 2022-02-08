@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import Image from "next/image";
 import Link from "next/link";
+import router from "next/router";
 
 // components
 import Grid from "@mui/material/Grid";
@@ -27,6 +28,8 @@ import google from "../../images/svg/google.svg";
 
 import styled from "@emotion/styled";
 import "react-phone-input-2/lib/material.css";
+
+import { authService } from "../../services/auth.service";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -91,14 +94,34 @@ const SignInText = styled(Typography)({
 });
 
 export default function Index() {
+  const [mobile, setMobile] = React.useState("");
   const {
     register,
     handleSubmit,
     watch,
+    setError,
     formState: { errors },
   } = useForm();
+
+  useEffect(() => {
+    // redirect to home if already logged in
+    console.log(authService)
+    if (authService.tokenValue) {
+      router.push("/dashboard");
+    }
+  }, []);
+
   const onSubmit = async (data) => {
-    alert(JSON.stringify(data));
+    console.log(JSON.stringify(data));
+    return authService
+      .signup(data.email, data.password, mobile)
+      .then(() => {
+        // get return url from query parameters or default to '/'
+        router.push("/dashboard");
+      })
+      .catch((error) => {
+        setError("apiError", { message: error });
+      });
   };
   return (
     <Layout bgColor="#f7fafc">
@@ -188,12 +211,7 @@ export default function Index() {
                     id="confirmpassword"
                     name="confirmpassword"
                     type="password"
-                    {...register("confirmpassword", {
-                      validate: (value) =>
-                        value === password.current ||
-                        "The passwords do not match",
-                    })}
-                    autoComplete="password"
+                    {...register("confirmpassword")}
                     placeholder="Confirm your password"
                   />
                   {errors.confirmpassword && (
@@ -202,7 +220,14 @@ export default function Index() {
                 </FormControl>
                 <PhoneFormControl fullWidth>
                   <LoginFormLabel>Phone Number</LoginFormLabel>
-                  <Phone onlyCountries={["in"]} country={"in"}></Phone>
+                  <Phone
+                    onlyCountries={["in"]}
+                    country={"in"}
+                    name="mobile"
+                    id="mobile"
+                    value={mobile}
+                    onChange={setMobile}
+                  ></Phone>
                 </PhoneFormControl>
                 <StyledButton
                   type="submit"
