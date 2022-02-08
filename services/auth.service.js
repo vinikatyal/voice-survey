@@ -3,6 +3,7 @@ import getConfig from "next/config";
 import Router from "next/router";
 
 import { fetchWrapper } from "../helpers/fetch-wrapper";
+import { errorHandler } from "../helpers/api/error-handler";
 
 const { publicRuntimeConfig } = getConfig();
 const baseUrl = `${publicRuntimeConfig.apiUrl}`;
@@ -33,7 +34,7 @@ function login(email, password) {
 
         return res;
       } else {
-        return {};
+        errorHandler({}, res)
       }
     });
 }
@@ -50,7 +51,7 @@ function signup(email, password, mobile) {
 
         return res;
       } else {
-        return {};
+        errorHandler({}, res)
       }
     });
 }
