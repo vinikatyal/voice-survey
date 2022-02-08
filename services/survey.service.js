@@ -10,7 +10,7 @@ const tokenSubject = new BehaviorSubject(
   process.browser && JSON.parse(localStorage.getItem("token"))
 );
 
-export const authService = {
+export const surveyService = {
   token: tokenSubject.asObservable(),
   get tokenValue() {
     return tokenSubject.value;

@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 
 import Image from "next/image";
 import Link from "next/link";
+import router from "next/router";
 
 // components
 import Grid from "@mui/material/Grid";
@@ -104,6 +105,7 @@ export default function Index() {
 
   useEffect(() => {
     // redirect to home if already logged in
+    console.log(authService)
     if (authService.userValue) {
       router.push("/dashboard");
     }
@@ -115,8 +117,7 @@ export default function Index() {
       .signup(data.email, data.password, mobile)
       .then(() => {
         // get return url from query parameters or default to '/'
-        const returnUrl = router.query.returnUrl || "/";
-        router.push(returnUrl);
+        router.push("/dashboard");
       })
       .catch((error) => {
         setError("apiError", { message: error });
