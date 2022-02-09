@@ -146,13 +146,12 @@ export default function Index() {
   };
 
   const onSubmit = async (data) => {
-    console.log(data);
     return authService
       .add_user_details(data)
       .then(() => {
         // get return url from query parameters or default to '/'
 
-        router.push("/survey/create");
+        router.push("/dashboard");
       })
       .catch((error) => {
         toast.error(error, {
@@ -215,7 +214,7 @@ export default function Index() {
                 <Grid container width="100%" justifyContent="space-between">
                   <Typography variant="h5">Members</Typography>
                   <Typography variant="h5" color="#0a23fb">
-                    2
+                    {members.length}
                   </Typography>
                 </Grid>
               </AccordionSummary>
