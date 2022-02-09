@@ -38,7 +38,7 @@ export default function MyApp(props) {
 
   function authCheck(url) {
     // redirect to login page if accessing a private page and not logged in
-    const publicPaths = ["/login"];
+    const publicPaths = ["/login", "/signup"];
     const path = url.split("?")[0];
     if (!authService.tokenValue && !publicPaths.includes(path)) {
       setAuthorized(false);

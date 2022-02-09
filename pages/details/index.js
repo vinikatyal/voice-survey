@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import isEmpty from "lodash.isempty";
 import { useForm } from "react-hook-form";
@@ -82,7 +82,7 @@ const MemberDetails = ({ img, email }) => (
   <React.Fragment>
     <Grid container mt={2}>
       <Grid item xs={8} display="flex" alignItems={"center"}>
-        <Avatar alt="avatar" src={img} />
+        {/* <Avatar alt="avatar" src={img} /> */}
         <Typography ml={2}>{email}</Typography>
       </Grid>
       <Grid
@@ -104,36 +104,9 @@ const MemberDetails = ({ img, email }) => (
   </React.Fragment>
 );
 
-const MembersAccordion = (
-  <React.Fragment>
-    <StyledAccordion>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls="panel1a-content"
-        id="panel1a-header"
-      >
-        <Grid container width="100%" justifyContent="space-between">
-          <Typography variant="h5">Members</Typography>
-          <Typography variant="h5" color="#0a23fb">
-            2
-          </Typography>
-        </Grid>
-      </AccordionSummary>
-      <AccordionDetails>
-        <MemberDetails
-          img="https://media.istockphoto.com/photos/millennial-male-team-leader-organize-virtual-workshop-with-employees-picture-id1300972574?b=1&k=20&m=1300972574&s=170667a&w=0&h=2nBGC7tr0kWIU8zRQ3dMg-C5JLo9H2sNUuDjQ5mlYfo="
-          email="dhanush@gmail.com"
-        />
-        <MemberDetails
-          img="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8&w=1000&q=80"
-          email="shilpa@gmail.com"
-        />
-      </AccordionDetails>
-    </StyledAccordion>
-  </React.Fragment>
-);
-
 export default function Index() {
+  const router = useRouter();
+  const [members, setTeamMembers] = useState([]);
   const {
     register,
     handleSubmit,
@@ -154,12 +127,39 @@ export default function Index() {
         });
         setError("apiError", { message: error });
       });
+    getTeamMembers();
   }, []);
 
-  const router = useRouter();
+  const getTeamMembers = () => {
+    authService
+      .get_team_members()
+      .then((res) => {
+        setTeamMembers(res.data);
+        console.log(res);
+      })
+      .catch((error) => {
+        toast.error(error, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        setError("apiError", { message: error });
+      });
+  };
+
   const onSubmit = async (data) => {
     console.log(data);
-    router.push("/survey/create");
+    return authService
+      .add_user_details(data)
+      .then(() => {
+        // get return url from query parameters or default to '/'
+
+        router.push("/survey/create");
+      })
+      .catch((error) => {
+        toast.error(error, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        setError("apiError", { message: error });
+      });
   };
   return (
     <Layout>
@@ -191,22 +191,44 @@ export default function Index() {
             <TextField
               error={!isEmpty(errors.company_name)}
               required
-              {...register("company_name", {
+              {...register("company", {
                 required: {
                   value: true,
                   message: "Company Name is required",
                 },
               })}
-              id="company_name"
-              name="company_name"
+              id="company"
+              name="company"
               placeholder="Your Company Name"
             />
-            {errors.company_name && (
-              <Typography color="red">{errors.company_name.message}</Typography>
+            {errors.company && (
+              <Typography color="red">{errors.company.message}</Typography>
             )}
             <InviteInput />
 
-            {MembersAccordion}
+            <StyledAccordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Grid container width="100%" justifyContent="space-between">
+                  <Typography variant="h5">Members</Typography>
+                  <Typography variant="h5" color="#0a23fb">
+                    2
+                  </Typography>
+                </Grid>
+              </AccordionSummary>
+              <AccordionDetails>
+                {members.map((member, index) => (
+                  <MemberDetails
+                    key={index}
+                    img="https://media.istockphoto.com/photos/millennial-male-team-leader-organize-virtual-workshop-with-employees-picture-id1300972574?b=1&k=20&m=1300972574&s=170667a&w=0&h=2nBGC7tr0kWIU8zRQ3dMg-C5JLo9H2sNUuDjQ5mlYfo="
+                    email={member}
+                  />
+                ))}
+              </AccordionDetails>
+            </StyledAccordion>
           </FormControl>
         </Grid>
 

@@ -21,6 +21,7 @@ export const authService = {
   add_user_details,
   get_user_profile,
   get_team_members,
+  send_invite,
   logout,
   getAll,
 };
@@ -85,6 +86,21 @@ function get_user_profile() {
       }
     });
 }
+
+function send_invite(data) {
+  return fetchWrapper
+    .post(`${baseUrl}/send_invite`, data, { token: tokenSubject.value })
+    .then((res) => {
+      // publish user to subscribers and store in local storage to stay logged in between page refreshes
+
+      if (res.code === 200) {
+        return res;
+      } else {
+        errorHandler({}, res);
+      }
+    });
+}
+
 
 function get_team_members(data) {
   return fetchWrapper
