@@ -1,8 +1,10 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 
 import isEmpty from "lodash.isempty";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
+
+import { toast } from "react-toastify";
 
 import Image from "next/image";
 
@@ -30,6 +32,8 @@ import StyledButton from "../../components/StyledButton";
 import AddLogo from "../../components/AddLogo";
 
 import InviteInput from "../../components/InviteInput";
+
+import { authService } from "../../services/auth.service";
 
 const ImageContainer = styled(Box)({
   paddingTop: "30px",
@@ -133,8 +137,24 @@ export default function Index() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm();
+
+  useEffect(() => {
+    // redirect to home if already logged in
+    authService
+      .get_user_profile()
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        toast.error(error, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        setError("apiError", { message: error });
+      });
+  }, []);
 
   const router = useRouter();
   const onSubmit = async (data) => {
