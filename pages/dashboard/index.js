@@ -15,8 +15,6 @@ import Link from "@mui/material/Link";
 import IconButton from "@mui/material/IconButton";
 
 import DashboardH from "../../components/dashboard/DashboardHeader";
-import StyledButton from "../../components/StyledButton";
-import Header from "../../components/Header";
 
 import Delete from "@mui/icons-material/Delete";
 import logo from "../../images/logo.png";
@@ -148,10 +146,6 @@ export default function Index() {
   const router = useRouter();
 
   // const { data, error } = useSWR('/login', fetcher)
-
-  const handleClickOpen = () => {
-    router.push("/survey/create");
-  };
 
   const handleSubmit = () => {};
   return (

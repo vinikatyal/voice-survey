@@ -14,7 +14,6 @@ import logo from "../../images/logo.png";
 
 import styled from "@emotion/styled";
 
-
 const BoxCustom = styled(Container)(({}) => ({
   width: "100%",
   display: "flex",
@@ -42,10 +41,13 @@ const Logo = styled(Image)(({}) => ({
   justifyContent: "flex-start",
 }));
 
-
 export default function DashboardHeader() {
   const router = useRouter();
   const handleSubmit = () => {};
+
+  const handleClickOpen = () => {
+    router.push("/survey/create");
+  };
   return (
     <Header>
       <BoxCustom maxWidth="lg">
