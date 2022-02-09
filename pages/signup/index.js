@@ -99,19 +99,17 @@ export default function Index() {
 
   useEffect(() => {
     // redirect to home if already logged in
-    console.log(authService);
     if (authService.tokenValue) {
       router.push("/dashboard");
     }
   }, []);
 
   const onSubmit = async (data) => {
-    console.log(JSON.stringify(data));
     return authService
       .signup(data.email, data.password, mobile)
       .then(() => {
         // get return url from query parameters or default to '/'
-        router.push("/dashboard");
+        router.push("/details");
       })
       .catch((error) => {
         setError("apiError", { message: error });

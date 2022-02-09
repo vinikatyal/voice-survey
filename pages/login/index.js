@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import router from "next/router";
 
+import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 // import useSWR from 'swr'
 
@@ -95,6 +96,9 @@ export default function Index() {
         router.push("/dashboard");
       })
       .catch((error) => {
+        toast.error(error, {
+          position: toast.POSITION.TOP_RIGHT
+        });
         setError("apiError", { message: error });
       });
   };
