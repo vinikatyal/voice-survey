@@ -173,7 +173,7 @@ export default function Index() {
             <NavLink to="/faq" underline="hover">
               Billing
             </NavLink>
-            <NavLink to="/faq" underline="hover">
+            <NavLink to="/dashboard/settings" underline="hover">
               Settings
             </NavLink>
             <StyledButton onClick={handleClickOpen}>New Survey</StyledButton>
