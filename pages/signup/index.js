@@ -32,48 +32,41 @@ import "react-phone-input-2/lib/material.css";
 import { authService } from "../../services/auth.service";
 
 const Item = styled(Paper)(({ theme }) => ({
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  marginLeft: "30px",
-  marginRight: "30px",
-  marginTop: "50px",
-  width: "450px",
-  boxShadow: "0 3px 6px 0 rgba(0, 0, 0, 0.16",
-  padding: "28px 30px 27px",
+  padding: "30px",
+  maxWidth: "450px",
   borderRadius: "20px",
-}));
-
-const GridItem = styled(Grid)(({ theme }) => ({
-  display: "flex",
-  alignItems: "flex-start",
-  flexDirection: "column",
-  justifyContent: "left",
-  marginLeft: "50px",
-  marginBottom: "50px",
-  marginTop: "50px",
-}));
-
-const GridLeftImage = styled(Grid)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  flexDirection: "column",
-  justifyContent: "center",
-  flexGrow: 1,
 }));
 
 const GoogleSignin = styled(Button)(({ theme }) => ({
   border: "1px solid #00063e",
-  borderRadius: "8px",
+  borderRadius: "5px",
   color: "#00063e",
 }));
+
+const BannerSection = styled(Grid)({
+  minHeight: "90vh",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-around",
+  alignItems: "flex-start",
+});
+const FormSection = styled(Grid)({
+  height: "80%",
+  display: "flex",
+  marginTop: "20px",
+  marginBottom: "50px",
+  justifyContent: "center",
+  alignItems: "center",
+});
 
 const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
   marginBottom: "10px",
   marginTop: "10px",
 }));
 
-const ErrorLabel = styled("p")({
+const ErrorLabel = styled("div")({
   color: "red",
+  marginTop: "5px",
 });
 
 const PhoneFormControl = styled(FormControl)`
@@ -90,7 +83,7 @@ const PhoneFormControl = styled(FormControl)`
 const Phone = styled(PhoneInput)``;
 
 const SignInText = styled(Typography)({
-  marginBottom: "16px",
+  marginBottom: "10px",
 });
 
 export default function Index() {
@@ -100,6 +93,7 @@ export default function Index() {
     handleSubmit,
     watch,
     setError,
+    trigger,
     formState: { errors },
   } = useForm();
 
@@ -124,29 +118,31 @@ export default function Index() {
   return (
     <Layout bgColor="#f7fafc">
       <Limiter>
-        <Grid container spacing={2}>
-          <Grid item lg={6} md={6}>
-            <GridItem>
-              <Image
-                src={logo}
-                width={142}
-                height={50}
-                alt="background"
-                loading="lazy"
-              />
-            </GridItem>
-            <GridLeftImage>
-              <Image
-                src={bck}
-                width={625}
-                height={369}
-                alt="background"
-                loading="lazy"
-              />
-            </GridLeftImage>
-          </Grid>
-          <Grid item md={6} lg={6}>
-            <Item>
+        <Grid
+          container
+          spacing={2}
+          alignItems="center"
+          justifyContent="space-between"
+          minHeight="100vh"
+        >
+          <BannerSection item lg={6} md={6}>
+            <Image
+              src={logo}
+              width={142}
+              height={61}
+              alt="background"
+              loading="lazy"
+            />
+            <Image
+              src={bck}
+              width={625}
+              height={369}
+              alt="background"
+              loading="lazy"
+            />
+          </BannerSection>
+          <FormSection item md={6} lg={6}>
+            <Item elevation={4}>
               <Typography align="left" variant="h4">
                 Create Your Account!
               </Typography>
@@ -171,6 +167,9 @@ export default function Index() {
                           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                         message: "Please enter a valid email",
                       },
+                      onChange: async (e) => {
+                        await trigger("email");
+                      },
                     })}
                     id="email"
                     name="email"
@@ -194,6 +193,11 @@ export default function Index() {
                         value: 5,
                         message: "Password must have at least 5 characters",
                       },
+                      onChange: async (e) => {
+                        await trigger("password");
+                        watch("confirmpassword", "").length > 0 &&
+                          (await trigger("confirmpassword"));
+                      },
                     })}
                     autoComplete="password"
                     placeholder="Set your password"
@@ -209,7 +213,14 @@ export default function Index() {
                     id="confirmpassword"
                     name="confirmpassword"
                     type="password"
-                    {...register("confirmpassword")}
+                    {...register("confirmpassword", {
+                      validate: (value) =>
+                        value === watch("password", "") ||
+                        "The passwords do not match",
+                      onChange: async (e) => {
+                        await trigger("confirmpassword");
+                      },
+                    })}
                     placeholder="Confirm your password"
                   />
                   {errors.confirmpassword && (
@@ -219,7 +230,6 @@ export default function Index() {
                 <PhoneFormControl fullWidth>
                   <LoginFormLabel>Phone Number</LoginFormLabel>
                   <Phone
-                    onlyCountries={["in"]}
                     country={"in"}
                     name="mobile"
                     id="mobile"
@@ -266,7 +276,7 @@ export default function Index() {
                 </Grid>
               </Box>
             </Item>
-          </Grid>
+          </FormSection>
         </Grid>
       </Limiter>
     </Layout>

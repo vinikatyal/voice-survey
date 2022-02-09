@@ -32,37 +32,30 @@ import { authService } from "../../services/auth.service";
 import styled from "@emotion/styled";
 
 const Item = styled(Paper)(({ theme }) => ({
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  marginLeft: "30px",
-  marginRight: "30px",
-  marginTop: "50px",
-  width: "450px",
-  boxShadow: "0 3px 6px 0 rgba(0, 0, 0, 0.16",
-  padding: "28px 30px 27px",
+  padding: "30px",
+  maxWidth: "450px",
+  borderRadius: "20px",
 }));
 
-const GridItem = styled(Grid)(({ theme }) => ({
+const BannerSection = styled(Grid)({
+  minHeight: "70vh",
   display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-around",
   alignItems: "flex-start",
-  flexDirection: "column",
-  justifyContent: "left",
-  marginLeft: "50px",
-  marginBottom: "50px",
-  marginTop: "50px",
-}));
-
-const GridLeftImage = styled(Grid)(({ theme }) => ({
+});
+const FormSection = styled(Grid)({
+  minHeight: "80vh",
   display: "flex",
-  alignItems: "center",
-  flexDirection: "column",
+  marginTop: "20px",
+  marginBottom: "50px",
   justifyContent: "center",
-  flexGrow: 1,
-}));
+  alignItems: "center",
+});
 
 const GoogleSignin = styled(Button)(({ theme }) => ({
   border: "1px solid #00063e",
-  borderRadius: "8px",
+  borderRadius: "5px",
   color: "#00063e",
 }));
 
@@ -71,8 +64,9 @@ const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
   marginTop: "10px",
 }));
 
-const ErrorLabel = styled("p")({
+const ErrorLabel = styled("div")({
   color: "red",
+  marginTop: "5px",
 });
 
 const SignInText = styled(Typography)({
@@ -83,8 +77,8 @@ export default function Index() {
   const {
     register,
     handleSubmit,
-    watch,
     setError,
+    trigger,
     formState: { errors },
   } = useForm();
 
@@ -111,17 +105,25 @@ export default function Index() {
   return (
     <Layout bgColor="#f7fafc">
       <Limiter>
-        <Grid container spacing={2}>
-          <Grid item lg={6} md={6}>
-            <GridItem>
-              <Image src={logo} width={142} height={50} alt="background" />
-            </GridItem>
-            <GridLeftImage>
-              <Image src={bck} width={625} height={369} alt="background" />
-            </GridLeftImage>
-          </Grid>
-          <Grid item md={6} lg={6}>
-            <Item>
+        <Grid
+          container
+          spacing={2}
+          alignItems="center"
+          justifyContent="space-between"
+          minHeight="100vh"
+        >
+          <BannerSection item lg={6} md={6}>
+            <Image src={logo} width={142} height={61} alt="background" />
+            <Image src={bck} width={625} height={369} alt="background" />
+          </BannerSection>
+          <FormSection
+            display="flex"
+            justifyContent="center"
+            item
+            md={6}
+            lg={6}
+          >
+            <Item elevation={4}>
               <Typography align="left" variant="h4">
                 Welcome back!
               </Typography>
@@ -148,6 +150,9 @@ export default function Index() {
                           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                         message: "Please enter a valid email",
                       },
+                      onChange: async (e) => {
+                        await trigger("email");
+                      },
                     })}
                     autoComplete="email"
                     placeholder="Enter your email"
@@ -170,6 +175,9 @@ export default function Index() {
                       minLength: {
                         value: 5,
                         message: "Password must have at least 5 characters",
+                      },
+                      onChange: async (e) => {
+                        await trigger("password");
                       },
                     })}
                     type="password"
@@ -217,7 +225,7 @@ export default function Index() {
                 </Grid>
               </Box>
             </Item>
-          </Grid>
+          </FormSection>
         </Grid>
       </Limiter>
     </Layout>
