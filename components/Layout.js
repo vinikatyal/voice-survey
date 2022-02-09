@@ -3,7 +3,8 @@ import styled from "@emotion/styled";
 import Head from "next/head";
 
 const FullBackground = styled("div")(({ bgColor }) => ({
-  height: "100vh",
+  overflow: "auto",
+  height: "auto",
   backgroundColor: bgColor,
 }));
 
