@@ -1,5 +1,8 @@
 import React from "react";
 
+import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
+
 import FormLabel from "@mui/material/FormLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
@@ -9,7 +12,8 @@ import StyledButton from "./StyledButton";
 import styled from "@emotion/styled";
 
 import isEmpty from "lodash.isempty";
-import { useForm } from "react-hook-form";
+
+import { authService } from "../services/auth.service";
 
 const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
   marginBottom: "5px",
@@ -20,18 +24,32 @@ export default function InviteInput() {
   const {
     register,
     handleSubmit,
+
     formState: { errors },
   } = useForm();
   const onSubmit = async (data) => {
-    alert(JSON.stringify(data));
+    return authService
+      .send_invite(data)
+      .then((res) => {
+        // get return url from query parameters or default to '/'
+        toast.success("Invite sent successfully", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        console.log(res);
+      })
+      .catch((error) => {
+        toast.error(error, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
   };
   return (
     <>
       <LoginFormLabel>Invite Team Member</LoginFormLabel>
       <TextField
-        error={!isEmpty(errors.invite_email)}
+        error={!isEmpty(errors.email)}
         required
-        {...register("invite_email", {
+        {...register("email", {
           required: {
             value: true,
             message: "Enter the email",
@@ -41,8 +59,8 @@ export default function InviteInput() {
             message: "Invalid Email",
           },
         })}
-        id="invite_email"
-        name="invite_email"
+        id="email"
+        name="email"
         placeholder="contact@email.com"
         InputProps={{
           endAdornment: (

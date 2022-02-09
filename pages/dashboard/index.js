@@ -9,15 +9,12 @@ import Image from "next/image";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import ButtonBase from "@mui/material/ButtonBase";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import IconButton from "@mui/material/IconButton";
 
-import StyledButton from "../../components/StyledButton";
-import Header from "../../components/Header";
+import DashboardH from "../../components/dashboard/DashboardHeader";
 
 import Delete from "@mui/icons-material/Delete";
 import logo from "../../images/logo.png";
@@ -150,36 +147,10 @@ export default function Index() {
 
   // const { data, error } = useSWR('/login', fetcher)
 
-  const handleClickOpen = () => {
-    router.push("/survey/create");
-  };
-
   const handleSubmit = () => {};
   return (
     <>
-      <Header>
-        <BoxCustom maxWidth="lg">
-          <Logo src={logo} alt="background" />
-          <Nav>
-            <NavLink to="/" underline="hover">
-              All Surveys
-            </NavLink>
-            <NavLink to="/about" underline="hover">
-              My Surveys
-            </NavLink>
-            <NavLink to="/contact" underline="hover">
-              Shared with me
-            </NavLink>
-            <NavLink to="/faq" underline="hover">
-              Billing
-            </NavLink>
-            <NavLink to="/dashboard/settings" underline="hover">
-              Settings
-            </NavLink>
-            <StyledButton onClick={handleClickOpen}>New Survey</StyledButton>
-          </Nav>
-        </BoxCustom>
-      </Header>
+      <DashboardH></DashboardH>
       <FullBackground maxWidth="lg">
         <DashboardHeader>
           <Typography variant="h4">All Surveys</Typography>
@@ -187,22 +158,20 @@ export default function Index() {
         <GridContainer container spacing={5}>
           {surveyData.map((survey, index) => (
             <Grid key={index} item md={4}>
-                <SurveyCard variant="outlined">
-                  <CardContent>
-                    <CardTitle>
-                      <CardHead>{survey.title}</CardHead>
-                      <CardIconContainer>
-                        <CardIcon>
-                          <Delete />
-                        </CardIcon>
-                      </CardIconContainer>
-                    </CardTitle>
-                    <Typography variant="body2">
-                      {survey.description}
-                    </Typography>
-                    <Response>{survey.responses} responses</Response>
-                  </CardContent>
-                </SurveyCard>
+              <SurveyCard variant="outlined">
+                <CardContent>
+                  <CardTitle>
+                    <CardHead>{survey.title}</CardHead>
+                    <CardIconContainer>
+                      <CardIcon>
+                        <Delete />
+                      </CardIcon>
+                    </CardIconContainer>
+                  </CardTitle>
+                  <Typography variant="body2">{survey.description}</Typography>
+                  <Response>{survey.responses} responses</Response>
+                </CardContent>
+              </SurveyCard>
             </Grid>
           ))}
         </GridContainer>
