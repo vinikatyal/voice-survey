@@ -92,13 +92,13 @@ const MemberDetails = ({ img, email }) => (
         alignItems="center"
         justifyContent="flex-end"
       >
-        <Typography
+        {/* <Typography
           variant="subtitle2"
           color="#bfbfbf"
           sx={{ textDecoration: "underline", cursor: "pointer" }}
         >
           Remove
-        </Typography>
+        </Typography> */}
       </Grid>
     </Grid>
   </React.Fragment>
@@ -106,6 +106,7 @@ const MemberDetails = ({ img, email }) => (
 
 export default function Index() {
   const router = useRouter();
+  const [existingDetails, setExistingDetails] = useState({});
   const [companyName, setCompanyName] = useState("");
   const [members, setTeamMembers] = useState([]);
   const [logoVal, setLogo] = useState();
@@ -121,7 +122,9 @@ export default function Index() {
     authService
       .get_user_profile()
       .then((res) => {
-        console.log(res);
+        setExistingDetails(
+          res.data
+        )
       })
       .catch((error) => {
         toast.error(error, {
@@ -137,7 +140,6 @@ export default function Index() {
       .get_team_members()
       .then((res) => {
         setTeamMembers(res.data);
-        console.log(res);
       })
       .catch((error) => {
         toast.error(error, {
@@ -152,14 +154,14 @@ export default function Index() {
   };
 
   const onSubmit = () => {
-    console.log(logoVal)
-    const user = {
-      user_name: "vini",
-      company_logo: logoVal,
-      company: companyName,
-    };
+
+    let formData = new FormData();
+    formData.append("company_logo", logoVal);
+    formData.append("user_name", "vini");
+    formData.append("company", companyName);
+    console.log(formData);
     return authService
-      .add_user_details(user)
+      .add_user_details(formData)
       .then(() => {
         router.push("/dashboard");
       })
@@ -190,7 +192,7 @@ export default function Index() {
           mb={3}
         >
           <LogoHeading>Select any png.svg or jpg file</LogoHeading>
-          <AddLogo updateLogo={updateLogo} />
+          <AddLogo logo={existingDetails.logo} updateLogo={updateLogo} />
         </Grid>
 
         <Grid id="formInputSection" container justifyContent="center">
@@ -198,6 +200,7 @@ export default function Index() {
             <LoginFormLabel>Add Company Name</LoginFormLabel>
             <TextField
               required
+              value={existingDetails.company}
               onChange={(e) => setCompanyName(e.target.value)}
               id="company"
               name="company"

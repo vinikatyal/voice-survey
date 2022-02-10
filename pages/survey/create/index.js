@@ -160,8 +160,8 @@ export default function Create() {
     authService
       .get_team_members()
       .then((res) => {
-        setAccessEmails(res.data);
-        console.log(res);
+        const emails = res.data.map((item) => ({ value: item, label: item }));
+        setAccessEmails(emails);
       })
       .catch((error) => {
         setError("apiError", { message: error });

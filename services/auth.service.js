@@ -26,6 +26,12 @@ export const authService = {
   getAll,
 };
 
+const getFromStorage = (key) => {
+  if (typeof window !== "undefined") {
+    return JSON.parse(window.localStorage.getItem(key));
+  }
+};
+
 function login(email, password) {
   return fetchWrapper
     .post(`${baseUrl}/login`, { email, password })
@@ -33,8 +39,8 @@ function login(email, password) {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
 
       if (res.code === 200) {
-        tokenSubject.next(res);
         localStorage.setItem("token", JSON.stringify(res.data.token));
+        tokenSubject.next(res);
 
         return res;
       } else {
@@ -50,8 +56,9 @@ function signup(email, password, mobile) {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
 
       if (res.code === 200) {
-        tokenSubject.next(res);
+        console.log(res);
         localStorage.setItem("token", JSON.stringify(res.data.token));
+        tokenSubject.next(res);
 
         return res;
       } else {
@@ -62,14 +69,9 @@ function signup(email, password, mobile) {
 
 function add_user_details(data) {
   return fetchWrapper
-    .post(
-      `${baseUrl}/added_user_profile`,
-      data,
-      {
-        token: tokenSubject.value,
-      },
-      true
-    )
+    .postFormData(`${baseUrl}/add_user_profile`, data, {
+      token: getFromStorage("token"),
+    })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
       if (res.code === 200) {
@@ -82,7 +84,7 @@ function add_user_details(data) {
 
 function get_user_profile() {
   return fetchWrapper
-    .get(`${baseUrl}/get_user_profile`, { token: tokenSubject.value })
+    .get(`${baseUrl}/get_user_profile`, { token: getFromStorage("token") })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
       if (res.code === 200) {
@@ -95,7 +97,7 @@ function get_user_profile() {
 
 function send_invite(data) {
   return fetchWrapper
-    .post(`${baseUrl}/send_invite`, data, { token: tokenSubject.value })
+    .post(`${baseUrl}/send_invite`, data, { token: getFromStorage("token") })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
 
@@ -108,9 +110,8 @@ function send_invite(data) {
 }
 
 function get_team_members() {
-  console.log(tokenSubject.value);
   return fetchWrapper
-    .get(`${baseUrl}/get_team_members`, { token: tokenSubject.value })
+    .get(`${baseUrl}/get_team_members`, { token: getFromStorage("token") })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
 

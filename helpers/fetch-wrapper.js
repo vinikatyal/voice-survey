@@ -8,6 +8,7 @@ export const fetchWrapper = {
   get,
   post,
   put,
+  postFormData,
   delete: _delete,
 };
 
@@ -20,19 +21,27 @@ function get(url, extraHeaders = {}) {
   return fetch(url, requestOptions).then(handleResponse);
 }
 
-function post(url, body, extraHeaders = {}, multipart = false) {
-  let contentType = { "Content-Type": "application/json" };
-  if (multipart) {
-    contentType = { "Content-Type": "multipart/form-data" };
-  }
+function post(url, body, extraHeaders = {}) {
   const requestOptions = {
     method: "POST",
     headers: {
-      contentType,
+      "Content-Type": "application/json",
       ...authHeader(url),
       ...extraHeaders,
     },
     body: JSON.stringify(body),
+  };
+  return fetch(url, requestOptions).then(handleResponse);
+}
+
+function postFormData(url, body, extraHeaders = {}) {
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      ...authHeader(url),
+      ...extraHeaders,
+    },
+    body: body,
   };
   return fetch(url, requestOptions).then(handleResponse);
 }

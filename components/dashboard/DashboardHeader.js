@@ -48,12 +48,20 @@ export default function DashboardHeader() {
   const handleClickOpen = () => {
     router.push("/survey/create");
   };
+
+  const openLink = (link) => {
+    router.push(link);
+  };
   return (
     <Header>
       <BoxCustom maxWidth="lg">
         <Logo src={logo} alt="background" />
         <Nav>
-          <NavLink to="/" underline="hover">
+          <NavLink
+            to="/"
+            onClick={() => openLink("/dashboard")}
+            underline="hover"
+          >
             All Surveys
           </NavLink>
           <NavLink to="/about" underline="hover">
@@ -62,10 +70,18 @@ export default function DashboardHeader() {
           <NavLink to="/contact" underline="hover">
             Shared with me
           </NavLink>
-          <NavLink to="/dashboard/settings" underline="hover">
+          <NavLink
+            to="/dashboard/settings"
+            onClick={() => openLink("/dashboard/settings")}
+            underline="hover"
+          >
             Billing
           </NavLink>
-          <NavLink to="/dashboard/settings" underline="hover">
+          <NavLink
+            to="/dashboard/settings"
+            onClick={() => openLink("/dashboard/settings")}
+            underline="hover"
+          >
             Settings
           </NavLink>
           <StyledButton onClick={handleClickOpen}>New Survey</StyledButton>
