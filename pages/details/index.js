@@ -203,31 +203,33 @@ export default function Index() {
             {errors.company && (
               <Typography color="red">{errors.company.message}</Typography>
             )}
-            <InviteInput />
+            <InviteInput updateTeamMembers={getTeamMembers} />
 
-            <StyledAccordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-              >
-                <Grid container width="100%" justifyContent="space-between">
-                  <Typography variant="h5">Members</Typography>
-                  <Typography variant="h5" color="#0a23fb">
-                    {members.length}
-                  </Typography>
-                </Grid>
-              </AccordionSummary>
-              <AccordionDetails>
-                {members.map((member, index) => (
-                  <MemberDetails
-                    key={index}
-                    img="https://media.istockphoto.com/photos/millennial-male-team-leader-organize-virtual-workshop-with-employees-picture-id1300972574?b=1&k=20&m=1300972574&s=170667a&w=0&h=2nBGC7tr0kWIU8zRQ3dMg-C5JLo9H2sNUuDjQ5mlYfo="
-                    email={member}
-                  />
-                ))}
-              </AccordionDetails>
-            </StyledAccordion>
+            {members && (
+              <StyledAccordion>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Grid container width="100%" justifyContent="space-between">
+                    <Typography variant="h5">Members</Typography>
+                    <Typography variant="h5" color="#0a23fb">
+                      {members.length}
+                    </Typography>
+                  </Grid>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {members.map((member, index) => (
+                    <MemberDetails
+                      key={index}
+                      img="https://media.istockphoto.com/photos/millennial-male-team-leader-organize-virtual-workshop-with-employees-picture-id1300972574?b=1&k=20&m=1300972574&s=170667a&w=0&h=2nBGC7tr0kWIU8zRQ3dMg-C5JLo9H2sNUuDjQ5mlYfo="
+                      email={member}
+                    />
+                  ))}
+                </AccordionDetails>
+              </StyledAccordion>
+            )}
           </FormControl>
         </Grid>
 
