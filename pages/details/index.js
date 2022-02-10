@@ -159,7 +159,6 @@ export default function Index() {
     formData.append("company_logo", logoVal);
     formData.append("user_name", "vini");
     formData.append("company", companyName);
-    console.log(formData);
     return authService
       .add_user_details(formData)
       .then(() => {

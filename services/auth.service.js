@@ -21,6 +21,7 @@ export const authService = {
   add_user_details,
   get_user_profile,
   get_team_members,
+  get_user_logo,
   send_invite,
   logout,
   getAll,
@@ -85,6 +86,20 @@ function add_user_details(data) {
 function get_user_profile() {
   return fetchWrapper
     .get(`${baseUrl}/get_user_profile`, { token: getFromStorage("token") })
+    .then((res) => {
+      // publish user to subscribers and store in local storage to stay logged in between page refreshes
+      if (res.code === 200) {
+        return res;
+      } else {
+        errorHandler({}, res);
+      }
+    });
+}
+
+
+function get_user_logo() {
+  return fetchWrapper
+    .post(`${baseUrl}/get_user_logo`, { token: getFromStorage("token") })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
       if (res.code === 200) {
