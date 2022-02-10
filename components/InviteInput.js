@@ -20,7 +20,7 @@ const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
   marginTop: "5px",
 }));
 
-export default function InviteInput() {
+export default function InviteInput({ updateTeamMembers }) {
   const {
     register,
     handleSubmit,
@@ -35,7 +35,7 @@ export default function InviteInput() {
         toast.success("Invite sent successfully", {
           position: toast.POSITION.TOP_RIGHT,
         });
-        console.log(res);
+        updateTeamMembers();
       })
       .catch((error) => {
         toast.error(error, {

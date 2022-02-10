@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 // UI
 import Box from "@mui/material/Box";
@@ -42,10 +42,16 @@ const StyledTypography = styled(Typography)({
   },
 });
 
-export default function AddLogo() {
+export default function AddLogo({ logo, updateLogo }) {
   const addLogoRef = React.useRef();
   const logoInp = React.useRef();
   const [imageSrc, setImageSrc] = React.useState("");
+
+  useEffect(() => {
+    if (logo) {
+      // setImageSrc(logo);
+    }
+  }, [logo]);
 
   const handleInputChange = (event) => {
     const reader = new FileReader(event.target.files[0]);
@@ -54,6 +60,7 @@ export default function AddLogo() {
       setImageSrc(reader.result);
     };
     reader.readAsDataURL(event.target.files[0]);
+    updateLogo(event.target.files[0]);
   };
 
   const changeLogo = () => {

@@ -8,14 +8,15 @@ export const fetchWrapper = {
   get,
   post,
   put,
+  postFormData,
   delete: _delete,
 };
 
 function get(url, extraHeaders = {}) {
+  console.log(extraHeaders);
   const requestOptions = {
     method: "GET",
-    headers: authHeader(url),
-    ...extraHeaders,
+    headers: { ...authHeader(url), ...extraHeaders },
   };
   return fetch(url, requestOptions).then(handleResponse);
 }
@@ -29,6 +30,18 @@ function post(url, body, extraHeaders = {}) {
       ...extraHeaders,
     },
     body: JSON.stringify(body),
+  };
+  return fetch(url, requestOptions).then(handleResponse);
+}
+
+function postFormData(url, body, extraHeaders = {}) {
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      ...authHeader(url),
+      ...extraHeaders,
+    },
+    body: body,
   };
   return fetch(url, requestOptions).then(handleResponse);
 }

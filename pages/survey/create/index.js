@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -24,6 +24,7 @@ import SurveyHeader from "../../../components/survey/SurveyHeader";
 import StyledButton from "../../../components/StyledButton";
 
 import { surveyService } from "../../../services/survey.service";
+import { authService } from "../../../services/auth.service";
 
 import styled from "@emotion/styled";
 const GridContainer = styled(Grid)(({ theme }) => ({
@@ -146,9 +147,26 @@ export default function Create() {
     setError,
     formState: { errors },
   } = useForm();
-  const [selectedValue, setSelectedValue] = React.useState("CSAT");
+  const [selectedValue, setSelectedValue] = useState("CSAT");
+  const [accessEmails, setAccessEmails] = useState([]);
 
   const router = useRouter();
+
+  useEffect(() => {
+    getTeamMembers();
+  }, []);
+
+  const getTeamMembers = () => {
+    authService
+      .get_team_members()
+      .then((res) => {
+        const emails = res.data.map((item) => ({ value: item, label: item }));
+        setAccessEmails(emails);
+      })
+      .catch((error) => {
+        setError("apiError", { message: error });
+      });
+  };
   const onSubmit = async (data) => {
     const surveyData = {
       survey_type: selectedValue,
@@ -203,7 +221,7 @@ export default function Create() {
                 }),
               }}
               isMulti
-              options={emailOptions}
+              options={accessEmails}
             />
           </CustomFormControl>
           <GridContainer container spacing={5}>

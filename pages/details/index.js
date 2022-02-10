@@ -92,13 +92,13 @@ const MemberDetails = ({ img, email }) => (
         alignItems="center"
         justifyContent="flex-end"
       >
-        <Typography
+        {/* <Typography
           variant="subtitle2"
           color="#bfbfbf"
           sx={{ textDecoration: "underline", cursor: "pointer" }}
         >
           Remove
-        </Typography>
+        </Typography> */}
       </Grid>
     </Grid>
   </React.Fragment>
@@ -106,7 +106,10 @@ const MemberDetails = ({ img, email }) => (
 
 export default function Index() {
   const router = useRouter();
+  const [existingDetails, setExistingDetails] = useState({});
+  const [companyName, setCompanyName] = useState("");
   const [members, setTeamMembers] = useState([]);
+  const [logoVal, setLogo] = useState();
   const {
     register,
     handleSubmit,
@@ -119,7 +122,9 @@ export default function Index() {
     authService
       .get_user_profile()
       .then((res) => {
-        console.log(res);
+        setExistingDetails(
+          res.data
+        )
       })
       .catch((error) => {
         toast.error(error, {
@@ -135,7 +140,6 @@ export default function Index() {
       .get_team_members()
       .then((res) => {
         setTeamMembers(res.data);
-        console.log(res);
       })
       .catch((error) => {
         toast.error(error, {
@@ -145,19 +149,26 @@ export default function Index() {
       });
   };
 
-  const onSubmit = async (data) => {
-    return authService
-      .add_user_details(data)
-      .then(() => {
-        // get return url from query parameters or default to '/'
+  const updateLogo = (file) => {
+    setLogo(file);
+  };
 
+  const onSubmit = () => {
+
+    let formData = new FormData();
+    formData.append("company_logo", logoVal);
+    formData.append("user_name", "vini");
+    formData.append("company", companyName);
+    console.log(formData);
+    return authService
+      .add_user_details(formData)
+      .then(() => {
         router.push("/dashboard");
       })
       .catch((error) => {
         toast.error(error, {
           position: toast.POSITION.TOP_RIGHT,
         });
-        setError("apiError", { message: error });
       });
   };
   return (
@@ -181,58 +192,54 @@ export default function Index() {
           mb={3}
         >
           <LogoHeading>Select any png.svg or jpg file</LogoHeading>
-          <AddLogo />
+          <AddLogo logo={existingDetails.logo} updateLogo={updateLogo} />
         </Grid>
 
         <Grid id="formInputSection" container justifyContent="center">
           <FormControl sx={{ width: "660px" }}>
             <LoginFormLabel>Add Company Name</LoginFormLabel>
             <TextField
-              error={!isEmpty(errors.company_name)}
               required
-              {...register("company", {
-                required: {
-                  value: true,
-                  message: "Company Name is required",
-                },
-              })}
+              value={existingDetails.company}
+              onChange={(e) => setCompanyName(e.target.value)}
               id="company"
               name="company"
               placeholder="Your Company Name"
             />
-            {errors.company && (
-              <Typography color="red">{errors.company.message}</Typography>
-            )}
-            <InviteInput />
+            <InviteInput updateTeamMembers={getTeamMembers} />
 
-            <StyledAccordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-              >
-                <Grid container width="100%" justifyContent="space-between">
-                  <Typography variant="h5">Members</Typography>
-                  <Typography variant="h5" color="#0a23fb">
-                    {members.length}
-                  </Typography>
-                </Grid>
-              </AccordionSummary>
-              <AccordionDetails>
-                {members.map((member, index) => (
-                  <MemberDetails
-                    key={index}
-                    img="https://media.istockphoto.com/photos/millennial-male-team-leader-organize-virtual-workshop-with-employees-picture-id1300972574?b=1&k=20&m=1300972574&s=170667a&w=0&h=2nBGC7tr0kWIU8zRQ3dMg-C5JLo9H2sNUuDjQ5mlYfo="
-                    email={member}
-                  />
-                ))}
-              </AccordionDetails>
-            </StyledAccordion>
+            {members && (
+              <StyledAccordion>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Grid container width="100%" justifyContent="space-between">
+                    <Typography variant="h5">Members</Typography>
+                    <Typography variant="h5" color="#0a23fb">
+                      {members.length}
+                    </Typography>
+                  </Grid>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {members.map((member, index) => (
+                    <MemberDetails
+                      key={index}
+                      img="https://media.istockphoto.com/photos/millennial-male-team-leader-organize-virtual-workshop-with-employees-picture-id1300972574?b=1&k=20&m=1300972574&s=170667a&w=0&h=2nBGC7tr0kWIU8zRQ3dMg-C5JLo9H2sNUuDjQ5mlYfo="
+                      email={member}
+                    />
+                  ))}
+                </AccordionDetails>
+              </StyledAccordion>
+            )}
           </FormControl>
         </Grid>
 
         <NextSection>
-          <StyledButton onClick={handleSubmit(onSubmit)}>Next</StyledButton>
+          <StyledButton type="submit" onClick={onSubmit}>
+            Next
+          </StyledButton>
         </NextSection>
       </Limiter>
     </Layout>

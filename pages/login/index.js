@@ -89,7 +89,7 @@ export default function Index() {
     }
   }, []);
   const onSubmit = async (data) => {
-    return authService
+    return await authService
       .login(data.email, data.password)
       .then(() => {
         // get return url from query parameters or default to '/'
