@@ -42,7 +42,7 @@ const StyledTypography = styled(Typography)({
   },
 });
 
-export default function AddLogo() {
+export default function AddLogo({ updateLogo }) {
   const addLogoRef = React.useRef();
   const logoInp = React.useRef();
   const [imageSrc, setImageSrc] = React.useState("");
@@ -54,6 +54,7 @@ export default function AddLogo() {
       setImageSrc(reader.result);
     };
     reader.readAsDataURL(event.target.files[0]);
+    updateLogo(event.target.files[0])
   };
 
   const changeLogo = () => {

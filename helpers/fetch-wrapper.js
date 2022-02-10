@@ -12,19 +12,23 @@ export const fetchWrapper = {
 };
 
 function get(url, extraHeaders = {}) {
+  console.log(extraHeaders);
   const requestOptions = {
     method: "GET",
-    headers: authHeader(url),
-    ...extraHeaders,
+    headers: { ...authHeader(url), ...extraHeaders },
   };
   return fetch(url, requestOptions).then(handleResponse);
 }
 
-function post(url, body, extraHeaders = {}) {
+function post(url, body, extraHeaders = {}, multipart = false) {
+  let contentType = { "Content-Type": "application/json" };
+  if (multipart) {
+    contentType = { "Content-Type": "multipart/form-data" };
+  }
   const requestOptions = {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      contentType,
       ...authHeader(url),
       ...extraHeaders,
     },

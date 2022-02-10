@@ -106,7 +106,9 @@ const MemberDetails = ({ img, email }) => (
 
 export default function Index() {
   const router = useRouter();
+  const [companyName, setCompanyName] = useState("");
   const [members, setTeamMembers] = useState([]);
+  const [logoVal, setLogo] = useState();
   const {
     register,
     handleSubmit,
@@ -145,19 +147,26 @@ export default function Index() {
       });
   };
 
-  const onSubmit = async (data) => {
-    return authService
-      .add_user_details(data)
-      .then(() => {
-        // get return url from query parameters or default to '/'
+  const updateLogo = (file) => {
+    setLogo(file);
+  };
 
+  const onSubmit = () => {
+    console.log(logoVal)
+    const user = {
+      user_name: "vini",
+      company_logo: logoVal,
+      company: companyName,
+    };
+    return authService
+      .add_user_details(user)
+      .then(() => {
         router.push("/dashboard");
       })
       .catch((error) => {
         toast.error(error, {
           position: toast.POSITION.TOP_RIGHT,
         });
-        setError("apiError", { message: error });
       });
   };
   return (
@@ -181,28 +190,19 @@ export default function Index() {
           mb={3}
         >
           <LogoHeading>Select any png.svg or jpg file</LogoHeading>
-          <AddLogo />
+          <AddLogo updateLogo={updateLogo} />
         </Grid>
 
         <Grid id="formInputSection" container justifyContent="center">
           <FormControl sx={{ width: "660px" }}>
             <LoginFormLabel>Add Company Name</LoginFormLabel>
             <TextField
-              error={!isEmpty(errors.company_name)}
               required
-              {...register("company", {
-                required: {
-                  value: true,
-                  message: "Company Name is required",
-                },
-              })}
+              onChange={(e) => setCompanyName(e.target.value)}
               id="company"
               name="company"
               placeholder="Your Company Name"
             />
-            {errors.company && (
-              <Typography color="red">{errors.company.message}</Typography>
-            )}
             <InviteInput updateTeamMembers={getTeamMembers} />
 
             {members && (
@@ -234,7 +234,9 @@ export default function Index() {
         </Grid>
 
         <NextSection>
-          <StyledButton onClick={handleSubmit(onSubmit)}>Next</StyledButton>
+          <StyledButton type="submit" onClick={onSubmit}>
+            Next
+          </StyledButton>
         </NextSection>
       </Limiter>
     </Layout>

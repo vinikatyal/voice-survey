@@ -62,10 +62,16 @@ function signup(email, password, mobile) {
 
 function add_user_details(data) {
   return fetchWrapper
-    .post(`${baseUrl}/added_user_profile`, data, { token: tokenSubject.value })
+    .post(
+      `${baseUrl}/added_user_profile`,
+      data,
+      {
+        token: tokenSubject.value,
+      },
+      true
+    )
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
-
       if (res.code === 200) {
         return res;
       } else {
@@ -76,7 +82,7 @@ function add_user_details(data) {
 
 function get_user_profile() {
   return fetchWrapper
-    .get(`${baseUrl}/get_user_profile`, {}, { token: tokenSubject.value })
+    .get(`${baseUrl}/get_user_profile`, { token: tokenSubject.value })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
       if (res.code === 200) {
@@ -101,10 +107,10 @@ function send_invite(data) {
     });
 }
 
-
-function get_team_members(data) {
+function get_team_members() {
+  console.log(tokenSubject.value);
   return fetchWrapper
-    .post(`${baseUrl}/get_team_members`, data, { token: tokenSubject.value })
+    .get(`${baseUrl}/get_team_members`, { token: tokenSubject.value })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
 
