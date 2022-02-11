@@ -1,7 +1,9 @@
 module.exports = {
+  images: {
+    domains: ["gnanispeechprod.blob.core.windows.net"],
+  },
   serverRuntimeConfig: {
-    secret:
-      "ABCD",
+    secret: "ABCD",
   },
   publicRuntimeConfig: {
     apiUrl:
