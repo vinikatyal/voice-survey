@@ -80,11 +80,13 @@ export default function SurveyQuestion({
   }, [expandStatus]);
 
   const answersList = [
-    { id: 1, label: "Email & contact", value: "email" },
-    { id: 2, label: "Multiple Choice", value: "multipleChoice" },
-    { id: 3, label: "Date picker", value: "date" },
-    { id: 4, label: "Linear Scale", value: "scale" },
-    { id: 5, label: "NPS", value: "nps" },
+    { id: 1, label: "Textfield", value: "text" },
+    { id: 2, label: "Description", value: "description" },
+    { id: 3, label: "Email", value: "email" },
+    { id: 4, label: "Phone number", value: "phone" },
+    { id: 5, label: "Date picker", value: "date" },
+    { id: 6, label: "Voice", value: "voice" },
+    { id: 7, label: "Datepicker", value: "date" },
   ];
 
   return (
