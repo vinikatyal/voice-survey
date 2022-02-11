@@ -51,10 +51,7 @@ export default function AddLogo({ logo, updateLogo }) {
 
   useEffect(() => {
     if (logo) {
-      const blob = new Blob([logo], { type: "image/png" });
-      const img = URL.createObjectURL(blob);
-      console.log(img)
-      setImageSrc(img);
+      setImageSrc(logo);
     }
   }, [logo]);
 
@@ -104,7 +101,12 @@ export default function AddLogo({ logo, updateLogo }) {
         </Grid>
         {imageSrc && (
           <Grid container>
-            <Image height={140} width={140} src={imageSrc} />
+            <Image
+              height={140}
+              width={140}
+              src={imageSrc}
+              unoptimized={false}
+            />
           </Grid>
         )}
       </LogoInputSection>
