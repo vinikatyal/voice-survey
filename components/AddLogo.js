@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 
+import { toast } from "react-toastify";
+
 // UI
 import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
@@ -8,6 +10,8 @@ import Grid from "@mui/material/Grid";
 
 import styled from "@emotion/styled";
 import Image from "next/image";
+
+import { authService } from "../services/auth.service";
 
 const LogoInputSection = styled(Box)({
   width: "140px",
@@ -42,16 +46,23 @@ const StyledTypography = styled(Typography)({
   },
 });
 
-export default function AddLogo({ logo, updateLogo }) {
+export default function AddLogo({ updateLogo }) {
   const addLogoRef = React.useRef();
   const logoInp = React.useRef();
   const [imageSrc, setImageSrc] = React.useState("");
 
   useEffect(() => {
-    if (logo) {
-      // setImageSrc(logo);
-    }
-  }, [logo]);
+    authService
+    .get_user_logo()
+    .then((res) => {
+     console.log(res)
+    })
+    .catch((error) => {
+      toast.error(error, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    });
+  }, []);
 
   const handleInputChange = (event) => {
     const reader = new FileReader(event.target.files[0]);

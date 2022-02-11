@@ -39,6 +39,7 @@ const Logo = styled(Image)(({}) => ({
   height: "30px",
   display: "flex",
   justifyContent: "flex-start",
+  cursor: "pointer"
 }));
 
 export default function DashboardHeader() {
@@ -55,7 +56,11 @@ export default function DashboardHeader() {
   return (
     <Header>
       <BoxCustom maxWidth="lg">
-        <Logo src={logo} alt="background" />
+        <Logo
+          onClick={() => openLink("/dashboard")}
+          src={logo}
+          alt="background"
+        />
         <Nav>
           <NavLink
             to="/"
