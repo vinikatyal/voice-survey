@@ -77,7 +77,6 @@ export default function Index() {
   const {
     register,
     handleSubmit,
-    setError,
     trigger,
     formState: { errors },
   } = useForm();
@@ -96,12 +95,15 @@ export default function Index() {
         router.push("/dashboard");
       })
       .catch((error) => {
-        toast.error(error, {
-          position: toast.POSITION.TOP_RIGHT
+        toast.error(error.message, {
+          position: toast.POSITION.TOP_RIGHT,
         });
-        setError("apiError", { message: error });
       });
   };
+
+  //   const handleKeypress = (e) => {
+  //     console.log(e);
+  //   };
   return (
     <Layout bgColor="#f7fafc">
       <Limiter>
