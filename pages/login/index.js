@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import router from "next/router";
 
+import isEmpty from "lodash.isempty";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 // import useSWR from 'swr'
@@ -143,6 +144,7 @@ export default function Index() {
                   <TextField
                     required
                     fullWidth
+                    error={!isEmpty(errors.email)}
                     id="email"
                     name="email"
                     {...register("email", {
@@ -169,6 +171,7 @@ export default function Index() {
                   <TextField
                     required
                     fullWidth
+                    error={!isEmpty(errors.password)}
                     id="password"
                     name="password"
                     autoComplete="password"
