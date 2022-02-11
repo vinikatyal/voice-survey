@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+
+import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 
 import Image from "next/image";
@@ -92,7 +94,6 @@ export default function Index() {
     register,
     handleSubmit,
     watch,
-    setError,
     trigger,
     formState: { errors },
   } = useForm();
@@ -112,7 +113,9 @@ export default function Index() {
         router.push("/details");
       })
       .catch((error) => {
-        setError("apiError", { message: error });
+        toast.error(error, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       });
   };
   return (
