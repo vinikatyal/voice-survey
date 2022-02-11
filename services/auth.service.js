@@ -83,8 +83,8 @@ function add_user_details(data) {
     });
 }
 
-function get_user_profile() {
-  return fetchWrapper
+async function get_user_profile() {
+  return await fetchWrapper
     .get(`${baseUrl}/get_user_profile`, { token: getFromStorage("token") })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
@@ -95,7 +95,6 @@ function get_user_profile() {
       }
     });
 }
-
 
 function get_user_logo() {
   return fetchWrapper
@@ -124,8 +123,8 @@ function send_invite(data) {
     });
 }
 
-function get_team_members() {
-  return fetchWrapper
+async function get_team_members() {
+  return await fetchWrapper
     .get(`${baseUrl}/get_team_members`, { token: getFromStorage("token") })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes

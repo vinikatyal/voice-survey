@@ -119,20 +119,30 @@ export default function Index() {
 
   useEffect(() => {
     // redirect to home if already logged in
-    authService
-      .get_user_profile()
-      .then((res) => {
-        setExistingDetails(
-          res.data
-        )
-      })
+    let isSubscribed = true;
+    // declare the async data fetching function
+    const fetchUserData = async () => {
+      // get the data from the api
+      const res = await authService.get_user_profile();
+      // convert the data to json
+      const json = await res.data;
+
+      if (isSubscribed) {
+        setExistingDetails(json);
+      }
+    };
+
+    // call the function
+    fetchUserData()
+      // make sure to catch any error
       .catch((error) => {
         toast.error(error, {
           position: toast.POSITION.TOP_RIGHT,
         });
-        setError("apiError", { message: error });
       });
     getTeamMembers();
+
+    return () => (isSubscribed = false);
   }, []);
 
   const getTeamMembers = () => {
@@ -154,7 +164,6 @@ export default function Index() {
   };
 
   const onSubmit = () => {
-
     let formData = new FormData();
     formData.append("company_logo", logoVal);
     formData.append("user_name", "vini");

@@ -11,8 +11,6 @@ import Grid from "@mui/material/Grid";
 import styled from "@emotion/styled";
 import Image from "next/image";
 
-import { authService } from "../services/auth.service";
-
 const LogoInputSection = styled(Box)({
   width: "140px",
   height: "140px",
@@ -46,23 +44,19 @@ const StyledTypography = styled(Typography)({
   },
 });
 
-export default function AddLogo({ updateLogo }) {
+export default function AddLogo({ logo, updateLogo }) {
   const addLogoRef = React.useRef();
   const logoInp = React.useRef();
   const [imageSrc, setImageSrc] = React.useState("");
 
   useEffect(() => {
-    authService
-    .get_user_logo()
-    .then((res) => {
-     console.log(res)
-    })
-    .catch((error) => {
-      toast.error(error, {
-        position: toast.POSITION.TOP_RIGHT,
-      });
-    });
-  }, []);
+    if (logo) {
+      const blob = new Blob([logo], { type: "image/png" });
+      const img = URL.createObjectURL(blob);
+      console.log(img)
+      setImageSrc(img);
+    }
+  }, [logo]);
 
   const handleInputChange = (event) => {
     const reader = new FileReader(event.target.files[0]);
