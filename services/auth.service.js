@@ -99,7 +99,7 @@ function get_user_profile() {
 
 function get_user_logo() {
   return fetchWrapper
-    .post(`${baseUrl}/get_user_logo`, { token: getFromStorage("token") })
+    .get(`${baseUrl}/get_user_logo`, { token: getFromStorage("token") })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
       if (res.code === 200) {
