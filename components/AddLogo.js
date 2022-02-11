@@ -10,20 +10,21 @@ import Grid from "@mui/material/Grid";
 
 import styled from "@emotion/styled";
 import Image from "next/image";
+import { useForm } from "react-hook-form";
 
-const LogoInputSection = styled(Box)({
+const LogoInputSection = styled(Box)(({ error }) => ({
   width: "140px",
   height: "140px",
   margin: "10px 0",
   borderRadius: "8px",
-  border: "dotted 2px #0a23fb",
+  border: `dotted 2px ${error ? "red" : "#0a23fb"}`,
   backgroundColor: "#f5f8ff",
   display: "flex ",
   flexDirection: "column",
   justifyContent: "space-around",
   alignItems: "center",
   padding: "5px",
-});
+}));
 
 const LogoAddButton = styled(Fab)({
   height: "10px",
@@ -44,19 +45,26 @@ const StyledTypography = styled(Typography)({
   },
 });
 
-export default function AddLogo({ logo, updateLogo }) {
+export default function AddLogo({ logo, updateLogo, error }) {
   const addLogoRef = React.useRef();
   const logoInp = React.useRef();
   const [imageSrc, setImageSrc] = React.useState("");
 
   useEffect(() => {
-    if (logo) {
+    if (logo && typeof logo === "object") {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        setImageSrc(reader.result);
+      };
+      reader.readAsDataURL(logo);
+    } else if (logo) {
+      addLogoRef.current.style.display = "none";
       setImageSrc(logo);
     }
   }, [logo]);
 
   const handleInputChange = (event) => {
-    const reader = new FileReader(event.target.files[0]);
+    const reader = new FileReader();
     reader.onload = async () => {
       addLogoRef.current.style.display = "none";
       setImageSrc(reader.result);
@@ -71,11 +79,17 @@ export default function AddLogo({ logo, updateLogo }) {
   const removeLogo = () => {
     addLogoRef.current.style.display = "flex";
     setImageSrc("");
+    updateLogo(null);
   };
 
   return (
-    <Grid container justifyContent="center">
-      <LogoInputSection>
+    <Grid
+      container
+      justifyContent="center"
+      direction="column"
+      alignItems="center"
+    >
+      <LogoInputSection error={error}>
         <Grid
           container
           justifyContent="center"
@@ -110,6 +124,7 @@ export default function AddLogo({ logo, updateLogo }) {
           </Grid>
         )}
       </LogoInputSection>
+      {error && <Typography color="red">You need to add logo</Typography>}
       {imageSrc && (
         <Grid container justifyContent="center" spacing={1}>
           <Grid item>

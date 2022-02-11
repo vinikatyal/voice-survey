@@ -106,68 +106,68 @@ const MemberDetails = ({ img, email }) => (
 
 export default function Index() {
   const router = useRouter();
-  const [existingDetails, setExistingDetails] = useState({});
-  const [companyName, setCompanyName] = useState("");
+  const [logoError, setLogoError] = useState(false);
   const [members, setTeamMembers] = useState([]);
-  const [logoVal, setLogo] = useState();
+
+  const [details, setDetails] = useState({
+    company: "",
+    logo: null,
+  });
+
   const {
     register,
     handleSubmit,
-    setError,
+    trigger,
+    setValue,
     formState: { errors },
   } = useForm();
 
   useEffect(() => {
-    // redirect to home if already logged in
-    let isSubscribed = true;
-    // declare the async data fetching function
-    const fetchUserData = async () => {
-      // get the data from the api
-      const res = await authService.get_user_profile();
-      // convert the data to json
-      const json = await res.data;
+    setValue("company", details.company, {
+      shouldDirty: true,
+    });
+  }, [details]);
 
-      if (isSubscribed) {
-        setExistingDetails(json);
-      }
-    };
-
-    // call the function
-    fetchUserData()
-      // make sure to catch any error
-      .catch((error) => {
-        toast.error(error, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+  useEffect(async () => {
+    try {
+      const profile = await authService.get_user_profile();
+      setDetails({ ...details, ...profile.data });
+      await getTeamMembers();
+    } catch (error) {
+      toast.error(error, {
+        position: toast.POSITION.TOP_RIGHT,
       });
-    getTeamMembers();
-
-    return () => (isSubscribed = false);
+    }
   }, []);
-
-  const getTeamMembers = () => {
-    authService
-      .get_team_members()
-      .then((res) => {
-        setTeamMembers(res.data);
-      })
-      .catch((error) => {
-        toast.error(error, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-        setError("apiError", { message: error });
+  const getTeamMembers = async () => {
+    try {
+      const members = await authService.get_team_members();
+      setTeamMembers(members.data);
+    } catch (error) {
+      toast.error(error, {
+        position: toast.POSITION.TOP_RIGHT,
       });
+    }
   };
 
   const updateLogo = (file) => {
-    setLogo(file);
+    file ? setLogoError(false) : setLogoError(true);
+    setDetails({ ...details, logo: file });
+  };
+
+  const handleCompanyInput = (e) => {
+    setDetails({ ...details, company: e.target.value });
   };
 
   const onSubmit = () => {
+    if (!details.logo) {
+      setLogoError(true);
+      return;
+    }
     let formData = new FormData();
-    formData.append("company_logo", logoVal);
+    formData.append("company_logo", details.logo);
     formData.append("user_name", "vini");
-    formData.append("company", companyName);
+    formData.append("company", details.company);
     return authService
       .add_user_details(formData)
       .then(() => {
@@ -200,20 +200,33 @@ export default function Index() {
           mb={3}
         >
           <LogoHeading>Select any png.svg or jpg file</LogoHeading>
-          <AddLogo logo={existingDetails.logo} updateLogo={updateLogo} />
+          <AddLogo
+            logo={details.logo}
+            error={logoError}
+            updateLogo={updateLogo}
+          />
         </Grid>
 
         <Grid id="formInputSection" container justifyContent="center">
           <FormControl sx={{ width: "660px" }}>
             <LoginFormLabel>Add Company Name</LoginFormLabel>
             <TextField
+              error={!isEmpty(errors.company)}
               required
-              value={existingDetails.company}
-              onChange={(e) => setCompanyName(e.target.value)}
+              {...register("company", {
+                required: "You must specify company name",
+                onChange: async (e) => {
+                  await trigger("company");
+                },
+              })}
+              onInput={handleCompanyInput}
               id="company"
               name="company"
               placeholder="Your Company Name"
             />
+            {errors.company && (
+              <Typography color="red">{errors.company.message}</Typography>
+            )}
             <InviteInput updateTeamMembers={getTeamMembers} />
 
             {members && (
@@ -245,7 +258,7 @@ export default function Index() {
         </Grid>
 
         <NextSection>
-          <StyledButton type="submit" onClick={onSubmit}>
+          <StyledButton type="submit" onClick={handleSubmit(onSubmit)}>
             Next
           </StyledButton>
         </NextSection>
