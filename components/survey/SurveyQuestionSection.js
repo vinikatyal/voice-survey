@@ -1,5 +1,7 @@
 import React from "react";
 
+import produce from "immer";
+
 // UI
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
@@ -11,6 +13,9 @@ import SurveyQuestion from "./SurveyQuestion";
 import StyledButton from "../StyledButton";
 
 import styled from "@emotion/styled";
+
+// State Manager
+import { useDispatchSurvey } from "./SurveyState";
 
 const Label = styled("span")({
   color: "#707070",
@@ -25,49 +30,33 @@ const AddQuestionSection = styled(Container)({
   marginTop: "30px",
 });
 
-export default function SurveyQuestionSection() {
-  const [questionList, setQuestionList] = React.useState([
-    { id: 1, questionNumber: 1, expandStatus: true },
-  ]);
+export default function SurveyQuestionSection({ questions }) {
+  const dispatch = useDispatchSurvey();
 
   const handleAddQuestion = () => {
-    let newArr = questionList.map((element) => ({
-      id: element.id,
-      questionNumber: element.questionNumber,
-      expandStatus: false,
-    }));
-    newArr = [
-      ...newArr,
-      {
-        id: newArr.length + 1,
-        questionNumber: newArr.length + 1,
+    const next = produce(questions, (draft) => {
+      draft.map((_, index) => (draft[index].expandStatus = false));
+      draft.push({
+        id: draft.length + 1,
+        question: "",
+        answerTypeId: 1,
         expandStatus: true,
-      },
-    ];
-    setQuestionList(newArr);
+      });
+    });
+
+    dispatch({ type: "QUESTIONS", value: next });
   };
 
   const handleExpanded = (id, expandStatus) => {
-    const newArr = questionList.map((element) => {
-      if (element.id === id) {
-        return {
-          id: element.id,
-          questionNumber: element.questionNumber,
-          expandStatus: expandStatus,
-        };
-      }
-      return {
-        id: element.id,
-        questionNumber: element.questionNumber,
-        expandStatus: false,
-      };
-    });
-    setQuestionList(newArr);
+    const newArr = questions.map((obj) =>
+      obj.id === id ? { ...obj, expandStatus } : { ...obj, expandStatus: false }
+    );
+    dispatch({ type: "QUESTIONS", value: newArr });
   };
 
   const deleteQuestion = (id) => {
-    const newArr = questionList.filter((element) => element.id !== id);
-    setQuestionList(newArr);
+    const newArr = questions.filter((element) => element.id !== id);
+    dispatch({ type: "QUESTIONS", value: newArr });
   };
   return (
     <>
@@ -83,11 +72,13 @@ export default function SurveyQuestionSection() {
 
       <Container maxWidth="lg" sx={{ marginTop: "30px" }}>
         <Label>Add Questions</Label>
-        {questionList.map((question) => (
+        {questions.map((question, index) => (
           <SurveyQuestion
             key={question.id}
             id={question.id}
-            questionNumber={question.questionNumber}
+            questionNumber={index + 1}
+            question={question.question}
+            answerTypeId={question.answerTypeId}
             expandStatus={question.expandStatus}
             handleExpanded={handleExpanded}
             deleteQuestion={deleteQuestion}

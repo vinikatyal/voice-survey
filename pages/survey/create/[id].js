@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import Layout from "../../../components/Layout.js";
 import SurveyHeader from "../../../components/survey/SurveyHeader";
@@ -7,7 +7,12 @@ import SurveyQuestionSection from "../../../components/survey/SurveyQuestionSect
 import SurveyThemeSection from "../../../components/survey/SurveyThemeSection";
 
 import { useRouter } from "next/router";
-import { useSurvey } from "../../../components/survey/SurveyState.js";
+
+// State Manager
+import {
+  useDispatchSurvey,
+  useSurvey,
+} from "../../../components/survey/SurveyState.js";
 
 export async function getStaticPaths() {
   const paths = [{ params: { id: "questions" } }, { params: { id: "themes" } }];
@@ -19,6 +24,19 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const props = {};
+  if (params.id === "questions") {
+    const questions = await fetch(
+      "https://api.jsonbin.io/b/6207aa1f1b38ee4b33b8c9d3",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "secret-key":
+            "$2b$10$WqnXsDDorMo41yYnbkChQ.PwewUpe1CvZ0s.bfJeSWfWCgKenMgwW",
+        },
+      }
+    );
+    props["questionTypes"] = await questions.json();
+  }
   params.id === "questions" && (props["currentTab"] = "questions");
   params.id === "themes" && (props["currentTab"] = "themes");
   return {
@@ -26,22 +44,38 @@ export async function getStaticProps({ params }) {
   };
 }
 
-export default function create({ currentTab }) {
+export default function create({ currentTab, questionTypes }) {
   const router = useRouter();
   const survey = useSurvey();
-  console.log(survey);
+  const dispatch = useDispatchSurvey();
+
+  useEffect(() => {
+    !survey.surveyTitle && router.push("/survey/create");
+  }, [survey.surveyTitle]);
+
+  useEffect(() => {
+    const modifiedArr =
+      questionTypes[survey.surveyType] &&
+      questionTypes[survey.surveyType].map((obj, index) => {
+        return index === 0
+          ? { ...obj, expandStatus: true }
+          : { ...obj, expandStatus: false };
+      });
+    modifiedArr && dispatch({ type: "QUESTIONS", value: modifiedArr });
+  }, [survey.surveyType]);
+
   const handleChangeTab = (currentTab) => {
     router.push(`/survey/create/${currentTab}`);
   };
   return (
     <Layout>
-      <SurveyHeader headerTitle="Survey's Name Here" currentTab="CREATE">
+      <SurveyHeader headerTitle={survey.surveyTitle} currentTab="CREATE">
         <SurveyCreateTabSection
           currentTab={currentTab}
           handleChangeTab={handleChangeTab}
         >
           {currentTab === "questions" ? (
-            <SurveyQuestionSection />
+            <SurveyQuestionSection questions={survey.questions} />
           ) : (
             <SurveyThemeSection />
           )}

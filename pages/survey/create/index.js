@@ -6,6 +6,7 @@ import Image from "next/image";
 import isEmpty from "lodash.isempty";
 import { useForm } from "react-hook-form";
 import Select from "react-select";
+import { toast } from "react-toastify";
 
 // material components
 import Container from "@mui/material/Container";
@@ -148,25 +149,29 @@ export default function Create() {
   const {
     register,
     handleSubmit,
-    watch,
-    setError,
     trigger,
     setValue,
     formState: { errors },
   } = useForm();
-  const [selectedValue, setSelectedValue] = useState("CSAT");
+  const survey = useSurvey();
+  const dispatch = useDispatchSurvey();
+
+  const [selectedValue, setSelectedValue] = useState(
+    survey.surveyType || "CSAT"
+  );
   const [accessEmails, setAccessEmails] = useState([]);
 
   const router = useRouter();
-
-  const survey = useSurvey();
-  const dispatch = useDispatchSurvey();
 
   useEffect(() => {
     setValue("survey_title", survey.surveyTitle, {
       shouldDirty: true,
     });
   }, [survey.surveyTitle]);
+
+  useEffect(() => {
+    dispatch({ type: "TYPE", value: selectedValue });
+  }, [selectedValue]);
 
   useEffect(() => {
     getTeamMembers();
@@ -180,7 +185,9 @@ export default function Create() {
         setAccessEmails(emails);
       })
       .catch((error) => {
-        setError("apiError", { message: error });
+        toast.error(error.message, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       });
   };
   const onSubmit = async (data) => {
@@ -193,11 +200,12 @@ export default function Create() {
       .create_survey(surveyData)
       .then(() => {
         // get return url from query parameters or default to '/'
-
         router.push("/survey/create/questions");
       })
       .catch((error) => {
-        setError("apiError", { message: error });
+        toast.error(error.message, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       });
   };
 
@@ -211,13 +219,11 @@ export default function Create() {
           component="form"
           noValidate
           onSubmit={(e) => e.preventDefault()}
-          fullWidth
         >
           <CustomFormControl fullWidth>
             <FormLabel>Survey Title</FormLabel>
             <TextField
               required
-              fullWidth
               error={!isEmpty(errors.survey_title)}
               id="survey_title"
               name="survey_title"
@@ -246,7 +252,9 @@ export default function Create() {
                 }),
               }}
               isMulti
+              value={survey.accessMembers}
               options={accessEmails}
+              onChange={(value) => dispatch({ type: "MEMBERS", value: value })}
             />
           </CustomFormControl>
           <GridContainer container spacing={5}>

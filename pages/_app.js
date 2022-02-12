@@ -59,13 +59,11 @@ export default function MyApp(props) {
       </Head>
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-        <CssBaseline />
-        {authorized && (
-          <SurveyProvider>
-            <Component {...pageProps} />
-          </SurveyProvider>
-        )}
-        <ToastContainer />
+        <SurveyProvider>
+          <CssBaseline />
+          {authorized && <Component {...pageProps} />}
+          <ToastContainer />
+        </SurveyProvider>
       </ThemeProvider>
     </>
   );
