@@ -1,4 +1,5 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
 
 import router from "next/router";
 
@@ -9,9 +10,19 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import TextField from "@mui/material/TextField";
+import Accordion from "@mui/material/Accordion";
 
 import DashboardHeader from "../../components/dashboard/DashboardHeader";
+import Limiter from "../../components/Limiter";
+import AddLogo from "../../components/AddLogo";
+import InviteInput from "../../components/InviteInput";
+import StyledButton from "../../components/StyledButton";
 
+
+// styles
 import styled from "@emotion/styled";
 
 import { authService } from "../../services/auth.service";
@@ -19,6 +30,12 @@ import { authService } from "../../services/auth.service";
 const FullBackground = styled(Container)(({ theme }) => ({
   height: "100vh",
 }));
+
+const LogoHeading = styled(Typography)({
+  fontSize: "16px",
+  fontWeight: "500",
+});
+
 
 const GridContainer = styled(Grid)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -47,6 +64,29 @@ const TabBasic = styled(Tab)(({ theme }) => ({
   },
 }));
 
+const StyledAccordion = styled(Accordion)(() => ({
+  boxShadow: "0 2px 6px 0 rgba(113, 125, 129, 0.16)",
+  borderTop: "none",
+  border: "solid 1px #dcdcdc",
+  backgroundColor: "#fff",
+  borderRadius: "5px",
+}));
+
+
+const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
+  marginBottom: "5px",
+  marginTop: "5px",
+}));
+
+const NextSection = styled("div")({
+  display: " flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  paddingTop: "30px",
+});
+
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   return (
@@ -68,6 +108,79 @@ function TabPanel(props) {
 
 export default function Index() {
   const [value, setValue] = React.useState(0);
+  const [existingDetails, setExistingDetails] = useState({});
+  const [companyName, setCompanyName] = useState("");
+  const [members, setTeamMembers] = useState([]);
+  const [logoVal, setLogo] = useState();
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm();
+
+  useEffect(() => {
+    // redirect to home if already logged in
+    let isSubscribed = true;
+    // declare the async data fetching function
+    const fetchUserData = async () => {
+      // get the data from the api
+      const res = await authService.get_user_profile();
+      // convert the data to json
+      const json = await res.data;
+
+      if (isSubscribed) {
+        setExistingDetails(json);
+      }
+    };
+
+    // call the function
+    fetchUserData()
+      // make sure to catch any error
+      .catch((error) => {
+        toast.error(error, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
+    getTeamMembers();
+
+    return () => (isSubscribed = false);
+  }, []);
+
+  const getTeamMembers = () => {
+    authService
+      .get_team_members()
+      .then((res) => {
+        setTeamMembers(res.data);
+      })
+      .catch((error) => {
+        toast.error(error, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        setError("apiError", { message: error });
+      });
+  };
+
+  const updateLogo = (file) => {
+    setLogo(file);
+  };
+
+  const onSubmit = () => {
+    let formData = new FormData();
+    formData.append("company_logo", logoVal);
+    formData.append("user_name", "vini");
+    formData.append("company", companyName);
+    return authService
+      .add_user_details(formData)
+      .then(() => {
+        router.push("/dashboard");
+      })
+      .catch((error) => {
+        toast.error(error, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
+  };
   const handleClickOpen = () => {
     router.push("/survey/create");
   };
@@ -103,7 +216,41 @@ export default function Index() {
           </StyledTabs>
 
           <TabPanel value={value} index={0}>
-            Item One
+            <Limiter>
+              <Grid
+                id="logoInputSection"
+                container
+                justifyContent="center"
+                flexDirection="column"
+                alignItems="center"
+                mt={3}
+                mb={3}
+              >
+                <LogoHeading>Select any png.svg or jpg file</LogoHeading>
+                <AddLogo logo={existingDetails.logo} updateLogo={updateLogo} />
+              </Grid>
+
+              <Grid id="formInputSection" container justifyContent="center">
+                <FormControl sx={{ width: "660px" }}>
+                  <LoginFormLabel>Add Company Name</LoginFormLabel>
+                  <TextField
+                    required
+                    value={existingDetails.company}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    id="company"
+                    name="company"
+                    placeholder="Your Company Name"
+                  />
+                  <InviteInput updateTeamMembers={getTeamMembers} />
+                </FormControl>
+              </Grid>
+
+              <NextSection>
+                <StyledButton type="submit" onClick={onSubmit}>
+                  Next
+                </StyledButton>
+              </NextSection>
+            </Limiter>
           </TabPanel>
           <TabPanel value={value} index={1}>
             Item Two
