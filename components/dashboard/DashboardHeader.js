@@ -75,13 +75,13 @@ export default function DashboardHeader() {
           <NavLink to="/contact" underline="hover">
             Shared with me
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to="/dashboard/settings"
             onClick={() => openLink("/dashboard/settings")}
             underline="hover"
           >
             Billing
-          </NavLink>
+          </NavLink> */}
           <NavLink
             to="/dashboard/settings"
             onClick={() => openLink("/dashboard/settings")}

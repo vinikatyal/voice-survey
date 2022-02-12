@@ -19,6 +19,7 @@ export const authService = {
   login,
   signup,
   add_user_details,
+  update_user_details,
   get_user_profile,
   get_team_members,
   get_user_logo,
@@ -71,6 +72,21 @@ function signup(email, password, mobile) {
 function add_user_details(data) {
   return fetchWrapper
     .postFormData(`${baseUrl}/add_user_profile`, data, {
+      token: getFromStorage("token"),
+    })
+    .then((res) => {
+      // publish user to subscribers and store in local storage to stay logged in between page refreshes
+      if (res.code === 200) {
+        return res;
+      } else {
+        errorHandler({}, res);
+      }
+    });
+}
+
+function update_user_details(data) {
+  return fetchWrapper
+    .postFormData(`${baseUrl}/update_user_profile`, data, {
       token: getFromStorage("token"),
     })
     .then((res) => {
