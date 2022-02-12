@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
+import { toast } from "react-toastify";
+
 import router from "next/router";
 
 import Container from "@mui/material/Container";
@@ -61,15 +63,6 @@ const TabBasic = styled(Tab)(({ theme }) => ({
     backgroundColor: "rgba(100, 95, 228, 0.32)",
   },
 }));
-
-const StyledAccordion = styled(Accordion)(() => ({
-  boxShadow: "0 2px 6px 0 rgba(113, 125, 129, 0.16)",
-  borderTop: "none",
-  border: "solid 1px #dcdcdc",
-  backgroundColor: "#fff",
-  borderRadius: "5px",
-}));
-
 const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
   marginBottom: "5px",
   marginTop: "5px",
@@ -82,6 +75,14 @@ const NextSection = styled("div")({
   justifyContent: "center",
   paddingTop: "30px",
 });
+
+const Logout = styled(Button)(({ theme }) => ({
+  borderRadius: "4px",
+  minWidth: "160px",
+  "&.MuiButtonBase-root:hover": {
+    backgroundColor: "#dfe6f5",
+  },
+}));
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -103,15 +104,15 @@ function TabPanel(props) {
 }
 
 export default function Index() {
-  const [value, setValue] = React.useState(0);
+  const [value, setVal] = React.useState(0);
   const [existingDetails, setExistingDetails] = useState({});
-  const [companyName, setCompanyName] = useState("");
-  const [members, setTeamMembers] = useState([]);
   const [logoVal, setLogo] = useState();
   const {
     register,
     handleSubmit,
     setError,
+    trigger,
+    setValue,
     formState: { errors },
   } = useForm();
 
@@ -127,6 +128,7 @@ export default function Index() {
 
       if (isSubscribed) {
         setExistingDetails(json);
+        setValue("company", json.company, { shouldDirty: true });
       }
     };
 
@@ -146,24 +148,26 @@ export default function Index() {
     setLogo(file);
   };
 
-  const onSubmit = () => {
+  const onSubmit = async (data) => {
     let formData = new FormData();
-    formData.append("company_logo", logoVal);
+
+    if (logoVal) {
+      formData.append("company_logo", logoVal);
+    }
     formData.append("user_name", existingDetails.email);
-    formData.append("company", companyName);
+    formData.append("company", data.company);
     return authService
-      .add_user_details(formData)
+      .update_user_details(formData)
       .then(() => {
-        router.push("/dashboard");
+        toast.success("Details updated successfully", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
       .catch((error) => {
         toast.error(error, {
           position: toast.POSITION.TOP_RIGHT,
         });
       });
-  };
-  const handleClickOpen = () => {
-    router.push("/survey/create");
   };
 
   const logOut = () => {
@@ -172,11 +176,7 @@ export default function Index() {
   };
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const handleChangeIndex = (index) => {
-    setValue(index);
+    setVal(newValue);
   };
 
   return (
@@ -193,57 +193,74 @@ export default function Index() {
           >
             <TabBasic label="Basic details" />
             <TabBasic label="Reset password" />
-            <TabBasic label="Billing" />
+            <TabBasic label="Account" />
           </StyledTabs>
 
           <TabPanel value={value} index={0}>
-            <Limiter>
-              <Grid
-                id="logoInputSection"
-                container
-                justifyContent="center"
-                flexDirection="column"
-                alignItems="center"
-                mt={3}
-                mb={3}
-              >
-                <LogoHeading>Select any png.svg or jpg file</LogoHeading>
-                <AddLogo logo={existingDetails.logo} updateLogo={updateLogo} />
-              </Grid>
-
-              <Grid id="formInputSection" container justifyContent="center">
-                <FormControl sx={{ width: "660px" }}>
-                  <LoginFormLabel>Add Company Name</LoginFormLabel>
-                  <TextField
-                    required
-                    value={existingDetails.company}
-                    onChange={(e) => setCompanyName(e.target.value)}
-                    id="company"
-                    name="company"
-                    placeholder="Your Company Name"
+            <Box
+              component="form"
+              noValidate
+              onSubmit={(e) => e.preventDefault()}
+            >
+              <Limiter>
+                <Grid
+                  id="logoInputSection"
+                  container
+                  justifyContent="center"
+                  flexDirection="column"
+                  alignItems="center"
+                  mt={3}
+                  mb={3}
+                >
+                  <LogoHeading>Select any png.svg or jpg file</LogoHeading>
+                  <AddLogo
+                    logo={existingDetails.logo}
+                    updateLogo={updateLogo}
                   />
-                  <InviteInput updateTeamMembers={() => {}} />
-                </FormControl>
-              </Grid>
+                </Grid>
 
-              <NextSection>
-                <StyledButton type="submit" onClick={onSubmit}>
-                  Save
-                </StyledButton>
-              </NextSection>
+                <Grid id="formInputSection" container justifyContent="center">
+                  <FormControl sx={{ width: "660px" }}>
+                    <LoginFormLabel>Add Company Name</LoginFormLabel>
+                    <TextField
+                      required
+                      {...register("company", {
+                        required: true,
+                        onChange: async (e) => {
+                          await trigger("company");
+                        },
+                      })}
+                      id="company"
+                      name="company"
+                      placeholder="Your Company Name"
+                      setValue={existingDetails.company}
+                    />
+                    <InviteInput updateTeamMembers={() => {}} />
+                  </FormControl>
+                </Grid>
 
-              <NextSection>
-                <Button type="submit" onClick={logOut}>
-                  Logout
-                </Button>
-              </NextSection>
-            </Limiter>
+                <NextSection>
+                  <StyledButton type="submit" onClick={handleSubmit(onSubmit)}>
+                    Save
+                  </StyledButton>
+                </NextSection>
+              </Limiter>
+            </Box>
           </TabPanel>
-          <TabPanel value={value} index={1}>
-            Item Two
-          </TabPanel>
+          <TabPanel value={value} index={1}></TabPanel>
           <TabPanel value={value} index={2}>
-            Item Two
+            <NextSection>
+              <Logout
+                variant="contained"
+                color="secondary"
+                type="submit"
+                onClick={logOut}
+                disableElevation
+                disableRipple
+              >
+                Logout
+              </Logout>
+            </NextSection>
           </TabPanel>
         </GridContainer>
       </FullBackground>
