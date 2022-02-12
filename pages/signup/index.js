@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 
+import isEmpty from "lodash.isempty";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 
@@ -163,6 +164,7 @@ export default function Index() {
                   <TextField
                     required
                     fullWidth
+                    error={!isEmpty(errors.email)}
                     {...register("email", {
                       required: "Email is required",
                       pattern: {
@@ -187,6 +189,7 @@ export default function Index() {
                   <LoginFormLabel>Create Password</LoginFormLabel>
                   <TextField
                     fullWidth
+                    error={!isEmpty(errors.password)}
                     id="password"
                     name="password"
                     type="password"
@@ -213,6 +216,7 @@ export default function Index() {
                   <LoginFormLabel>Confirm Password</LoginFormLabel>
                   <TextField
                     fullWidth
+                    error={!isEmpty(errors.confirmpassword)}
                     id="confirmpassword"
                     name="confirmpassword"
                     type="password"
