@@ -5,7 +5,6 @@ import router from "next/router";
 
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import Link from "@mui/material/Link";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
@@ -14,13 +13,13 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import Accordion from "@mui/material/Accordion";
+import Button from "@mui/material/Button";
 
 import DashboardHeader from "../../components/dashboard/DashboardHeader";
 import Limiter from "../../components/Limiter";
 import AddLogo from "../../components/AddLogo";
 import InviteInput from "../../components/InviteInput";
 import StyledButton from "../../components/StyledButton";
-
 
 // styles
 import styled from "@emotion/styled";
@@ -35,7 +34,6 @@ const LogoHeading = styled(Typography)({
   fontSize: "16px",
   fontWeight: "500",
 });
-
 
 const GridContainer = styled(Grid)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -72,7 +70,6 @@ const StyledAccordion = styled(Accordion)(() => ({
   borderRadius: "5px",
 }));
 
-
 const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
   marginBottom: "5px",
   marginTop: "5px",
@@ -85,7 +82,6 @@ const NextSection = styled("div")({
   justifyContent: "center",
   paddingTop: "30px",
 });
-
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -142,24 +138,9 @@ export default function Index() {
           position: toast.POSITION.TOP_RIGHT,
         });
       });
-    getTeamMembers();
 
     return () => (isSubscribed = false);
   }, []);
-
-  const getTeamMembers = () => {
-    authService
-      .get_team_members()
-      .then((res) => {
-        setTeamMembers(res.data);
-      })
-      .catch((error) => {
-        toast.error(error, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-        setError("apiError", { message: error });
-      });
-  };
 
   const updateLogo = (file) => {
     setLogo(file);
@@ -168,7 +149,7 @@ export default function Index() {
   const onSubmit = () => {
     let formData = new FormData();
     formData.append("company_logo", logoVal);
-    formData.append("user_name", "vini");
+    formData.append("user_name", existingDetails.email);
     formData.append("company", companyName);
     return authService
       .add_user_details(formData)
@@ -241,14 +222,20 @@ export default function Index() {
                     name="company"
                     placeholder="Your Company Name"
                   />
-                  <InviteInput updateTeamMembers={getTeamMembers} />
+                  <InviteInput updateTeamMembers={() => {}} />
                 </FormControl>
               </Grid>
 
               <NextSection>
                 <StyledButton type="submit" onClick={onSubmit}>
-                  Next
+                  Save
                 </StyledButton>
+              </NextSection>
+
+              <NextSection>
+                <Button type="submit" onClick={logOut}>
+                  Logout
+                </Button>
               </NextSection>
             </Limiter>
           </TabPanel>
