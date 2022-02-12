@@ -28,6 +28,7 @@ const QuestionAccordionSummary = styled("div")(() => ({
   display: "flex",
   width: "100%",
   justifyContent: "space-between",
+  alignItems: "center"
 }));
 
 const Label = styled("span")({
@@ -112,6 +113,12 @@ export default function SurveyQuestion({
                 {!expanded ? questionValue : ""}
               </Typography>
             </StyledQuestionHead>
+            <FormGroup marginRight={10}>
+              <FormControlLabel
+                control={<Checkbox defaultChecked />}
+                label="Required"
+              />
+            </FormGroup>
             <DeleteIcon
               onClick={() => deleteQuestion(id)}
               sx={{ color: "#9a9cb5" }}
@@ -153,12 +160,6 @@ export default function SurveyQuestion({
                   <TextField {...params} placeholder="Select one" />
                 )}
               />
-              <FormGroup>
-                <FormControlLabel
-                  control={<Checkbox defaultChecked />}
-                  label="Required"
-                />
-              </FormGroup>
             </AnswerSection>
           </QuestionAccordionBody>
         </AccordionDetails>

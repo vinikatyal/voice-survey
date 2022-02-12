@@ -5,6 +5,7 @@ import ThemeContext from "../../context/ThemeContext";
 import { ThemeValues } from "../../context/ThemeContext";
 
 import Layout from "../../components/Layout";
+import DateField from "../../components/questions/DateField";
 
 export default function Index() {
   const { theme } = React.useContext(ThemeContext);
@@ -21,7 +22,13 @@ export default function Index() {
       <Head>
         <style>{bg}</style>
       </Head>
-      <Layout variant={theme}>My theme demo</Layout>
+      <Layout variant={theme}>
+        <DateField
+          _id="dateField"
+          placeholder={"Enter Date"}
+          title={"What is your date of birth"}
+        ></DateField>
+      </Layout>
     </>
   );
 }
