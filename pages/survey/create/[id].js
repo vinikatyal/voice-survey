@@ -7,6 +7,7 @@ import SurveyQuestionSection from "../../../components/survey/SurveyQuestionSect
 import SurveyThemeSection from "../../../components/survey/SurveyThemeSection";
 
 import { useRouter } from "next/router";
+import { useSurvey } from "../../../components/survey/SurveyState.js";
 
 export async function getStaticPaths() {
   const paths = [{ params: { id: "questions" } }, { params: { id: "themes" } }];
@@ -20,7 +21,6 @@ export async function getStaticProps({ params }) {
   const props = {};
   params.id === "questions" && (props["currentTab"] = "questions");
   params.id === "themes" && (props["currentTab"] = "themes");
-  console.log(params)
   return {
     props,
   };
@@ -28,6 +28,8 @@ export async function getStaticProps({ params }) {
 
 export default function create({ currentTab }) {
   const router = useRouter();
+  const survey = useSurvey();
+  console.log(survey);
   const handleChangeTab = (currentTab) => {
     router.push(`/survey/create/${currentTab}`);
   };

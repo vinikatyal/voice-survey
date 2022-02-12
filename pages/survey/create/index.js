@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 
+import isEmpty from "lodash.isempty";
 import { useForm } from "react-hook-form";
 import Select from "react-select";
 
@@ -27,6 +28,10 @@ import { surveyService } from "../../../services/survey.service";
 import { authService } from "../../../services/auth.service";
 
 import styled from "@emotion/styled";
+import {
+  useDispatchSurvey,
+  useSurvey,
+} from "../../../components/survey/SurveyState";
 const GridContainer = styled(Grid)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
@@ -76,7 +81,7 @@ const QuestionNumber = styled("div")({
   marginTop: "16px",
 });
 
-const ErrorLabel = styled("p")({
+const ErrorLabel = styled("div")({
   color: "red",
 });
 
@@ -145,12 +150,23 @@ export default function Create() {
     handleSubmit,
     watch,
     setError,
+    trigger,
+    setValue,
     formState: { errors },
   } = useForm();
   const [selectedValue, setSelectedValue] = useState("CSAT");
   const [accessEmails, setAccessEmails] = useState([]);
 
   const router = useRouter();
+
+  const survey = useSurvey();
+  const dispatch = useDispatchSurvey();
+
+  useEffect(() => {
+    setValue("survey_title", survey.surveyTitle, {
+      shouldDirty: true,
+    });
+  }, [survey.surveyTitle]);
 
   useEffect(() => {
     getTeamMembers();
@@ -202,14 +218,23 @@ export default function Create() {
             <TextField
               required
               fullWidth
+              error={!isEmpty(errors.survey_title)}
               id="survey_title"
               name="survey_title"
               {...register("survey_title", {
                 required: "Survey Name is required",
+                onChange: async (e) => {
+                  await trigger("survey_title");
+                },
               })}
               placeholder="Please name your survey"
+              onInput={(e) =>
+                dispatch({ type: "TITLE", value: e.target.value })
+              }
             />
-            {errors.title && <ErrorLabel>{errors.title.message}</ErrorLabel>}
+            {errors.survey_title && (
+              <ErrorLabel>{errors.survey_title.message}</ErrorLabel>
+            )}
           </CustomFormControl>
           <CustomFormControl fullWidth>
             <FormLabel>Who has access</FormLabel>
