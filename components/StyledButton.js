@@ -20,7 +20,7 @@ const PrimaryButton = styled(Button)(
 
 export default function StyledButton(props) {
   return (
-    <PrimaryButton variant="contained" {...props}>
+    <PrimaryButton variant="contained" disableElevation {...props}>
       {props.children}
     </PrimaryButton>
   );
