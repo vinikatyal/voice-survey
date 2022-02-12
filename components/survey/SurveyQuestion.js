@@ -7,10 +7,12 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 
 // icons
 import DeleteIcon from "@mui/icons-material/Delete";
-import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 
 import styled from "@emotion/styled";
 
@@ -86,7 +88,6 @@ export default function SurveyQuestion({
     { id: 4, label: "Phone number", value: "phone" },
     { id: 5, label: "Date picker", value: "date" },
     { id: 6, label: "Voice", value: "voice" },
-    { id: 7, label: "Datepicker", value: "date" },
   ];
 
   return (
@@ -152,12 +153,12 @@ export default function SurveyQuestion({
                   <TextField {...params} placeholder="Select one" />
                 )}
               />
-              <AddImage>
-                <InsertPhotoIcon sx={{ color: "#0a23fb" }} />
-                <Typography ml={1} color="#0a23fb">
-                  Add Image
-                </Typography>
-              </AddImage>
+              <FormGroup>
+                <FormControlLabel
+                  control={<Checkbox defaultChecked />}
+                  label="Required"
+                />
+              </FormGroup>
             </AnswerSection>
           </QuestionAccordionBody>
         </AccordionDetails>
