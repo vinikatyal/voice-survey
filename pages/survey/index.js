@@ -4,8 +4,10 @@ import Head from "next/head";
 import ThemeContext from "../../context/ThemeContext";
 import { ThemeValues } from "../../context/ThemeContext";
 
-import Layout from "../../components/Layout";
+import SurveyFinalLayout from "../../components/SurveyFinalLayout";
 import DateField from "../../components/questions/DateField";
+import EmailTextField from "../../components/questions/EmailTextField";
+import SingleLineTextField from "../../components/questions/SingleLineTextfield";
 
 export default function Index() {
   const { theme } = React.useContext(ThemeContext);
@@ -22,13 +24,18 @@ export default function Index() {
       <Head>
         <style>{bg}</style>
       </Head>
-      <Layout variant={theme}>
+      <SurveyFinalLayout variant={theme}>
+        <SingleLineTextField
+          _id="dateField"
+          placeholder={"Enter Name"}
+          title={"What is your Name"}
+        ></SingleLineTextField>
         <DateField
           _id="dateField"
           placeholder={"Enter Date"}
           title={"What is your date of birth"}
         ></DateField>
-      </Layout>
+      </SurveyFinalLayout>
     </>
   );
 }
