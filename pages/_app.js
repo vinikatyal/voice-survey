@@ -12,6 +12,7 @@ import theme from "../src/theme";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { authService } from "../services/auth.service";
+import { SurveyProvider } from "../components/survey/SurveyState";
 
 export default function MyApp(props) {
   const router = useRouter();
@@ -58,9 +59,11 @@ export default function MyApp(props) {
       </Head>
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-        <CssBaseline />
-        {authorized && <Component {...pageProps} />}
-        <ToastContainer />
+        <SurveyProvider>
+          <CssBaseline />
+          {authorized && <Component {...pageProps} />}
+          <ToastContainer />
+        </SurveyProvider>
       </ThemeProvider>
     </>
   );

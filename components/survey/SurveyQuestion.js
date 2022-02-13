@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+
+import produce from "immer";
+import isEmpty from "lodash.isempty";
 
 // UI
 import Accordion from "@mui/material/Accordion";
@@ -15,6 +18,10 @@ import Checkbox from "@mui/material/Checkbox";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import styled from "@emotion/styled";
+
+// State Manager
+import { useDispatchSurvey, useSurvey } from "./SurveyState";
+import { useForm } from "react-hook-form";
 
 // styled components
 
@@ -70,17 +77,18 @@ const AddImage = styled("div")(() => ({
 export default function SurveyQuestion({
   id,
   questionNumber,
+  question,
+  answerTypeId,
   expandStatus,
   handleExpanded,
   deleteQuestion,
 }) {
-  const [expanded, setExpanded] = useState(true);
-  const [answer, setAnswer] = useState("");
-  const [questionValue, setQuestionValue] = useState("");
-
-  useEffect(() => {
-    setExpanded(expandStatus);
-  }, [expandStatus]);
+  const {
+    register,
+    trigger,
+    setValue,
+    formState: { errors },
+  } = useForm();
 
   const answersList = [
     { id: 1, label: "Textfield", value: "text" },
@@ -90,27 +98,55 @@ export default function SurveyQuestion({
     { id: 5, label: "Date picker", value: "date" },
     { id: 6, label: "Voice", value: "voice" },
   ];
+  const survey = useSurvey();
+  const dispatch = useDispatchSurvey();
+
+  useEffect(() => {
+    setValue("question", question, {
+      shouldDirty: true,
+    });
+  }, [question]);
+
+  const handleInputChange = (e) => {
+    const next = produce(survey.questions, (draft) => {
+      const question = draft.find((question) => question.id === id);
+      question.question = e.target.value;
+    });
+    dispatch({ type: "QUESTIONS", value: next });
+  };
+
+  const handleAnswerTypeChange = (_, value) => {
+    const next = produce(survey.questions, (draft) => {
+      const question = draft.find((question) => question.id === id);
+      question.answerTypeId = value.id;
+    });
+    dispatch({ type: "QUESTIONS", value: next });
+  };
 
   return (
     <>
-      <QuestionAccordion expanded={expanded} square>
+      <QuestionAccordion expanded={expandStatus} square>
         <AccordionSummary
           sx={{ borderBottom: "solid 1px #dcdcdc" }}
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
           <QuestionAccordionSummary>
-            <StyledQuestionHead onClick={() => handleExpanded(id, !expanded)}>
+            <StyledQuestionHead
+              onClick={() => handleExpanded(id, !expandStatus)}
+            >
               <Typography
                 variant="subtitle2"
                 color="#0a23fb"
                 fontSize="18px"
                 fontWeight="600"
               >
-                {expanded ? `Question ${questionNumber}` : `Q${questionNumber}`}
+                {expandStatus
+                  ? `Question ${questionNumber}`
+                  : `Q${questionNumber}`}
               </Typography>
               <Typography color="#707070" ml={2}>
-                {!expanded ? questionValue : ""}
+                {!expandStatus ? question : ""}
               </Typography>
             </StyledQuestionHead>
             <FormGroup marginRight={10}>
@@ -133,33 +169,49 @@ export default function SurveyQuestion({
               <TextField
                 multiline={true}
                 minRows={3}
+                error={!isEmpty(errors.question)}
+                {...register("question", {
+                  required: "You need to specify question",
+                  onChange: async () => {
+                    await trigger("question");
+                  },
+                })}
                 id="outlined-basic"
                 placeholder="Enter your welcome text here"
                 fullWidth
-                value={questionValue}
-                onInput={(e) => setQuestionValue(e.target.value)}
-                variant="filled"
+                onInput={handleInputChange}
+                variant="outlined"
                 sx={{ backgroundColor: "#f7f7f7" }}
-                InputProps={{
-                  disableUnderline: true,
-                }}
+                // InputProps={{
+                //   disableUnderline: true,
+                // }}
               />
+              {errors.question && (
+                <Typography color="red">{errors.question.message}</Typography>
+              )}
             </QuestionSection>
             <AnswerSection>
               <Label>Short Answer</Label>
               <Autocomplete
+                {...register("answer_type")}
                 disablePortal
                 disableClearable
                 fullWidth
                 id="combo-box-demo"
+                value={answersList.filter((obj) => obj.id === answerTypeId)[0]}
                 options={answersList}
-                value={answer}
-                onChange={(event, value) => setAnswer(value)}
+                onChange={handleAnswerTypeChange}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 renderInput={(params) => (
                   <TextField {...params} placeholder="Select one" />
                 )}
               />
+              {/* <AddImage>
+                <InsertPhotoIcon sx={{ color: "#0a23fb" }} />
+                <Typography ml={1} color="#0a23fb">
+                  Add Image
+                </Typography>
+              </AddImage> */}
             </AnswerSection>
           </QuestionAccordionBody>
         </AccordionDetails>
