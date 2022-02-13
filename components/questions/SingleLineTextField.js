@@ -5,14 +5,13 @@ import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 import TextField from "@mui/material/TextField";
 
-
 const QuestionTextField = styled(TextField)(({}) => ({}));
 
 const QuestionDiv = styled("div")(({}) => ({}));
 
 const QuestionHeader = styled("h2")(({}) => ({
-    fontSize: "28px",
-    color: "#00063e"
+  fontSize: "28px",
+  color: "#00063e",
 }));
 
 function SingleLineTextField({ title, placeholder, _id }) {
