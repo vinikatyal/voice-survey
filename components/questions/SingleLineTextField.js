@@ -14,13 +14,18 @@ const QuestionHeader = styled("h2")(({}) => ({
   color: "#00063e",
 }));
 
-function SingleLineTextField({ title, placeholder, _id }) {
+function SingleLineTextField({
+  title,
+  placeholder = "Please enter your response",
+  _id,
+}) {
   return (
     <QuestionDiv>
       <QuestionHeader>{title}</QuestionHeader>
       <QuestionTextField
         placeholder={placeholder}
         name={_id}
+        id={_id}
       ></QuestionTextField>
     </QuestionDiv>
   );

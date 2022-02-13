@@ -10,15 +10,15 @@ const QuestionTextField = styled(TextField)(({}) => ({}));
 const QuestionDiv = styled("div")(({}) => ({}));
 
 const QuestionHeader = styled("h2")(({}) => ({
-    fontSize: "28px",
-    color: "#00063e"
+  fontSize: "28px",
+  color: "#00063e",
 }));
 
-function DateField({ title, placeholder, _id }) {
+function DateField({ title, _id }) {
   return (
     <QuestionDiv>
       <QuestionHeader>{title}</QuestionHeader>
-      <TextField id={_id} placeholder={placeholder} type="date" />
+      <TextField id={_id} name={_id} type="date" />
     </QuestionDiv>
   );
 }
