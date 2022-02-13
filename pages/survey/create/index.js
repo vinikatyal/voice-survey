@@ -29,10 +29,7 @@ import { surveyService } from "../../../services/survey.service";
 import { authService } from "../../../services/auth.service";
 
 import styled from "@emotion/styled";
-import {
-  useDispatchSurvey,
-  useSurvey,
-} from "../../../components/survey/SurveyState";
+import { useDispatchSurvey, useSurvey } from "../../../context/SurveyState";
 const GridContainer = styled(Grid)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
@@ -170,7 +167,7 @@ export default function Create() {
   }, [survey.surveyTitle]);
 
   useEffect(() => {
-    dispatch({ type: "TYPE", value: selectedValue });
+    dispatch({ type: "SET_TYPE", value: selectedValue });
   }, [selectedValue]);
 
   useEffect(() => {
@@ -200,7 +197,7 @@ export default function Create() {
       .create_survey(surveyData)
       .then(() => {
         // get return url from query parameters or default to '/'
-        router.push("/survey/create/questions");
+        router.push("/survey/create/questions", undefined, { shallow: true });
       })
       .catch((error) => {
         toast.error(error.message, {
@@ -235,7 +232,7 @@ export default function Create() {
               })}
               placeholder="Please name your survey"
               onInput={(e) =>
-                dispatch({ type: "TITLE", value: e.target.value })
+                dispatch({ type: "SET_TITLE", value: e.target.value })
               }
             />
             {errors.survey_title && (
@@ -254,7 +251,9 @@ export default function Create() {
               isMulti
               value={survey.accessMembers}
               options={accessEmails}
-              onChange={(value) => dispatch({ type: "MEMBERS", value: value })}
+              onChange={(value) =>
+                dispatch({ type: "SET_MEMBERS", value: value })
+              }
             />
           </CustomFormControl>
           <GridContainer container spacing={5}>

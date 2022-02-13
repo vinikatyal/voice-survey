@@ -9,10 +9,7 @@ import SurveyThemeSection from "../../../components/survey/SurveyThemeSection";
 import { useRouter } from "next/router";
 
 // State Manager
-import {
-  useDispatchSurvey,
-  useSurvey,
-} from "../../../components/survey/SurveyState.js";
+import { useDispatchSurvey, useSurvey } from "../../../context/SurveyState.js";
 
 export async function getStaticPaths() {
   const paths = [{ params: { id: "questions" } }, { params: { id: "themes" } }];
@@ -54,14 +51,19 @@ export default function create({ currentTab, questionTypes }) {
   }, [survey.surveyTitle]);
 
   useEffect(() => {
-    const modifiedArr =
-      questionTypes[survey.surveyType] &&
-      questionTypes[survey.surveyType].map((obj, index) => {
-        return index === 0
-          ? { ...obj, expandStatus: true }
-          : { ...obj, expandStatus: false };
-      });
-    modifiedArr && dispatch({ type: "QUESTIONS", value: modifiedArr });
+    if (survey.previousQuestionType !== survey.surveyType) {
+      if (questionTypes) {
+        const modifiedArr =
+          questionTypes[survey.surveyType] &&
+          questionTypes[survey.surveyType].map((obj, index) => {
+            return index === 0
+              ? { ...obj, expandStatus: true, required: false }
+              : { ...obj, expandStatus: false, required: false };
+          });
+        modifiedArr && dispatch({ type: "SET_QUESTIONS", value: modifiedArr });
+        dispatch({ type: "SET_PREV_QUESTIONTYPE", value: survey.surveyType });
+      }
+    }
   }, [survey.surveyType]);
 
   const handleChangeTab = (currentTab) => {
