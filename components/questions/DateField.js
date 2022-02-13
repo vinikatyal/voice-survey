@@ -5,6 +5,10 @@ import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
 const QuestionTextField = styled(TextField)(({}) => ({}));
 
@@ -18,8 +22,14 @@ function DateField({ title, placeholder, _id }) {
         id={_id}
         placeholder={placeholder}
         type="date"
-        InputLabelProps={{
-          shrink: true,
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position={"end"}>
+              <IconButton type="submit" sx={{ p: "10px" }} aria-label="search">
+                <CalendarTodayIcon />
+              </IconButton>
+            </InputAdornment>
+          ),
         }}
       />
     </QuestionDiv>
