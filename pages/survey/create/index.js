@@ -3,8 +3,10 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 
+import isEmpty from "lodash.isempty";
 import { useForm } from "react-hook-form";
 import Select from "react-select";
+import { toast } from "react-toastify";
 
 // material components
 import Container from "@mui/material/Container";
@@ -27,6 +29,10 @@ import { surveyService } from "../../../services/survey.service";
 import { authService } from "../../../services/auth.service";
 
 import styled from "@emotion/styled";
+import {
+  useDispatchSurvey,
+  useSurvey,
+} from "../../../components/survey/SurveyState";
 const GridContainer = styled(Grid)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
@@ -76,7 +82,7 @@ const QuestionNumber = styled("div")({
   marginTop: "16px",
 });
 
-const ErrorLabel = styled("p")({
+const ErrorLabel = styled("div")({
   color: "red",
 });
 
@@ -143,14 +149,29 @@ export default function Create() {
   const {
     register,
     handleSubmit,
-    watch,
-    setError,
+    trigger,
+    setValue,
     formState: { errors },
   } = useForm();
-  const [selectedValue, setSelectedValue] = useState("CSAT");
+  const survey = useSurvey();
+  const dispatch = useDispatchSurvey();
+
+  const [selectedValue, setSelectedValue] = useState(
+    survey.surveyType || "CSAT"
+  );
   const [accessEmails, setAccessEmails] = useState([]);
 
   const router = useRouter();
+
+  useEffect(() => {
+    setValue("survey_title", survey.surveyTitle, {
+      shouldDirty: true,
+    });
+  }, [survey.surveyTitle]);
+
+  useEffect(() => {
+    dispatch({ type: "TYPE", value: selectedValue });
+  }, [selectedValue]);
 
   useEffect(() => {
     getTeamMembers();
@@ -164,7 +185,9 @@ export default function Create() {
         setAccessEmails(emails);
       })
       .catch((error) => {
-        setError("apiError", { message: error });
+        toast.error(error.message, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       });
   };
   const onSubmit = async (data) => {
@@ -177,11 +200,12 @@ export default function Create() {
       .create_survey(surveyData)
       .then(() => {
         // get return url from query parameters or default to '/'
-
         router.push("/survey/create/questions");
       })
       .catch((error) => {
-        setError("apiError", { message: error });
+        toast.error(error.message, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       });
   };
 
@@ -195,21 +219,28 @@ export default function Create() {
           component="form"
           noValidate
           onSubmit={(e) => e.preventDefault()}
-          fullWidth
         >
           <CustomFormControl fullWidth>
             <FormLabel>Survey Title</FormLabel>
             <TextField
               required
-              fullWidth
+              error={!isEmpty(errors.survey_title)}
               id="survey_title"
               name="survey_title"
               {...register("survey_title", {
                 required: "Survey Name is required",
+                onChange: async (e) => {
+                  await trigger("survey_title");
+                },
               })}
               placeholder="Please name your survey"
+              onInput={(e) =>
+                dispatch({ type: "TITLE", value: e.target.value })
+              }
             />
-            {errors.title && <ErrorLabel>{errors.title.message}</ErrorLabel>}
+            {errors.survey_title && (
+              <ErrorLabel>{errors.survey_title.message}</ErrorLabel>
+            )}
           </CustomFormControl>
           <CustomFormControl fullWidth>
             <FormLabel>Who has access</FormLabel>
@@ -221,7 +252,9 @@ export default function Create() {
                 }),
               }}
               isMulti
+              value={survey.accessMembers}
               options={accessEmails}
+              onChange={(value) => dispatch({ type: "MEMBERS", value: value })}
             />
           </CustomFormControl>
           <GridContainer container spacing={5}>
