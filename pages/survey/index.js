@@ -1,5 +1,4 @@
 import * as React from "react";
-import Head from "next/head";
 
 import ThemeContext from "../../context/ThemeContext";
 import { ThemeValues } from "../../context/ThemeContext";
@@ -18,6 +17,7 @@ const FullBackgroundSurvey = styled("div")(({ bgColor }) => ({
   justifyContent: "center",
   alignItems: "center",
   height: "100vh",
+  textAlign: "center"
 }));
 
 export default function Index() {

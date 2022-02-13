@@ -4,34 +4,21 @@ import PropTypes from "prop-types";
 
 import styled from "@emotion/styled";
 import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import InputAdornment from "@mui/material/InputAdornment";
-import IconButton from "@mui/material/IconButton";
-
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
 const QuestionTextField = styled(TextField)(({}) => ({}));
 
 const QuestionDiv = styled("div")(({}) => ({}));
 
+const QuestionHeader = styled("h2")(({}) => ({
+    fontSize: "28px",
+    color: "#00063e"
+}));
+
 function DateField({ title, placeholder, _id }) {
   return (
     <QuestionDiv>
-      <Typography component="h4">{title}</Typography>
-      <TextField
-        id={_id}
-        placeholder={placeholder}
-        type="date"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position={"end"}>
-              <IconButton type="submit" sx={{ p: "10px" }} aria-label="search">
-                <CalendarTodayIcon />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
+      <QuestionHeader>{title}</QuestionHeader>
+      <TextField id={_id} placeholder={placeholder} type="date" />
     </QuestionDiv>
   );
 }

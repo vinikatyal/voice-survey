@@ -16,6 +16,9 @@ const theme = createTheme({
   typography: {
     fontFamily: "Poppins",
     fontSize: 14,
+    h2: {
+      color: "#00063e",
+    },
     h4: {
       fontSize: 21,
       fontWeight: 600,
