@@ -15,6 +15,7 @@ export const surveyService = {
     return tokenSubject.value;
   },
   create_survey,
+  get_survey_template_metadata,
   get_survey_template_data,
   getAll,
 };
@@ -35,6 +36,20 @@ function create_survey(data) {
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
 
+      if (res.code === 200) {
+        return res;
+      } else {
+        return {};
+      }
+    });
+}
+
+function get_survey_template_metadata() {
+  return fetchWrapper
+    .get(`${baseUrl}/get_survey_template_metadata`, {
+      token: tokenSubject.value,
+    })
+    .then((res) => {
       if (res.code === 200) {
         return res;
       } else {

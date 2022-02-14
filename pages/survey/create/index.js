@@ -29,10 +29,7 @@ import { surveyService } from "../../../services/survey.service";
 import { authService } from "../../../services/auth.service";
 
 import styled from "@emotion/styled";
-import {
-  useDispatchSurvey,
-  useSurvey,
-} from "../../../components/survey/SurveyState";
+import { useDispatchSurvey, useSurvey } from "../../../context/SurveyState";
 const GridContainer = styled(Grid)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
@@ -160,6 +157,7 @@ export default function Create() {
     survey.surveyType || "csat"
   );
   const [accessEmails, setAccessEmails] = useState([]);
+  const [questionTypes, setQuestionTypes] = useState([]);
 
   const router = useRouter();
 
@@ -170,12 +168,31 @@ export default function Create() {
   }, [survey.surveyTitle]);
 
   useEffect(() => {
-    dispatch({ type: "TYPE", value: selectedValue });
+    dispatch({ type: "SET_TYPE", value: selectedValue });
   }, [selectedValue]);
 
   useEffect(() => {
     getTeamMembers();
+    getSurveyTypes();
   }, []);
+
+  const getSurveyTypes = () => {
+    surveyService
+      .get_survey_template_metadata()
+      .then((res) => {
+        const surveyTypes = res.data.map((survey) => ({
+          name: survey.name,
+          title: survey.name.split("_").map(capitalize).join(" "),
+          description: survey.description,
+        }));
+        setQuestionTypes(surveyTypes);
+      })
+      .catch((error) => {
+        toast.error(error.message, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
+  };
 
   const getTeamMembers = () => {
     authService
@@ -190,23 +207,29 @@ export default function Create() {
         });
       });
   };
+
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
   const onSubmit = async (data) => {
     const surveyData = {
       survey_type: selectedValue,
       access_list_emails: "",
       ...data,
     };
-    return surveyService
-      .create_survey(surveyData)
-      .then(() => {
-        // get return url from query parameters or default to '/'
-        router.push("/survey/create/questions");
-      })
-      .catch((error) => {
-        toast.error(error.message, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-      });
+    router.push("/survey/create/questions", undefined, { shallow: true });
+    // return surveyService
+    //   .create_survey(surveyData)
+    //   .then(() => {
+    //     // get return url from query parameters or default to '/'
+    //     router.push("/survey/create/questions", undefined, { shallow: true });
+    //   })
+    //   .catch((error) => {
+    //     toast.error(error.message, {
+    //       position: toast.POSITION.TOP_RIGHT,
+    //     });
+    //   });
   };
 
   const handleChange = (event) => {
@@ -235,7 +258,7 @@ export default function Create() {
               })}
               placeholder="Please name your survey"
               onInput={(e) =>
-                dispatch({ type: "TITLE", value: e.target.value })
+                dispatch({ type: "SET_TITLE", value: e.target.value })
               }
             />
             {errors.survey_title && (
@@ -254,46 +277,55 @@ export default function Create() {
               isMulti
               value={survey.accessMembers}
               options={accessEmails}
-              onChange={(value) => dispatch({ type: "MEMBERS", value: value })}
+              onChange={(value) =>
+                dispatch({ type: "SET_MEMBERS", value: value })
+              }
             />
           </CustomFormControl>
           <GridContainer container spacing={5}>
-            {surveyTypes.map((survey, index) => (
-              <Grid key={index} item md={4}>
-                <Card variant="outlined">
-                  <CardMedia>
-                    <div
-                      style={{
-                        position: "relative",
-                        width: "100%",
-                        height: "90px",
-                      }}
-                    >
-                      <Image src={survey.img} layout="fill" objectFit="cover" />
-                    </div>
-                  </CardMedia>
-                  <CardContent>
-                    <CardTitle>
-                      <CardHead>
-                        <Title>{survey.title}</Title>
-                        <RadioButtonSection>
-                          <Radio
-                            name="survey_type"
-                            onChange={handleChange}
-                            value={survey.name}
-                            checked={selectedValue === survey.name}
-                          />
-                        </RadioButtonSection>
-                      </CardHead>
-                    </CardTitle>
-                    <Typography variant="body2">
-                      {survey.description}
-                    </Typography>
-                    <QuestionNumber>{survey.qNo} questions</QuestionNumber>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
+            {questionTypes &&
+              questionTypes.map((survey, index) => (
+                <Grid key={index} item md={4}>
+                  <Card variant="outlined">
+                    <CardMedia>
+                      <div
+                        style={{
+                          position: "relative",
+                          width: "100%",
+                          height: "90px",
+                        }}
+                      >
+                        <Image
+                          src={"/survey/" + survey.name + ".png"}
+                          layout="fill"
+                          objectFit="cover"
+                        />
+                      </div>
+                    </CardMedia>
+                    <CardContent>
+                      <CardTitle>
+                        <CardHead>
+                          <Title>{survey.title}</Title>
+                          <RadioButtonSection>
+                            <Radio
+                              name="survey_type"
+                              onChange={handleChange}
+                              value={survey.name}
+                              checked={selectedValue === survey.name}
+                            />
+                          </RadioButtonSection>
+                        </CardHead>
+                      </CardTitle>
+                      <Typography variant="body2">
+                        {survey.description}
+                      </Typography>
+                      {survey.qNo && (
+                        <QuestionNumber>{survey.qNo} questions</QuestionNumber>
+                      )}
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
           </GridContainer>
           <ButtonContainer>
             <StyledButton

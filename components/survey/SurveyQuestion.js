@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 
 import produce from "immer";
 import isEmpty from "lodash.isempty";
+import debounce from "lodash.debounce";
 
 // UI
 import Accordion from "@mui/material/Accordion";
@@ -10,6 +11,9 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 
 // icons
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -18,7 +22,7 @@ import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import styled from "@emotion/styled";
 
 // State Manager
-import { useDispatchSurvey, useSurvey } from "./SurveyState";
+import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
 import { useForm } from "react-hook-form";
 
 // styled components
@@ -55,6 +59,10 @@ const StyledQuestionHead = styled("div")({
   alignItems: "center",
   width: "100%",
 });
+const StyledQuestionHeadEndSlot = styled(Grid)({
+  display: "flex",
+  alignItems: "center",
+});
 
 const AnswerSection = styled("div")(() => ({
   width: "30%",
@@ -75,8 +83,9 @@ export default function SurveyQuestion({
   id,
   questionNumber,
   question,
-  answerTypeId,
+  questionType,
   expandStatus,
+  required,
   handleExpanded,
   deleteQuestion,
 }) {
@@ -109,15 +118,27 @@ export default function SurveyQuestion({
       const question = draft.find((question) => question.qid === id);
       question.question = e.target.value;
     });
-    dispatch({ type: "QUESTIONS", value: next });
+    dispatch({ type: "SET_QUESTIONS", value: next });
   };
+
+  const debounced = debounce((e) => {
+    handleInputChange(e);
+  }, 600);
 
   const handleAnswerTypeChange = (_, value) => {
     const next = produce(survey.questions, (draft) => {
       const question = draft.find((question) => question.qid === id);
       question.question_type = value.value;
     });
-    dispatch({ type: "QUESTIONS", value: next });
+    dispatch({ type: "SET_QUESTIONS", value: next });
+  };
+
+  const handleRequired = (e) => {
+    const next = produce(survey.questions, (draft) => {
+      const question = draft.find((question) => question.qid === id);
+      question.required = e.target.checked;
+    });
+    dispatch({ type: "SET_QUESTIONS", value: next });
   };
 
   return (
@@ -146,10 +167,18 @@ export default function SurveyQuestion({
                 {!expandStatus ? question : ""}
               </Typography>
             </StyledQuestionHead>
-            <DeleteIcon
-              onClick={() => deleteQuestion(id)}
-              sx={{ color: "#9a9cb5" }}
-            />
+            <StyledQuestionHeadEndSlot>
+              <FormControlLabel
+                control={
+                  <Checkbox checked={required} onClick={handleRequired} />
+                }
+                label="Required"
+              />
+              <DeleteIcon
+                onClick={() => deleteQuestion(id)}
+                sx={{ color: "#9a9cb5" }}
+              />
+            </StyledQuestionHeadEndSlot>
           </QuestionAccordionSummary>
         </AccordionSummary>
 
@@ -170,7 +199,7 @@ export default function SurveyQuestion({
                 id="outlined-basic"
                 placeholder="Enter your welcome text here"
                 fullWidth
-                onInput={handleInputChange}
+                onInput={debounced}
                 variant="outlined"
                 sx={{ backgroundColor: "#f7f7f7" }}
               />
@@ -181,15 +210,18 @@ export default function SurveyQuestion({
             <AnswerSection>
               <Label>Short Answer</Label>
               <Autocomplete
-                {...register("answer_type")}
                 disablePortal
                 disableClearable
                 fullWidth
                 id="combo-box-demo"
-                value={answersList.filter((obj) => obj.value === answerTypeId)[0]}
+                value={
+                  answersList.filter((obj) => obj.value === questionType)[0]
+                }
                 options={answersList}
                 onChange={handleAnswerTypeChange}
-                isOptionEqualToValue={(option, value) => option.value === value.value}
+                isOptionEqualToValue={(option, value) =>
+                  option.value === value.value
+                }
                 renderInput={(params) => (
                   <TextField {...params} placeholder="Select one" />
                 )}

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import Layout from "../../../components/Layout.js";
+import Layout from "../../../components/Layout";
 import SurveyHeader from "../../../components/survey/SurveyHeader";
 import SurveyCreateTabSection from "../../../components/survey/SurveyCreateTabSection";
 import SurveyQuestionSection from "../../../components/survey/SurveyQuestionSection";
@@ -8,13 +8,10 @@ import SurveyThemeSection from "../../../components/survey/SurveyThemeSection";
 
 import { useRouter } from "next/router";
 
-// State Manager
-import {
-  useDispatchSurvey,
-  useSurvey,
-} from "../../../components/survey/SurveyState";
-
 import { surveyService } from "../../../services/survey.service";
+
+// State Manager
+import { useDispatchSurvey, useSurvey } from "../../../context/SurveyState";
 
 export async function getStaticPaths() {
   const paths = [{ params: { id: "questions" } }, { params: { id: "themes" } }];
@@ -33,21 +30,31 @@ export async function getStaticProps({ params }) {
   };
 }
 
-export default function create({ currentTab, questionTypes }) {
+export default function create({ currentTab }) {
   const router = useRouter();
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
 
-  useEffect(() => {
-    !survey.surveyTitle && router.push("/survey/create");
-  }, [survey.surveyTitle]);
-
   useEffect(async () => {
-    const res = await surveyService.get_survey_template_data({
-      survey_type: "teacher_feedback",
-    });
-    dispatch({ type: "QUESTIONS", value: res.data.questions });
-  }, []);
+    if (!survey.surveyType) {
+      router.push("/survey/create");
+      return;
+    }
+
+    if (survey.previousSurveyType !== survey.surveyType) {
+      const res = await surveyService.get_survey_template_data({
+        survey_type: survey.surveyType,
+      });
+      const modifiedArr = res.data.questions.map((obj, index) => {
+        return index === 0
+          ? { ...obj, expandStatus: true, required: false }
+          : { ...obj, expandStatus: false, required: false };
+      });
+      modifiedArr.length &&
+        dispatch({ type: "SET_QUESTIONS", value: modifiedArr });
+      dispatch({ type: "SET_PREV_SURVEYTYPE", value: survey.surveyType });
+    }
+  }, [survey.surveyType]);
 
   const handleChangeTab = (currentTab) => {
     router.push(`/survey/create/${currentTab}`);
