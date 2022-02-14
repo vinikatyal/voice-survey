@@ -12,7 +12,9 @@ import { useRouter } from "next/router";
 import {
   useDispatchSurvey,
   useSurvey,
-} from "../../../components/survey/SurveyState.js";
+} from "../../../components/survey/SurveyState";
+
+import { surveyService } from "../../../services/survey.service";
 
 export async function getStaticPaths() {
   const paths = [{ params: { id: "questions" } }, { params: { id: "themes" } }];
@@ -24,19 +26,6 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const props = {};
-  if (params.id === "questions") {
-    const questions = await fetch(
-      "https://api.jsonbin.io/b/6207aa1f1b38ee4b33b8c9d3",
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "secret-key":
-            "$2b$10$WqnXsDDorMo41yYnbkChQ.PwewUpe1CvZ0s.bfJeSWfWCgKenMgwW",
-        },
-      }
-    );
-    props["questionTypes"] = await questions.json();
-  }
   params.id === "questions" && (props["currentTab"] = "questions");
   params.id === "themes" && (props["currentTab"] = "themes");
   return {
@@ -53,16 +42,12 @@ export default function create({ currentTab, questionTypes }) {
     !survey.surveyTitle && router.push("/survey/create");
   }, [survey.surveyTitle]);
 
-  useEffect(() => {
-    const modifiedArr =
-      questionTypes[survey.surveyType] &&
-      questionTypes[survey.surveyType].map((obj, index) => {
-        return index === 0
-          ? { ...obj, expandStatus: true }
-          : { ...obj, expandStatus: false };
-      });
-    modifiedArr && dispatch({ type: "QUESTIONS", value: modifiedArr });
-  }, [survey.surveyType]);
+  useEffect(async () => {
+    const res = await surveyService.get_survey_template_data({
+      survey_type: "teacher_feedback",
+    });
+    dispatch({ type: "QUESTIONS", value: res.data.questions });
+  }, []);
 
   const handleChangeTab = (currentTab) => {
     router.push(`/survey/create/${currentTab}`);
