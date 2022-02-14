@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useRouter } from "next/router";
+
 // UI
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
@@ -35,25 +37,26 @@ const ButtonContainer = styled("div")({
   marginTop: "30px",
 });
 
-export default function SurveyThemeSection() {
-  const themes = [
-    {
-      id: "BLUE",
-      theme: theme1,
-      themeName: "Theme Blue",
-    },
-    {
-      id: "PINK",
-      theme: theme2,
-      themeName: "Theme Pink",
-    },
-    {
-      id: "YELLOW",
-      theme: theme3,
-      themeName: "Theme Orange",
-    },
-  ];
+const themes = [
+  {
+    id: "BLUE",
+    theme: theme1,
+    themeName: "Theme Blue",
+  },
+  {
+    id: "PINK",
+    theme: theme2,
+    themeName: "Theme Pink",
+  },
+  {
+    id: "YELLOW",
+    theme: theme3,
+    themeName: "Theme Orange",
+  },
+];
 
+export default function SurveyThemeSection() {
+  const router = useRouter();
   const [selectedValue, setSelectedValue] = React.useState("BLUE");
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
@@ -105,6 +108,7 @@ export default function SurveyThemeSection() {
       toast.success("Survey created successfully", {
         position: toast.POSITION.TOP_RIGHT,
       });
+      router.push("/dashboard");
     } catch (error) {
       toast.error(error.message, {
         position: toast.POSITION.TOP_RIGHT,
