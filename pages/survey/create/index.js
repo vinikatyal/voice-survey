@@ -183,6 +183,7 @@ export default function Create() {
         const surveyTypes = res.data.map((survey) => ({
           name: survey.name,
           title: survey.name.split("_").map(capitalize).join(" "),
+          description: survey.description,
         }));
         setQuestionTypes(surveyTypes);
       })
