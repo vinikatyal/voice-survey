@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import Layout from "../../../components/Layout.js";
+import Layout from "../../../components/Layout";
 import SurveyHeader from "../../../components/survey/SurveyHeader";
 import SurveyCreateTabSection from "../../../components/survey/SurveyCreateTabSection";
 import SurveyQuestionSection from "../../../components/survey/SurveyQuestionSection";
@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 import { surveyService } from "../../../services/survey.service";
 
 // State Manager
-import { useDispatchSurvey, useSurvey } from "../../../context/SurveyState.js";
+import { useDispatchSurvey, useSurvey } from "../../../context/SurveyState";
 
 export async function getStaticPaths() {
   const paths = [{ params: { id: "questions" } }, { params: { id: "themes" } }];

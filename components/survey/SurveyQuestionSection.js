@@ -112,7 +112,7 @@ export default function SurveyQuestionSection({ questions }) {
 
       <Container maxWidth="lg" sx={{ marginTop: "30px" }}>
         <Label>Add Questions</Label>
-        {questions.map((question, index) => (
+        {questions && questions.map((question, index) => (
           <SurveyQuestion
             key={question.qid}
             id={question.qid}
