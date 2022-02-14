@@ -21,19 +21,6 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const props = {};
-  if (params.id === "questions") {
-    const questions = await fetch(
-      "https://api.jsonbin.io/b/6207aa1f1b38ee4b33b8c9d3",
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "secret-key":
-            "$2b$10$WqnXsDDorMo41yYnbkChQ.PwewUpe1CvZ0s.bfJeSWfWCgKenMgwW",
-        },
-      }
-    );
-    props["questionTypes"] = await questions.json();
-  }
   params.id === "questions" && (props["currentTab"] = "questions");
   params.id === "themes" && (props["currentTab"] = "themes");
   return {

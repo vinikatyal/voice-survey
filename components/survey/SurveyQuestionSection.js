@@ -112,11 +112,11 @@ export default function SurveyQuestionSection({ questions }) {
         <Label>Add Questions</Label>
         {questions.map((question, index) => (
           <SurveyQuestion
-            key={question.id}
-            id={question.id}
+            key={question.qid}
+            id={question.qid}
             questionNumber={index + 1}
             question={question.question}
-            answerTypeId={question.answerTypeId}
+            answerTypeId={question.question_type}
             expandStatus={question.expandStatus}
             required={question.required}
             handleExpanded={handleExpanded}

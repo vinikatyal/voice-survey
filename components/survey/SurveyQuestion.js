@@ -100,9 +100,9 @@ export default function SurveyQuestion({
     { id: 1, label: "Textfield", value: "text" },
     { id: 2, label: "Description", value: "description" },
     { id: 3, label: "Email", value: "email" },
-    { id: 4, label: "Phone number", value: "phone" },
+    { id: 4, label: "Phone number", value: "contact" },
     { id: 5, label: "Date picker", value: "date" },
-    { id: 6, label: "Voice", value: "voice" },
+    { id: 6, label: "Voice", value: "audio" },
   ];
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
@@ -115,7 +115,7 @@ export default function SurveyQuestion({
 
   const handleInputChange = (e) => {
     const next = produce(survey.questions, (draft) => {
-      const question = draft.find((question) => question.id === id);
+      const question = draft.find((question) => question.qid === id);
       question.question = e.target.value;
     });
     dispatch({ type: "SET_QUESTIONS", value: next });
@@ -127,8 +127,8 @@ export default function SurveyQuestion({
 
   const handleAnswerTypeChange = (_, value) => {
     const next = produce(survey.questions, (draft) => {
-      const question = draft.find((question) => question.id === id);
-      question.answerTypeId = value.id;
+      const question = draft.find((question) => question.qid === id);
+      question.question_type = value.value;
     });
     dispatch({ type: "SET_QUESTIONS", value: next });
   };
@@ -202,9 +202,6 @@ export default function SurveyQuestion({
                 onInput={debounced}
                 variant="outlined"
                 sx={{ backgroundColor: "#f7f7f7" }}
-                // InputProps={{
-                //   disableUnderline: true,
-                // }}
               />
               {errors.question && (
                 <Typography color="red">{errors.question.message}</Typography>
@@ -218,20 +215,14 @@ export default function SurveyQuestion({
                 disableClearable
                 fullWidth
                 id="combo-box-demo"
-                value={answersList.filter((obj) => obj.id === answerTypeId)[0]}
+                value={answersList.filter((obj) => obj.value === answerTypeId)[0]}
                 options={answersList}
                 onChange={handleAnswerTypeChange}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
+                isOptionEqualToValue={(option, value) => option.value === value.value}
                 renderInput={(params) => (
                   <TextField {...params} placeholder="Select one" />
                 )}
               />
-              {/* <AddImage>
-                <InsertPhotoIcon sx={{ color: "#0a23fb" }} />
-                <Typography ml={1} color="#0a23fb">
-                  Add Image
-                </Typography>
-              </AddImage> */}
             </AnswerSection>
           </QuestionAccordionBody>
         </AccordionDetails>
