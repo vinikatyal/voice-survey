@@ -96,7 +96,7 @@ const emailOptions = [
 
 const surveyTypes = [
   {
-    name: "CSAT",
+    name: "csat",
     title: "CSAT",
     img: "/survey/csat.png",
     description:
@@ -104,7 +104,7 @@ const surveyTypes = [
     qNo: 12,
   },
   {
-    name: "TEACHER_FEEDBACK",
+    name: "teacher_feedback",
     title: "Teacher Feedback",
     img: "/survey/teachers.png",
     description:
@@ -112,7 +112,7 @@ const surveyTypes = [
     qNo: 12,
   },
   {
-    name: "PMF",
+    name: "pmf_survey",
     title: "PMF Survey",
     img: "/survey/pmf.png",
     description:
@@ -120,7 +120,7 @@ const surveyTypes = [
     qNo: 12,
   },
   {
-    name: "COURSE",
+    name: "course_feedback",
     title: "Course feedback",
     img: "/survey/course.png",
     description:
@@ -128,7 +128,7 @@ const surveyTypes = [
     qNo: 5,
   },
   {
-    name: "CUSTOMER",
+    name: "customer_feedback",
     title: "Customer feedback",
     img: "/survey/customer.png",
     description:
@@ -136,7 +136,7 @@ const surveyTypes = [
     qNo: 12,
   },
   {
-    name: "CUSTOM",
+    name: "custom",
     title: "Custom",
     img: "/survey/custom.png",
     description:
@@ -157,7 +157,7 @@ export default function Create() {
   const dispatch = useDispatchSurvey();
 
   const [selectedValue, setSelectedValue] = useState(
-    survey.surveyType || "CSAT"
+    survey.surveyType || "csat"
   );
   const [accessEmails, setAccessEmails] = useState([]);
 

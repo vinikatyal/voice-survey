@@ -91,9 +91,9 @@ export default function SurveyQuestion({
     { id: 1, label: "Textfield", value: "text" },
     { id: 2, label: "Description", value: "description" },
     { id: 3, label: "Email", value: "email" },
-    { id: 4, label: "Phone number", value: "phone" },
+    { id: 4, label: "Phone number", value: "contact" },
     { id: 5, label: "Date picker", value: "date" },
-    { id: 6, label: "Voice", value: "voice" },
+    { id: 6, label: "Voice", value: "audio" },
   ];
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
