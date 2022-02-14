@@ -85,62 +85,6 @@ const ErrorLabel = styled("div")({
 
 const CustomSelect = styled(Select)({});
 
-const emailOptions = [
-  { value: "1", label: "dfhgh@gmail.com" },
-  { value: "2", label: "1@gmail.com" },
-  { value: "3", label: "bfbnf@gmail.com" },
-];
-
-const surveyTypes = [
-  {
-    name: "csat",
-    title: "CSAT",
-    img: "/survey/csat.png",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
-    qNo: 12,
-  },
-  {
-    name: "teacher_feedback",
-    title: "Teacher Feedback",
-    img: "/survey/teachers.png",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
-    qNo: 12,
-  },
-  {
-    name: "pmf_survey",
-    title: "PMF Survey",
-    img: "/survey/pmf.png",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
-    qNo: 12,
-  },
-  {
-    name: "course_feedback",
-    title: "Course feedback",
-    img: "/survey/course.png",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
-    qNo: 5,
-  },
-  {
-    name: "customer_feedback",
-    title: "Customer feedback",
-    img: "/survey/customer.png",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
-    qNo: 12,
-  },
-  {
-    name: "custom",
-    title: "Custom",
-    img: "/survey/custom.png",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
-    qNo: 0,
-  },
-];
 
 export default function Create() {
   const {
@@ -219,17 +163,6 @@ export default function Create() {
       ...data,
     };
     router.push("/survey/create/questions", undefined, { shallow: true });
-    // return surveyService
-    //   .create_survey(surveyData)
-    //   .then(() => {
-    //     // get return url from query parameters or default to '/'
-    //     router.push("/survey/create/questions", undefined, { shallow: true });
-    //   })
-    //   .catch((error) => {
-    //     toast.error(error.message, {
-    //       position: toast.POSITION.TOP_RIGHT,
-    //     });
-    //   });
   };
 
   const handleChange = (event) => {

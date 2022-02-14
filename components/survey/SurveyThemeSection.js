@@ -7,10 +7,18 @@ import styled from "@emotion/styled";
 import AddLogo from "../AddLogo";
 import ThemeItem from "../ThemeItem";
 
+// button
+import StyledButton from "../StyledButton";
+
+import { surveyService } from "../../services/survey.service";
+
 // themes images
 import theme1 from "../../images/themes/theme1.png";
 import theme2 from "../../images/themes/theme2.png";
 import theme3 from "../../images/themes/theme3.png";
+
+// State Manager
+import { useSurvey, useDispatchSurvey } from "../../context/SurveyState";
 
 const Label = styled("span")({
   color: "#707070",
@@ -18,28 +26,74 @@ const Label = styled("span")({
   fontWeight: "500",
 });
 
+const ButtonContainer = styled(Container)({
+  display: "flex",
+  justifyContent: "flex-end",
+  alignItems: "center",
+  marginTop: "30px",
+});
+
 export default function SurveyThemeSection() {
   const themes = [
     {
+      id: "BLUE",
       theme: theme1,
       themeName: "Theme Blue",
     },
     {
+      id: "PINK",
       theme: theme2,
       themeName: "Theme Pink",
     },
     {
+      id: "YELLOW",
       theme: theme3,
       themeName: "Theme Orange",
     },
   ];
 
-  const [selectedValue, setSelectedValue] = React.useState("");
+  const [selectedValue, setSelectedValue] = React.useState("BLUE");
+  const survey = useSurvey();
+  const dispatch = useDispatchSurvey();
+
+  console.log(survey);
 
   const handleChangeSelectedValue = (themeName) => {
     selectedValue === themeName
       ? setSelectedValue("")
       : setSelectedValue(themeName);
+
+    dispatch({ type: "SET_THEME", value: themeName });
+  };
+
+  const createSurvey = () => {
+    const surveyData = {
+      survey_title: survey.surveyTitle,
+      access_list_emails: survey.accessMembers,
+      survey_type: survey.surveyType,
+      survey_theme: survey.surveyTheme,
+    };
+    return surveyService
+      .create_survey(surveyData)
+      .then(() => {
+        return surveyService
+          .add_survey_questions(survey.questions)
+          .then(() => {
+            toast.success("Survey created successfully", {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+          })
+          .catch((error) => {
+            toast.error(error.message, {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+          });
+      })
+      .catch((error) => {
+        toast.error(error.message, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
   };
 
   return (
@@ -53,7 +107,8 @@ export default function SurveyThemeSection() {
         <Grid container direction="row" justifyContent="space-between">
           {themes.map((item, index) => (
             <ThemeItem
-              key={index}
+              key={item.id}
+              id={item.id}
               theme={item.theme}
               themeName={item.themeName}
               selectedValue={selectedValue}
@@ -62,6 +117,16 @@ export default function SurveyThemeSection() {
           ))}
         </Grid>
       </Grid>
+      <ButtonContainer>
+        <StyledButton
+          type="submit"
+          onClick={createSurvey}
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+        >
+          Create Survey
+        </StyledButton>
+      </ButtonContainer>
     </Container>
   );
 }

@@ -17,22 +17,13 @@ export const surveyService = {
   create_survey,
   get_survey_template_metadata,
   get_survey_template_data,
+  add_survey_questions,
   getAll,
 };
 
 function create_survey(data) {
-  const { survey_title, access_list_emails, survey_type } = data;
-  console.log(tokenSubject);
   return fetchWrapper
-    .post(
-      `${baseUrl}/create_survey`,
-      {
-        survey_title,
-        access_list_emails,
-        survey_type,
-      },
-      { token: tokenSubject.value }
-    )
+    .post(`${baseUrl}/create_survey`, data, { token: tokenSubject.value })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
 
@@ -61,6 +52,20 @@ function get_survey_template_metadata() {
 async function get_survey_template_data(data) {
   return await fetchWrapper
     .post(`${baseUrl}/get_survey_template_data`, data, {
+      token: tokenSubject.value,
+    })
+    .then((res) => {
+      if (res.code === 200) {
+        return res;
+      } else {
+        return {};
+      }
+    });
+}
+
+async function add_survey_questions(data) {
+  return await fetchWrapper
+    .post(`${baseUrl}/add_survey_questions`, data, {
       token: tokenSubject.value,
     })
     .then((res) => {

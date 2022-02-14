@@ -11,7 +11,7 @@ export default function Index() {
   const bg =
     theme === ThemeValues.BLUE
       ? "body {background: linear-gradient(to right, #1EA798, #2D4C93)!important;}"
-      : theme === ThemeValues.RED
+      : theme === ThemeValues.PINK
       ? "body {background: linear-gradient(to right, #EC2E89, #9540E4)!important;}"
       : theme === ThemeValues.YELLOW
       ? "body {background: linear-gradient(to right, #350F69, #BA824C)!important;}"
