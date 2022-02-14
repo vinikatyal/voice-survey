@@ -105,7 +105,7 @@ export default function SurveyThemeSection() {
       toast.success("Survey created successfully", {
         position: toast.POSITION.TOP_RIGHT,
       });
-    } catch (e) {
+    } catch (error) {
       toast.error(error.message, {
         position: toast.POSITION.TOP_RIGHT,
       });
