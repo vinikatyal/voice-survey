@@ -139,11 +139,11 @@ export default function SurveyQuestionSection({ questions }) {
               required={question.required}
               handleExpanded={handleExpanded}
               deleteQuestion={deleteQuestion}
+              handleAddQuestion={handleAddQuestion}
             />
           ))}
       </Container>
       <AddQuestionSection maxWidth="lg">
-        <StyledButton onClick={handleAddQuestion}>Add Question</StyledButton>
         <StyledButton
           type="submit"
           variant="contained"

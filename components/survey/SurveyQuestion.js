@@ -24,6 +24,7 @@ import styled from "@emotion/styled";
 // State Manager
 import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
 import { useForm } from "react-hook-form";
+import StyledButton from "../StyledButton";
 
 // styled components
 
@@ -88,6 +89,7 @@ export default function SurveyQuestion({
   required,
   handleExpanded,
   deleteQuestion,
+  handleAddQuestion,
 }) {
   const {
     register,
@@ -174,9 +176,14 @@ export default function SurveyQuestion({
                 }
                 label="Required"
               />
+              {questionNumber === survey.questions.length && (
+                <StyledButton onClick={() => handleAddQuestion()}>
+                  Add Question
+                </StyledButton>
+              )}
               <DeleteIcon
                 onClick={() => deleteQuestion(id)}
-                sx={{ color: "#9a9cb5" }}
+                sx={{ color: "#9a9cb5", marginLeft: "20px" }}
               />
             </StyledQuestionHeadEndSlot>
           </QuestionAccordionSummary>
