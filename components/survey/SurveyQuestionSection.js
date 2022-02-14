@@ -4,6 +4,8 @@ import produce from "immer";
 import isEmpty from "lodash.isempty";
 import debounce from "lodash.debounce";
 
+import { useRouter } from "next/router";
+
 // UI
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
@@ -35,6 +37,13 @@ const AddQuestionSection = styled(Container)({
   marginTop: "30px",
 });
 
+const ButtonContainer = styled(Container)({
+  display: "flex",
+  justifyContent: "flex-end",
+  alignItems: "center",
+  marginTop: "30px",
+});
+
 export default function SurveyQuestionSection({ questions }) {
   const {
     register,
@@ -42,6 +51,7 @@ export default function SurveyQuestionSection({ questions }) {
     setValue,
     formState: { errors },
   } = useForm();
+  const router = useRouter();
 
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
@@ -87,6 +97,10 @@ export default function SurveyQuestionSection({ questions }) {
     const newArr = questions.filter((element) => element.qid !== id);
     dispatch({ type: "SET_QUESTIONS", value: newArr });
   };
+
+  const goToThemeScreen = () => {
+    router.push(`/survey/create/themes`);
+  };
   return (
     <>
       <Container maxWidth="lg" sx={{ marginTop: "30px" }}>
@@ -112,23 +126,35 @@ export default function SurveyQuestionSection({ questions }) {
 
       <Container maxWidth="lg" sx={{ marginTop: "30px" }}>
         <Label>Add Questions</Label>
-        {questions && questions.map((question, index) => (
-          <SurveyQuestion
-            key={question.qid}
-            id={question.qid}
-            questionNumber={index + 1}
-            question={question.question}
-            questionType={question.question_type}
-            expandStatus={question.expandStatus}
-            required={question.required}
-            handleExpanded={handleExpanded}
-            deleteQuestion={deleteQuestion}
-          />
-        ))}
+        {questions &&
+          questions.map((question, index) => (
+            <SurveyQuestion
+              key={question.qid}
+              id={question.qid}
+              questionNumber={index + 1}
+              question={question.question}
+              questionType={question.question_type}
+              expandStatus={question.expandStatus}
+              required={question.required}
+              handleExpanded={handleExpanded}
+              deleteQuestion={deleteQuestion}
+            />
+          ))}
       </Container>
       <AddQuestionSection maxWidth="lg">
         <StyledButton onClick={handleAddQuestion}>Add Question</StyledButton>
       </AddQuestionSection>
+
+      <ButtonContainer>
+        <StyledButton
+          type="submit"
+          variant="contained"
+          onClick={goToThemeScreen}
+          sx={{ mt: 3, mb: 2 }}
+        >
+          Next
+        </StyledButton>
+      </ButtonContainer>
     </>
   );
 }

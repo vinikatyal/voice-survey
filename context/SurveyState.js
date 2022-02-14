@@ -10,6 +10,7 @@ const initialState = {
   accessMembers: [],
   surveyType: "",
   surveyWelcomeText: "",
+  surveyTheme: "BLUE",
   questions: [
     {
       qid: 1,
@@ -44,6 +45,10 @@ const reducer = produce((draft, action) => {
       break;
     case "SET_PREV_SURVEYTYPE":
       draft.previousSurveyType = action.value;
+      break;
+
+    case "SET_THEME":
+      draft.surveyTheme = action.value;
       break;
     default:
       throw new Error(`Unknown action: ${action.type}`);
