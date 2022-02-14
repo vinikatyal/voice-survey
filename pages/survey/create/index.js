@@ -193,17 +193,18 @@ export default function Create() {
       access_list_emails: "",
       ...data,
     };
-    return surveyService
-      .create_survey(surveyData)
-      .then(() => {
-        // get return url from query parameters or default to '/'
-        router.push("/survey/create/questions", undefined, { shallow: true });
-      })
-      .catch((error) => {
-        toast.error(error.message, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-      });
+    router.push("/survey/create/questions", undefined, { shallow: true });
+    // return surveyService
+    //   .create_survey(surveyData)
+    //   .then(() => {
+    //     // get return url from query parameters or default to '/'
+    //     router.push("/survey/create/questions", undefined, { shallow: true });
+    //   })
+    //   .catch((error) => {
+    //     toast.error(error.message, {
+    //       position: toast.POSITION.TOP_RIGHT,
+    //     });
+    //   });
   };
 
   const handleChange = (event) => {
