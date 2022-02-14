@@ -85,7 +85,6 @@ const ErrorLabel = styled("div")({
 
 const CustomSelect = styled(Select)({});
 
-
 export default function Create() {
   const {
     register,
@@ -128,6 +127,7 @@ export default function Create() {
           name: survey.name,
           title: survey.name.split("_").map(capitalize).join(" "),
           description: survey.description,
+          noOfQuestions: survey.no_of_ques,
         }));
         setQuestionTypes(surveyTypes);
       })
@@ -247,8 +247,10 @@ export default function Create() {
                       <Typography variant="body2">
                         {survey.description}
                       </Typography>
-                      {survey.qNo && (
-                        <QuestionNumber>{survey.qNo} questions</QuestionNumber>
+                      {survey.noOfQuestions && (
+                        <QuestionNumber>
+                          {survey.noOfQuestions} questions
+                        </QuestionNumber>
                       )}
                     </CardContent>
                   </Card>
