@@ -27,11 +27,11 @@ async function create_survey(data) {
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
 
-      if (res.code === 200) {
-        return res;
-      } else {
-        return {};
-      }
+      return res;
+      //   if (res.code === 200) {
+      //   } else {
+      //     return {};
+      //   }
     });
 }
 
@@ -69,7 +69,6 @@ async function add_survey_questions(data, question_id) {
       token: tokenSubject.value,
     })
     .then((res) => {
-      console.log(res)
       if (res.code) {
         return res;
       } else {

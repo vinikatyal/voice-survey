@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useRouter } from "next/router";
+
 // UI
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
@@ -28,37 +30,36 @@ const Label = styled("span")({
   fontWeight: "500",
 });
 
-const ButtonContainer = styled(Container)({
+const ButtonContainer = styled("div")({
   display: "flex",
   justifyContent: "flex-end",
   alignItems: "center",
   marginTop: "30px",
 });
 
-export default function SurveyThemeSection() {
-  const themes = [
-    {
-      id: "BLUE",
-      theme: theme1,
-      themeName: "Theme Blue",
-    },
-    {
-      id: "PINK",
-      theme: theme2,
-      themeName: "Theme Pink",
-    },
-    {
-      id: "YELLOW",
-      theme: theme3,
-      themeName: "Theme Orange",
-    },
-  ];
+const themes = [
+  {
+    id: "BLUE",
+    theme: theme1,
+    themeName: "Theme Blue",
+  },
+  {
+    id: "PINK",
+    theme: theme2,
+    themeName: "Theme Pink",
+  },
+  {
+    id: "YELLOW",
+    theme: theme3,
+    themeName: "Theme Orange",
+  },
+];
 
+export default function SurveyThemeSection() {
+  const router = useRouter();
   const [selectedValue, setSelectedValue] = React.useState("BLUE");
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
-
-  console.log(survey);
 
   const handleChangeSelectedValue = (themeName) => {
     selectedValue === themeName
@@ -74,34 +75,45 @@ export default function SurveyThemeSection() {
         return item.value;
       })
       .join(",");
+
+    //   Uncomment below code after api's are merged
+    // const surveyPayload = {
+    //   survey_title: survey.surveyTitle,
+    //   access_list_emails: members || [],
+    //   survey_type: survey.surveyType,
+    //   survey_theme: survey.surveyTheme,
+    //   welcome_text: survey.surveyWelcomeText,
+    //   survey_questions: survey.questions,
+    // };
+
+    // //   remove below code after api's are merged
     const surveyData = {
       survey_title: survey.surveyTitle,
       access_list_emails: members || [],
       survey_type: survey.surveyType,
       survey_theme: survey.surveyTheme,
     };
-    await surveyService
-      .create_survey(surveyData)
-      .then(async (res) => {
-        console.log(res);
-        await surveyService
-          .add_survey_questions(survey.questions, res.code.survey_id)
-          .then(() => {
-            toast.success("Survey created successfully", {
-              position: toast.POSITION.TOP_RIGHT,
-            });
-          })
-          .catch((error) => {
-            toast.error(error.message, {
-              position: toast.POSITION.TOP_RIGHT,
-            });
-          });
-      })
-      .catch((error) => {
-        toast.error(error.message, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+    const addQuestionsPayload = {
+      welcome_text: survey.surveyWelcomeText,
+      survey_questions: survey.questions,
+    };
+
+    try {
+      const surveyRes = await surveyService.create_survey(surveyData);
+      //   remove below code after api's are merged
+      await surveyService.add_survey_questions(
+        addQuestionsPayload,
+        surveyRes.code.survey_id
+      );
+      toast.success("Survey created successfully", {
+        position: toast.POSITION.TOP_RIGHT,
       });
+      router.push("/dashboard");
+    } catch (error) {
+      toast.error(error.message, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    }
   };
 
   return (
@@ -126,12 +138,7 @@ export default function SurveyThemeSection() {
         </Grid>
       </Grid>
       <ButtonContainer>
-        <StyledButton
-          type="submit"
-          onClick={createSurvey}
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
-        >
+        <StyledButton type="submit" onClick={createSurvey} variant="contained">
           Create Survey
         </StyledButton>
       </ButtonContainer>

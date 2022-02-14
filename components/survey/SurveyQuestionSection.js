@@ -34,6 +34,7 @@ const AddQuestionSection = styled(Container)({
   display: "flex",
   width: "100%",
   justifyContent: "flex-end",
+  alignItems: "center",
   marginTop: "30px",
 });
 
@@ -143,18 +144,15 @@ export default function SurveyQuestionSection({ questions }) {
       </Container>
       <AddQuestionSection maxWidth="lg">
         <StyledButton onClick={handleAddQuestion}>Add Question</StyledButton>
-      </AddQuestionSection>
-
-      <ButtonContainer>
         <StyledButton
           type="submit"
           variant="contained"
           onClick={goToThemeScreen}
-          sx={{ mt: 3, mb: 2 }}
+          sx={{ ml: 3 }}
         >
           Next
         </StyledButton>
-      </ButtonContainer>
+      </AddQuestionSection>
     </>
   );
 }
