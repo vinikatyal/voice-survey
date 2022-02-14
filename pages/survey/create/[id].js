@@ -8,6 +8,8 @@ import SurveyThemeSection from "../../../components/survey/SurveyThemeSection";
 
 import { useRouter } from "next/router";
 
+import { surveyService } from "../../../services/survey.service";
+
 // State Manager
 import { useDispatchSurvey, useSurvey } from "../../../context/SurveyState.js";
 
@@ -21,19 +23,6 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const props = {};
-  if (params.id === "questions") {
-    const questions = await fetch(
-      "https://api.jsonbin.io/b/6207aa1f1b38ee4b33b8c9d3/1",
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "secret-key":
-            "$2b$10$WqnXsDDorMo41yYnbkChQ.PwewUpe1CvZ0s.bfJeSWfWCgKenMgwW",
-        },
-      }
-    );
-    props["questionTypes"] = await questions.json();
-  }
   params.id === "questions" && (props["currentTab"] = "questions");
   params.id === "themes" && (props["currentTab"] = "themes");
   return {
@@ -41,28 +30,29 @@ export async function getStaticProps({ params }) {
   };
 }
 
-export default function create({ currentTab, questionTypes }) {
+export default function create({ currentTab }) {
   const router = useRouter();
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
 
-  useEffect(() => {
-    !survey.surveyTitle && router.push("/survey/create");
-  }, [survey.surveyTitle]);
+  useEffect(async () => {
+    if (!survey.surveyType) {
+      router.push("/survey/create");
+      return;
+    }
 
-  useEffect(() => {
-    if (survey.previousQuestionType !== survey.surveyType) {
-      if (questionTypes) {
-        const modifiedArr =
-          questionTypes[survey.surveyType] &&
-          questionTypes[survey.surveyType].map((obj, index) => {
-            return index === 0
-              ? { ...obj, expandStatus: true, required: false }
-              : { ...obj, expandStatus: false, required: false };
-          });
-        modifiedArr && dispatch({ type: "SET_QUESTIONS", value: modifiedArr });
-        dispatch({ type: "SET_PREV_QUESTIONTYPE", value: survey.surveyType });
-      }
+    if (survey.previousSurveyType !== survey.surveyType) {
+      const res = await surveyService.get_survey_template_data({
+        survey_type: survey.surveyType,
+      });
+      const modifiedArr = res.data.questions.map((obj, index) => {
+        return index === 0
+          ? { ...obj, expandStatus: true, required: false }
+          : { ...obj, expandStatus: false, required: false };
+      });
+      modifiedArr.length &&
+        dispatch({ type: "SET_QUESTIONS", value: modifiedArr });
+      dispatch({ type: "SET_PREV_SURVEYTYPE", value: survey.surveyType });
     }
   }, [survey.surveyType]);
 

@@ -83,7 +83,7 @@ export default function SurveyQuestion({
   id,
   questionNumber,
   question,
-  answerTypeId,
+  questionType,
   expandStatus,
   required,
   handleExpanded,
@@ -135,7 +135,7 @@ export default function SurveyQuestion({
 
   const handleRequired = (e) => {
     const next = produce(survey.questions, (draft) => {
-      const question = draft.find((question) => question.id === id);
+      const question = draft.find((question) => question.qid === id);
       question.required = e.target.checked;
     });
     dispatch({ type: "SET_QUESTIONS", value: next });
@@ -210,15 +210,18 @@ export default function SurveyQuestion({
             <AnswerSection>
               <Label>Short Answer</Label>
               <Autocomplete
-                {...register("answer_type")}
                 disablePortal
                 disableClearable
                 fullWidth
                 id="combo-box-demo"
-                value={answersList.filter((obj) => obj.value === answerTypeId)[0]}
+                value={
+                  answersList.filter((obj) => obj.value === questionType)[0]
+                }
                 options={answersList}
                 onChange={handleAnswerTypeChange}
-                isOptionEqualToValue={(option, value) => option.value === value.value}
+                isOptionEqualToValue={(option, value) =>
+                  option.value === value.value
+                }
                 renderInput={(params) => (
                   <TextField {...params} placeholder="Select one" />
                 )}

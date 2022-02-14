@@ -12,14 +12,14 @@ const initialState = {
   surveyWelcomeText: "",
   questions: [
     {
-      id: 1,
+      qid: 1,
       question: "",
-      answerTypeId: 1,
+      question_type: "text",
       required: false,
       expandStatus: true,
     },
   ],
-  previousQuestionType: null,
+  previousSurveyType: null,
 };
 
 const reducer = produce((draft, action) => {
@@ -42,8 +42,8 @@ const reducer = produce((draft, action) => {
     case "SET_QUESTIONS":
       draft.questions = action.value;
       break;
-    case "SET_PREV_QUESTIONTYPE":
-      draft.previousQuestionType = action.value;
+    case "SET_PREV_SURVEYTYPE":
+      draft.previousSurveyType = action.value;
       break;
     default:
       throw new Error(`Unknown action: ${action.type}`);

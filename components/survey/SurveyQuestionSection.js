@@ -64,9 +64,9 @@ export default function SurveyQuestionSection({ questions }) {
     const next = produce(questions, (draft) => {
       draft.map((_, index) => (draft[index].expandStatus = false));
       draft.push({
-        id: draft.length + 1,
+        qid: draft.length + 1,
         question: "",
-        answerTypeId: 1,
+        question_type: "text",
         expandStatus: true,
       });
     });
@@ -76,13 +76,15 @@ export default function SurveyQuestionSection({ questions }) {
 
   const handleExpanded = (id, expandStatus) => {
     const newArr = questions.map((obj) =>
-      obj.id === id ? { ...obj, expandStatus } : { ...obj, expandStatus: false }
+      obj.qid === id
+        ? { ...obj, expandStatus }
+        : { ...obj, expandStatus: false }
     );
     dispatch({ type: "SET_QUESTIONS", value: newArr });
   };
 
   const deleteQuestion = (id) => {
-    const newArr = questions.filter((element) => element.id !== id);
+    const newArr = questions.filter((element) => element.qid !== id);
     dispatch({ type: "SET_QUESTIONS", value: newArr });
   };
   return (
@@ -112,11 +114,11 @@ export default function SurveyQuestionSection({ questions }) {
         <Label>Add Questions</Label>
         {questions.map((question, index) => (
           <SurveyQuestion
-            key={question.id}
-            id={question.id}
+            key={question.qid}
+            id={question.qid}
             questionNumber={index + 1}
             question={question.question}
-            answerTypeId={question.question_type}
+            questionType={question.question_type}
             expandStatus={question.expandStatus}
             required={question.required}
             handleExpanded={handleExpanded}
