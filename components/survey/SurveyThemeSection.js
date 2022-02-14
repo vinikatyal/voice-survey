@@ -7,6 +7,8 @@ import styled from "@emotion/styled";
 import AddLogo from "../AddLogo";
 import ThemeItem from "../ThemeItem";
 
+import { toast } from "react-toastify";
+
 // button
 import StyledButton from "../StyledButton";
 
@@ -66,18 +68,24 @@ export default function SurveyThemeSection() {
     dispatch({ type: "SET_THEME", value: themeName });
   };
 
-  const createSurvey = () => {
+  const createSurvey = async () => {
+    const members = survey.accessMembers
+      .map((item) => {
+        return item.value;
+      })
+      .join(",");
     const surveyData = {
       survey_title: survey.surveyTitle,
-      access_list_emails: survey.accessMembers,
+      access_list_emails: members || [],
       survey_type: survey.surveyType,
       survey_theme: survey.surveyTheme,
     };
-    return surveyService
+    await surveyService
       .create_survey(surveyData)
-      .then(() => {
-        return surveyService
-          .add_survey_questions(survey.questions)
+      .then(async (res) => {
+        console.log(res);
+        await surveyService
+          .add_survey_questions(survey.questions, res.code.survey_id)
           .then(() => {
             toast.success("Survey created successfully", {
               position: toast.POSITION.TOP_RIGHT,

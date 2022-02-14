@@ -21,8 +21,8 @@ export const surveyService = {
   getAll,
 };
 
-function create_survey(data) {
-  return fetchWrapper
+async function create_survey(data) {
+  return await fetchWrapper
     .post(`${baseUrl}/create_survey`, data, { token: tokenSubject.value })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
@@ -63,13 +63,14 @@ async function get_survey_template_data(data) {
     });
 }
 
-async function add_survey_questions(data) {
+async function add_survey_questions(data, question_id) {
   return await fetchWrapper
-    .post(`${baseUrl}/add_survey_questions`, data, {
+    .post(`${baseUrl}/add_survey_questions/${question_id}`, data, {
       token: tokenSubject.value,
     })
     .then((res) => {
-      if (res.code === 200) {
+      console.log(res)
+      if (res.code) {
         return res;
       } else {
         return {};

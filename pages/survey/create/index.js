@@ -157,11 +157,6 @@ export default function Create() {
   }
 
   const onSubmit = async (data) => {
-    const surveyData = {
-      survey_type: selectedValue,
-      access_list_emails: "",
-      ...data,
-    };
     router.push("/survey/create/questions", undefined, { shallow: true });
   };
 
