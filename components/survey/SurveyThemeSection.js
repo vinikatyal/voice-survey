@@ -6,8 +6,8 @@ import { useRouter } from "next/router";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import styled from "@emotion/styled";
-import AddLogo from "../AddLogo";
 import ThemeItem from "../ThemeItem";
+import Box from "@mui/material/Box";
 
 import { toast } from "react-toastify";
 
@@ -23,6 +23,7 @@ import theme3 from "../../images/themes/theme3.png";
 
 // State Manager
 import { useSurvey, useDispatchSurvey } from "../../context/SurveyState";
+import Image from "next/image";
 
 const Label = styled("span")({
   color: "#707070",
@@ -37,35 +38,38 @@ const ButtonContainer = styled("div")({
   marginTop: "30px",
 });
 
-const themes = [
-  {
-    id: "BLUE",
-    theme: theme1,
-    themeName: "Theme Blue",
-  },
-  {
-    id: "PINK",
-    theme: theme2,
-    themeName: "Theme Pink",
-  },
-  {
-    id: "YELLOW",
-    theme: theme3,
-    themeName: "Theme Orange",
-  },
-];
+const LogoContainer = styled(Box)({
+  width: "140px",
+  height: "140px",
+  border: "dotted 2px #0a23fb",
+  borderRadius: "8px",
+  padding: "5px",
+  marginTop: "10px",
+});
 
-export default function SurveyThemeSection() {
-  const router = useRouter();
-  const [selectedValue, setSelectedValue] = React.useState("BLUE");
+export default function SurveyThemeSection({ logo }) {
+  const themes = [
+    {
+      id: "BLUE",
+      theme: theme1,
+      themeName: "Theme Blue",
+    },
+    {
+      id: "PINK",
+      theme: theme2,
+      themeName: "Theme Pink",
+    },
+    {
+      id: "YELLOW",
+      theme: theme3,
+      themeName: "Theme Orange",
+    },
+  ];
+
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
 
   const handleChangeSelectedValue = (themeName) => {
-    selectedValue === themeName
-      ? setSelectedValue("")
-      : setSelectedValue(themeName);
-
     dispatch({ type: "SET_THEME", value: themeName });
   };
 
@@ -118,10 +122,14 @@ export default function SurveyThemeSection() {
 
   return (
     <Container maxWidth="lg">
-      <Grid mt={2} container direction="column">
-        <Label>Select any png,svg or jpg file</Label>
-        <AddLogo />
-      </Grid>
+      {logo && (
+        <Grid mt={2} container direction="column">
+          <Label>Select any png,svg or jpg file</Label>
+          <LogoContainer>
+            <Image height={140} width={140} src={logo} unoptimized={false} />
+          </LogoContainer>
+        </Grid>
+      )}
       <Grid mt={2} container direction="column">
         <Label>Choose Theme</Label>
         <Grid container direction="row" justifyContent="space-between">
@@ -131,7 +139,7 @@ export default function SurveyThemeSection() {
               id={item.id}
               theme={item.theme}
               themeName={item.themeName}
-              selectedValue={selectedValue}
+              selectedValue={survey.surveyTheme}
               handleChange={handleChangeSelectedValue}
             />
           ))}
