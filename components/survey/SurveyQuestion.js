@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 
 import produce from "immer";
 import isEmpty from "lodash.isempty";
+import debounce from "lodash.debounce";
 
 // UI
 import Accordion from "@mui/material/Accordion";
@@ -10,7 +11,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import FormGroup from "@mui/material/FormGroup";
+import Grid from "@mui/material/Grid";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 
@@ -20,7 +21,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import styled from "@emotion/styled";
 
 // State Manager
-import { useDispatchSurvey, useSurvey } from "./SurveyState";
+import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
 import { useForm } from "react-hook-form";
 
 // styled components
@@ -58,6 +59,10 @@ const StyledQuestionHead = styled("div")({
   alignItems: "center",
   width: "100%",
 });
+const StyledQuestionHeadEndSlot = styled(Grid)({
+  display: "flex",
+  alignItems: "center",
+});
 
 const AnswerSection = styled("div")(() => ({
   width: "30%",
@@ -78,8 +83,9 @@ export default function SurveyQuestion({
   id,
   questionNumber,
   question,
-  answerTypeId,
+  questionType,
   expandStatus,
+  required,
   handleExpanded,
   deleteQuestion,
 }) {
@@ -94,9 +100,9 @@ export default function SurveyQuestion({
     { id: 1, label: "Textfield", value: "text" },
     { id: 2, label: "Description", value: "description" },
     { id: 3, label: "Email", value: "email" },
-    { id: 4, label: "Phone number", value: "phone" },
+    { id: 4, label: "Phone number", value: "contact" },
     { id: 5, label: "Date picker", value: "date" },
-    { id: 6, label: "Voice", value: "voice" },
+    { id: 6, label: "Voice", value: "audio" },
   ];
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
@@ -109,18 +115,30 @@ export default function SurveyQuestion({
 
   const handleInputChange = (e) => {
     const next = produce(survey.questions, (draft) => {
-      const question = draft.find((question) => question.id === id);
+      const question = draft.find((question) => question.qid === id);
       question.question = e.target.value;
     });
-    dispatch({ type: "QUESTIONS", value: next });
+    dispatch({ type: "SET_QUESTIONS", value: next });
   };
+
+  const debounced = debounce((e) => {
+    handleInputChange(e);
+  }, 600);
 
   const handleAnswerTypeChange = (_, value) => {
     const next = produce(survey.questions, (draft) => {
-      const question = draft.find((question) => question.id === id);
-      question.answerTypeId = value.id;
+      const question = draft.find((question) => question.qid === id);
+      question.question_type = value.value;
     });
-    dispatch({ type: "QUESTIONS", value: next });
+    dispatch({ type: "SET_QUESTIONS", value: next });
+  };
+
+  const handleRequired = (e) => {
+    const next = produce(survey.questions, (draft) => {
+      const question = draft.find((question) => question.qid === id);
+      question.required = e.target.checked;
+    });
+    dispatch({ type: "SET_QUESTIONS", value: next });
   };
 
   return (
@@ -149,16 +167,18 @@ export default function SurveyQuestion({
                 {!expandStatus ? question : ""}
               </Typography>
             </StyledQuestionHead>
-            <FormGroup marginRight={10}>
+            <StyledQuestionHeadEndSlot>
               <FormControlLabel
-                control={<Checkbox defaultChecked />}
+                control={
+                  <Checkbox checked={required} onClick={handleRequired} />
+                }
                 label="Required"
               />
-            </FormGroup>
-            <DeleteIcon
-              onClick={() => deleteQuestion(id)}
-              sx={{ color: "#9a9cb5" }}
-            />
+              <DeleteIcon
+                onClick={() => deleteQuestion(id)}
+                sx={{ color: "#9a9cb5" }}
+              />
+            </StyledQuestionHeadEndSlot>
           </QuestionAccordionSummary>
         </AccordionSummary>
 
@@ -179,12 +199,9 @@ export default function SurveyQuestion({
                 id="outlined-basic"
                 placeholder="Enter your welcome text here"
                 fullWidth
-                onInput={handleInputChange}
+                onInput={debounced}
                 variant="outlined"
                 sx={{ backgroundColor: "#f7f7f7" }}
-                // InputProps={{
-                //   disableUnderline: true,
-                // }}
               />
               {errors.question && (
                 <Typography color="red">{errors.question.message}</Typography>
@@ -193,25 +210,22 @@ export default function SurveyQuestion({
             <AnswerSection>
               <Label>Short Answer</Label>
               <Autocomplete
-                {...register("answer_type")}
                 disablePortal
                 disableClearable
                 fullWidth
                 id="combo-box-demo"
-                value={answersList.filter((obj) => obj.id === answerTypeId)[0]}
+                value={
+                  answersList.filter((obj) => obj.value === questionType)[0]
+                }
                 options={answersList}
                 onChange={handleAnswerTypeChange}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
+                isOptionEqualToValue={(option, value) =>
+                  option.value === value.value
+                }
                 renderInput={(params) => (
                   <TextField {...params} placeholder="Select one" />
                 )}
               />
-              {/* <AddImage>
-                <InsertPhotoIcon sx={{ color: "#0a23fb" }} />
-                <Typography ml={1} color="#0a23fb">
-                  Add Image
-                </Typography>
-              </AddImage> */}
             </AnswerSection>
           </QuestionAccordionBody>
         </AccordionDetails>

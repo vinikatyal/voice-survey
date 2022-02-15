@@ -3,7 +3,7 @@ import React from "react"
 
 export const ThemeValues = {
     BLUE: 1,
-    RED: 2,
+    PINK: 2,
     YELLOW: 3
  };
 

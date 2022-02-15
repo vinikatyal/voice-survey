@@ -9,32 +9,46 @@ const initialState = {
   surveyTitle: "",
   accessMembers: [],
   surveyType: "",
+  surveyWelcomeText: "",
+  surveyTheme: "BLUE",
   questions: [
     {
-      id: 1,
+      qid: 1,
       question: "",
-      answerTypeId: 1,
+      question_type: "text",
+      required: false,
       expandStatus: true,
     },
   ],
+  previousSurveyType: null,
 };
 
 const reducer = produce((draft, action) => {
   switch (action.type) {
-    case "TITLE":
+    case "SET_TITLE":
       draft.surveyTitle = action.value;
       break;
 
-    case "MEMBERS":
+    case "SET_MEMBERS":
       draft.accessMembers = action.value;
       break;
 
-    case "TYPE":
+    case "SET_TYPE":
       draft.surveyType = action.value;
       break;
+    case "SET_WELCOME_TEXT":
+      draft.surveyWelcomeText = action.value;
+      break;
 
-    case "QUESTIONS":
+    case "SET_QUESTIONS":
       draft.questions = action.value;
+      break;
+    case "SET_PREV_SURVEYTYPE":
+      draft.previousSurveyType = action.value;
+      break;
+
+    case "SET_THEME":
+      draft.surveyTheme = action.value;
       break;
     default:
       throw new Error(`Unknown action: ${action.type}`);

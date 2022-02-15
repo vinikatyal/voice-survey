@@ -17,7 +17,7 @@ const FullBackgroundSurvey = styled("div")(({ bgColor }) => ({
   justifyContent: "center",
   alignItems: "center",
   height: "100vh",
-  textAlign: "center"
+  textAlign: "center",
 }));
 
 export default function Index() {
@@ -25,7 +25,7 @@ export default function Index() {
   const bg =
     theme === ThemeValues.BLUE
       ? "linear-gradient(to right, #1EA798, #2D4C93)!important;"
-      : theme === ThemeValues.RED
+      : theme === ThemeValues.PINK
       ? "inear-gradient(to right, #EC2E89, #9540E4)!important;"
       : theme === ThemeValues.YELLOW
       ? "linear-gradient(to right, #350F69, #BA824C)!important;"

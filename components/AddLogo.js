@@ -10,7 +10,6 @@ import Grid from "@mui/material/Grid";
 
 import styled from "@emotion/styled";
 import Image from "next/image";
-import { useForm } from "react-hook-form";
 
 const LogoInputSection = styled(Box)(({ error }) => ({
   width: "140px",
@@ -83,12 +82,7 @@ export default function AddLogo({ logo, updateLogo, error }) {
   };
 
   return (
-    <Grid
-      container
-      justifyContent="center"
-      direction="column"
-      alignItems="center"
-    >
+    <>
       <LogoInputSection error={error}>
         <Grid
           container
@@ -147,6 +141,6 @@ export default function AddLogo({ logo, updateLogo, error }) {
           </Grid>
         </Grid>
       )}
-    </Grid>
+    </>
   );
 }

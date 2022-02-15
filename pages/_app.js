@@ -12,7 +12,7 @@ import theme from "../src/theme";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { authService } from "../services/auth.service";
-import { SurveyProvider } from "../components/survey/SurveyState";
+import { SurveyProvider } from "../context/SurveyState";
 
 export default function MyApp(props) {
   const router = useRouter();

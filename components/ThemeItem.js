@@ -10,6 +10,7 @@ import Typography from "@mui/material/Typography";
 import Image from "next/image";
 
 export default function ThemeItem({
+  id,
   theme,
   themeName,
   selectedValue,
@@ -17,7 +18,7 @@ export default function ThemeItem({
 }) {
   return (
     <Card sx={{ maxWidth: 345 }}>
-      <CardActionArea onClick={() => handleChange(themeName)}>
+      <CardActionArea onClick={() => handleChange(id)}>
         <Image src={theme} alt="theme-1" />
         <CardContent>
           <Grid
@@ -29,7 +30,7 @@ export default function ThemeItem({
             <Typography fontSize={20} fontWeight={500} color="#00063e">
               {themeName}
             </Typography>
-            <Radio value={themeName} checked={themeName === selectedValue} />
+            <Radio value={id} checked={id === selectedValue} />
           </Grid>
         </CardContent>
       </CardActionArea>
