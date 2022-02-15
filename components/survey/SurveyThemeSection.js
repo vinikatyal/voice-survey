@@ -48,6 +48,7 @@ const LogoContainer = styled(Box)({
 });
 
 export default function SurveyThemeSection({ logo }) {
+  const router = useRouter();
   const themes = [
     {
       id: "BLUE",
