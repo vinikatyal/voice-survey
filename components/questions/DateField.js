@@ -18,7 +18,7 @@ function DateField({ title, _id }) {
   return (
     <QuestionDiv>
       <QuestionHeader>{title}</QuestionHeader>
-      <TextField id={_id} name={_id} type="date" />
+      <QuestionTextField id={_id} name={_id} type="date" />
     </QuestionDiv>
   );
 }
