@@ -25,13 +25,11 @@ async function create_survey(data) {
   return await fetchWrapper
     .post(`${baseUrl}/create_survey`, data, { token: tokenSubject.value })
     .then((res) => {
-      // publish user to subscribers and store in local storage to stay logged in between page refreshes
-
-      return res;
-      //   if (res.code === 200) {
-      //   } else {
-      //     return {};
-      //   }
+      if (res.code.survey_id) {
+        return res;
+      } else {
+        return {};
+      }
     });
 }
 
