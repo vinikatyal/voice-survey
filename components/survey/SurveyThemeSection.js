@@ -24,6 +24,7 @@ import theme3 from "../../images/themes/theme3.png";
 // State Manager
 import { useSurvey, useDispatchSurvey } from "../../context/SurveyState";
 import Image from "next/image";
+import { get } from "react-hook-form";
 
 const Label = styled("span")({
   color: "#707070",
@@ -92,7 +93,7 @@ export default function SurveyThemeSection({ logo }) {
     // };
 
     // //   remove below code after api's are merged
-    const surveyData = {
+    let surveyData = {
       survey_title: survey.surveyTitle,
       access_list_emails: members || [],
       survey_type: survey.surveyType,
@@ -102,6 +103,10 @@ export default function SurveyThemeSection({ logo }) {
       welcome_text: survey.surveyWelcomeText,
       survey_questions: survey.questions,
     };
+
+    if (members.length === 0) {
+      delete surveyData.access_list_emails;
+    }
 
     try {
       const surveyRes = await surveyService.create_survey(surveyData);
