@@ -16,11 +16,6 @@ import StyledButton from "../StyledButton";
 
 import { surveyService } from "../../services/survey.service";
 
-// themes images
-import theme1 from "../../images/themes/theme1.png";
-import theme2 from "../../images/themes/theme2.png";
-import theme3 from "../../images/themes/theme3.png";
-
 // State Manager
 import { useSurvey, useDispatchSurvey } from "../../context/SurveyState";
 import Image from "next/image";
@@ -50,24 +45,6 @@ const LogoContainer = styled(Box)({
 
 export default function SurveyThemeSection({ logo }) {
   const router = useRouter();
-  const themes = [
-    {
-      id: "BLUE",
-      theme: theme1,
-      themeName: "Theme Blue",
-    },
-    {
-      id: "PINK",
-      theme: theme2,
-      themeName: "Theme Pink",
-    },
-    {
-      id: "YELLOW",
-      theme: theme3,
-      themeName: "Theme Orange",
-    },
-  ];
-
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
 
@@ -92,7 +69,7 @@ export default function SurveyThemeSection({ logo }) {
     };
 
     try {
-      const surveyRes = await surveyService.create_survey(surveyPayload);
+      await surveyService.create_survey(surveyPayload);
       toast.success("Survey created successfully", {
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -117,13 +94,11 @@ export default function SurveyThemeSection({ logo }) {
       <Grid mt={2} container direction="column">
         <Label>Choose Theme</Label>
         <Grid container direction="row" justifyContent="space-between">
-          {themes.map((item, index) => (
+          {survey.themes.map((item, index) => (
             <ThemeItem
               key={item.id}
-              id={item.id}
-              theme={item.theme}
-              themeName={item.themeName}
-              selectedValue={survey.surveyTheme}
+              theme={item}
+              selectedValue={survey.selectedSurveyTheme}
               handleChange={handleChangeSelectedValue}
             />
           ))}
