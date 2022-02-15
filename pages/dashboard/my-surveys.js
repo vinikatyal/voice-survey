@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-// import fetcher from '../../hooks/api/fetcher'
-
-import { useRouter } from "next/router";
-
 import Image from "next/image";
 
 import Container from "@mui/material/Container";
@@ -12,12 +8,17 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
+import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 import DashboardH from "../../components/dashboard/DashboardHeader";
 
 import Delete from "@mui/icons-material/Delete";
-import logo from "../../images/logo.png";
 
 import { surveyService } from "../../services/survey.service";
 
@@ -59,12 +60,6 @@ const NavLink = styled(Link)(({}) => ({
   cursor: "pointer",
 }));
 
-const Logo = styled(Image)(({}) => ({
-  height: "30px",
-  display: "flex",
-  justifyContent: "flex-start",
-}));
-
 const CardTitle = styled("div")({
   width: "100%",
   fontSize: "16px",
@@ -99,15 +94,24 @@ const SurveyCard = styled(Card)({
   cursor: "pointer",
 });
 
+const SuccessButton = styled(Button)(() => ({
+  backgroundColor: "#19B885",
+  "&:hover": {
+    background: "#19B885",
+  },
+}));
 
 export default function Index() {
-  const router = useRouter();
+  const [open, setOpen] = useState(false);
   const [surveys, setMySurveys] = useState([]);
-  // const { data, error } = useSWR('/login', fetcher)
 
   useEffect(() => {
     getSurveyTypes();
   }, []);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const getSurveyTypes = () => {
     surveyService
@@ -122,7 +126,9 @@ export default function Index() {
       });
   };
 
-  const deleteSurvey = () => {};
+  const deleteSurvey = () => {
+      setOpen(true)
+  };
   return (
     <>
       <DashboardH></DashboardH>
@@ -156,6 +162,34 @@ export default function Index() {
           ))}
         </GridContainer>
       </FullBackground>
+      {open && (
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <DialogTitle>{"Delete Survey?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-slide-description">
+              Are you sure you want to delete your survey?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button size="medium" onClick={handleClose}>
+              No
+            </Button>
+            <SuccessButton
+              size="medium"
+              variant="contained"
+              disableElevation
+              disableRipple
+              onClick={handleClose}
+            >
+              Yes, Delete
+            </SuccessButton>
+          </DialogActions>
+        </Dialog>
+      )}
     </>
   );
 }
