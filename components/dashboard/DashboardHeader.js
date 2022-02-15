@@ -69,7 +69,7 @@ export default function DashboardHeader() {
           >
             All Surveys
           </NavLink>
-          <NavLink to="/about" underline="hover">
+          <NavLink   onClick={() => openLink("/dashboard/my-surveys")} underline="hover">
             My Surveys
           </NavLink>
           <NavLink to="/contact" underline="hover">
@@ -83,7 +83,6 @@ export default function DashboardHeader() {
             Billing
           </NavLink> */}
           <NavLink
-            to="/dashboard/settings"
             onClick={() => openLink("/dashboard/settings")}
             underline="hover"
           >

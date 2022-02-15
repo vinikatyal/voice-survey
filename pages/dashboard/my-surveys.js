@@ -99,54 +99,10 @@ const SurveyCard = styled(Card)({
   cursor: "pointer",
 });
 
-const surveyData = [
-  {
-    id: "1",
-    title: "CSAT",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
-    responses: 12,
-  },
-  {
-    id: "2",
-    title: "Teacher Feedback",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
-    responses: 12,
-  },
-  {
-    id: "3",
-    title: "PMF Survey",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
-    responses: 12,
-  },
-  {
-    id: "4",
-    title: "Course feedback",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
-    responses: 12,
-  },
-  {
-    id: "5",
-    title: "Customer feedback",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
-    responses: 12,
-  },
-  {
-    id: "6",
-    title: "Course feedback",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
-    responses: 12,
-  },
-];
 
 export default function Index() {
   const router = useRouter();
-  const [surveys, setAllSurveys] = useState([]);
+  const [surveys, setMySurveys] = useState([]);
   // const { data, error } = useSWR('/login', fetcher)
 
   useEffect(() => {
@@ -155,9 +111,9 @@ export default function Index() {
 
   const getSurveyTypes = () => {
     surveyService
-      .get_all_surveys()
+      .get_my_surveys()
       .then((res) => {
-        setAllSurveys(res.data);
+        setMySurveys(res.data);
       })
       .catch((error) => {
         toast.error(error.message, {
@@ -172,7 +128,7 @@ export default function Index() {
       <DashboardH></DashboardH>
       <FullBackground maxWidth="lg">
         <DashboardHeader>
-          <Typography variant="h4">All Surveys</Typography>
+          <Typography variant="h4">My Surveys</Typography>
         </DashboardHeader>
         <GridContainer container spacing={5}>
           {surveys.map((survey, index) => (
