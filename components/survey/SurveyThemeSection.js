@@ -82,39 +82,21 @@ export default function SurveyThemeSection({ logo }) {
       })
       .join(",");
 
-    //   Uncomment below code after api's are merged
-    // const surveyPayload = {
-    //   survey_title: survey.surveyTitle,
-    //   access_list_emails: members || [],
-    //   survey_type: survey.surveyType,
-    //   survey_theme: survey.surveyTheme,
-    //   welcome_text: survey.surveyWelcomeText,
-    //   survey_questions: survey.questions,
-    // };
-
-    // //   remove below code after api's are merged
-    let surveyData = {
+    const surveyPayload = {
       survey_title: survey.surveyTitle,
       access_list_emails: members || [],
       survey_type: survey.surveyType,
       survey_theme: survey.surveyTheme,
-    };
-    const addQuestionsPayload = {
       welcome_text: survey.surveyWelcomeText,
       survey_questions: survey.questions,
     };
 
     if (members.length === 0) {
-      delete surveyData.access_list_emails;
+      delete surveyPayload.access_list_emails;
     }
 
     try {
-      const surveyRes = await surveyService.create_survey(surveyData);
-      //   remove below code after api's are merged
-      await surveyService.add_survey_questions(
-        addQuestionsPayload,
-        surveyRes.code.survey_id
-      );
+      const surveyRes = await surveyService.create_survey(surveyPayload);
       toast.success("Survey created successfully", {
         position: toast.POSITION.TOP_RIGHT,
       });
