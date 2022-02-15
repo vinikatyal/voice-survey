@@ -19,6 +19,7 @@ export const surveyService = {
   create_survey,
   get_survey_template_metadata,
   get_survey_template_data,
+  get_all_surveys,
   getAll,
 };
 
@@ -27,6 +28,20 @@ async function create_survey(data) {
     .post(`${baseUrl}/create_survey`, data, { token: tokenSubject.value })
     .then((res) => {
       if (get(res, "code.survey_id")) {
+        return res;
+      } else {
+        return {};
+      }
+    });
+}
+
+function get_all_surveys() {
+  return fetchWrapper
+    .get(`${baseUrl}/get_all_surveys`, {
+      token: tokenSubject.value,
+    })
+    .then((res) => {
+      if (get(res, "code") === 200) {
         return res;
       } else {
         return {};

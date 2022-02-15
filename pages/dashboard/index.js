@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 
 // import fetcher from '../../hooks/api/fetcher'
 
@@ -18,6 +18,8 @@ import DashboardH from "../../components/dashboard/DashboardHeader";
 
 import Delete from "@mui/icons-material/Delete";
 import logo from "../../images/logo.png";
+
+import { surveyService } from "../../services/survey.service";
 
 import styled from "@emotion/styled";
 
@@ -144,10 +146,27 @@ const surveyData = [
 
 export default function Index() {
   const router = useRouter();
-
+  const [surveys, setAllSurveys] = useState([]);
   // const { data, error } = useSWR('/login', fetcher)
 
-  const handleSubmit = () => {};
+  useEffect(() => {
+    getSurveyTypes();
+  }, []);
+
+  const getSurveyTypes = () => {
+    surveyService
+      .get_all_surveys()
+      .then((res) => {
+        setAllSurveys(res.data);
+      })
+      .catch((error) => {
+        toast.error(error.message, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
+  };
+
+  const deleteSurvey = () => {};
   return (
     <>
       <DashboardH></DashboardH>
@@ -156,20 +175,25 @@ export default function Index() {
           <Typography variant="h4">All Surveys</Typography>
         </DashboardHeader>
         <GridContainer container spacing={5}>
-          {surveyData.map((survey, index) => (
-            <Grid key={index} item md={4}>
+          {surveys.map((survey, index) => (
+            <Grid key={survey.survey_id} item md={4}>
               <SurveyCard variant="outlined">
                 <CardContent>
                   <CardTitle>
-                    <CardHead>{survey.title}</CardHead>
+                    <CardHead>{survey.survey_title}</CardHead>
                     <CardIconContainer>
-                      <CardIcon>
+                      <CardIcon onClick={deleteSurvey}>
                         <Delete />
                       </CardIcon>
                     </CardIconContainer>
                   </CardTitle>
-                  <Typography variant="body2">{survey.description}</Typography>
-                  <Response>{survey.responses} responses</Response>
+                  <Typography variant="body2">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                    do et dolore magna aliqua. Amet facilisis magna etiam orci.
+                  </Typography>
+                  {survey.responses && (
+                    <Response>{survey.responses} responses</Response>
+                  )}
                 </CardContent>
               </SurveyCard>
             </Grid>
