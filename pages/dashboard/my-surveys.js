@@ -18,6 +18,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 import DashboardH from "../../components/dashboard/DashboardHeader";
 
+import person from "../../images/svg/person.svg";
 import Delete from "@mui/icons-material/Delete";
 
 import { surveyService } from "../../services/survey.service";
@@ -84,10 +85,18 @@ const CardIcon = styled(IconButton)({
 });
 
 const Response = styled("div")({
+  display: "flex",
+  alignItems: "center",
   fontSize: "14px",
   fontWeight: 600,
   color: "#00063e",
   marginTop: "16px",
+});
+
+const Logo = styled(Image)(({}) => ({}));
+
+const Text = styled("div")({
+  marginLeft: "4px",
 });
 
 const SurveyCard = styled(Card)({
@@ -127,7 +136,7 @@ export default function Index() {
   };
 
   const deleteSurvey = () => {
-      setOpen(true)
+    setOpen(true);
   };
   return (
     <>
@@ -153,9 +162,10 @@ export default function Index() {
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
                     do et dolore magna aliqua. Amet facilisis magna etiam orci.
                   </Typography>
-                  {survey.responses && (
-                    <Response>{survey.responses} responses</Response>
-                  )}
+                  <Response>
+                    <Logo src={person} width="14" alt="person" />
+                    <Text>2 responses</Text>
+                  </Response>
                 </CardContent>
               </SurveyCard>
             </Grid>

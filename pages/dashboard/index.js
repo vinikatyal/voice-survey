@@ -63,8 +63,6 @@ const NavLink = styled(Link)(({}) => ({
   cursor: "pointer",
 }));
 
-const Logo = styled(Image)(({}) => ({}));
-
 const CardTitle = styled("div")({
   width: "100%",
   fontSize: "16px",
@@ -96,6 +94,8 @@ const Response = styled("div")({
   color: "#00063e",
   marginTop: "16px",
 });
+
+const Logo = styled(Image)(({}) => ({}));
 
 const Text = styled("div")({
   marginLeft: "4px",
