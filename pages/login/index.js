@@ -210,7 +210,7 @@ export default function Index() {
                 </Grid>
                 <Grid container>
                   <Grid item xs>
-                    <GoogleSignin
+                    {/* <GoogleSignin
                       type="submit"
                       variant="outlined"
                       fullWidth
@@ -225,7 +225,7 @@ export default function Index() {
                       sx={{ mt: 3, mb: 2 }}
                     >
                       Login with google
-                    </GoogleSignin>
+                    </GoogleSignin> */}
                   </Grid>
                 </Grid>
               </Box>

@@ -37,6 +37,7 @@ const QuestionAccordionSummary = styled("div")(() => ({
   display: "flex",
   width: "100%",
   justifyContent: "space-between",
+  alignItems: "center"
 }));
 
 const Label = styled("span")({

@@ -84,16 +84,12 @@ export default function SurveyThemeSection({ logo }) {
 
     const surveyPayload = {
       survey_title: survey.surveyTitle,
-      access_list_emails: members || [],
+      access_list_emails: members || "",
       survey_type: survey.surveyType,
       survey_theme: survey.surveyTheme,
       welcome_text: survey.surveyWelcomeText,
       survey_questions: survey.questions,
     };
-
-    if (members.length === 0) {
-      delete surveyPayload.access_list_emails;
-    }
 
     try {
       const surveyRes = await surveyService.create_survey(surveyPayload);

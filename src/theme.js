@@ -16,6 +16,9 @@ const theme = createTheme({
   typography: {
     fontFamily: "Poppins",
     fontSize: 14,
+    h2: {
+      color: "#00063e",
+    },
     h4: {
       fontSize: 21,
       fontWeight: 600,
@@ -41,10 +44,17 @@ const theme = createTheme({
       fontWeight: 500,
       textTransform: "none",
     },
+    body1: {
+      fontSize: 16,
+      color: "#707070",
+    },
     body2: {
       fontSize: 14,
       color: "#707070",
       textAlign: "justify",
+    },
+    label: {
+      color: "#707070",
     },
   },
   overrides: {
