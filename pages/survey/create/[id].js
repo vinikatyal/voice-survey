@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import Layout from "../../../components/Layout";
 import SurveyHeader from "../../../components/survey/SurveyHeader";
@@ -12,6 +12,7 @@ import { surveyService } from "../../../services/survey.service";
 
 // State Manager
 import { useDispatchSurvey, useSurvey } from "../../../context/SurveyState";
+import { authService } from "../../../services/auth.service";
 
 export async function getStaticPaths() {
   const paths = [{ params: { id: "questions" } }, { params: { id: "themes" } }];
@@ -31,6 +32,8 @@ export async function getStaticProps({ params }) {
 }
 
 export default function create({ currentTab }) {
+  const [logo, setLogo] = useState("");
+
   const router = useRouter();
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
@@ -40,6 +43,9 @@ export default function create({ currentTab }) {
       router.push("/survey/create");
       return;
     }
+
+    const profile = await authService.get_user_profile();
+    profile.data.logo && setLogo(profile.data.logo);
 
     if (survey.previousSurveyType !== survey.surveyType) {
       const res = await surveyService.get_survey_template_data({
@@ -69,7 +75,7 @@ export default function create({ currentTab }) {
           {currentTab === "questions" ? (
             <SurveyQuestionSection questions={survey.questions} />
           ) : (
-            <SurveyThemeSection />
+            <SurveyThemeSection logo={logo} />
           )}
         </SurveyCreateTabSection>
       </SurveyHeader>

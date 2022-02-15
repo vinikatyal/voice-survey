@@ -1,11 +1,13 @@
 import React from "react";
 
+import { useRouter } from "next/router";
+
 // UI
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import styled from "@emotion/styled";
-import AddLogo from "../AddLogo";
 import ThemeItem from "../ThemeItem";
+import Box from "@mui/material/Box";
 
 import { toast } from "react-toastify";
 
@@ -21,6 +23,8 @@ import theme3 from "../../images/themes/theme3.png";
 
 // State Manager
 import { useSurvey, useDispatchSurvey } from "../../context/SurveyState";
+import Image from "next/image";
+import { get } from "react-hook-form";
 
 const Label = styled("span")({
   color: "#707070",
@@ -28,14 +32,24 @@ const Label = styled("span")({
   fontWeight: "500",
 });
 
-const ButtonContainer = styled(Container)({
+const ButtonContainer = styled("div")({
   display: "flex",
   justifyContent: "flex-end",
   alignItems: "center",
   marginTop: "30px",
 });
 
-export default function SurveyThemeSection() {
+const LogoContainer = styled(Box)({
+  width: "140px",
+  height: "140px",
+  border: "dotted 2px #0a23fb",
+  borderRadius: "8px",
+  padding: "5px",
+  marginTop: "10px",
+});
+
+export default function SurveyThemeSection({ logo }) {
+  const router = useRouter();
   const themes = [
     {
       id: "BLUE",
@@ -54,17 +68,10 @@ export default function SurveyThemeSection() {
     },
   ];
 
-  const [selectedValue, setSelectedValue] = React.useState("BLUE");
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
 
-  console.log(survey);
-
   const handleChangeSelectedValue = (themeName) => {
-    selectedValue === themeName
-      ? setSelectedValue("")
-      : setSelectedValue(themeName);
-
     dispatch({ type: "SET_THEME", value: themeName });
   };
 
@@ -74,42 +81,43 @@ export default function SurveyThemeSection() {
         return item.value;
       })
       .join(",");
-    const surveyData = {
+
+    const surveyPayload = {
       survey_title: survey.surveyTitle,
       access_list_emails: members || [],
       survey_type: survey.surveyType,
       survey_theme: survey.surveyTheme,
+      welcome_text: survey.surveyWelcomeText,
+      survey_questions: survey.questions,
     };
-    await surveyService
-      .create_survey(surveyData)
-      .then(async (res) => {
-        console.log(res);
-        await surveyService
-          .add_survey_questions(survey.questions, res.code.survey_id)
-          .then(() => {
-            toast.success("Survey created successfully", {
-              position: toast.POSITION.TOP_RIGHT,
-            });
-          })
-          .catch((error) => {
-            toast.error(error.message, {
-              position: toast.POSITION.TOP_RIGHT,
-            });
-          });
-      })
-      .catch((error) => {
-        toast.error(error.message, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+
+    if (members.length === 0) {
+      delete surveyPayload.access_list_emails;
+    }
+
+    try {
+      const surveyRes = await surveyService.create_survey(surveyPayload);
+      toast.success("Survey created successfully", {
+        position: toast.POSITION.TOP_RIGHT,
       });
+      router.push("/dashboard");
+    } catch (error) {
+      toast.error(error.message, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    }
   };
 
   return (
     <Container maxWidth="lg">
-      <Grid mt={2} container direction="column">
-        <Label>Select any png,svg or jpg file</Label>
-        <AddLogo />
-      </Grid>
+      {logo && (
+        <Grid mt={2} container direction="column">
+          <Label>Select any png,svg or jpg file</Label>
+          <LogoContainer>
+            <Image height={140} width={140} src={logo} unoptimized={false} />
+          </LogoContainer>
+        </Grid>
+      )}
       <Grid mt={2} container direction="column">
         <Label>Choose Theme</Label>
         <Grid container direction="row" justifyContent="space-between">
@@ -119,19 +127,14 @@ export default function SurveyThemeSection() {
               id={item.id}
               theme={item.theme}
               themeName={item.themeName}
-              selectedValue={selectedValue}
+              selectedValue={survey.surveyTheme}
               handleChange={handleChangeSelectedValue}
             />
           ))}
         </Grid>
       </Grid>
       <ButtonContainer>
-        <StyledButton
-          type="submit"
-          onClick={createSurvey}
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
-        >
+        <StyledButton type="submit" onClick={createSurvey} variant="contained">
           Create Survey
         </StyledButton>
       </ButtonContainer>

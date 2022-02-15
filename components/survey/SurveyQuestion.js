@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import Button from "@mui/material/Button";
 
 // icons
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -57,7 +58,7 @@ const StyledQuestionHead = styled("div")({
   display: "flex",
   justifyContent: "flex-start",
   alignItems: "center",
-  width: "100%",
+  width: "70%",
 });
 const StyledQuestionHeadEndSlot = styled(Grid)({
   display: "flex",
@@ -68,15 +69,11 @@ const AnswerSection = styled("div")(() => ({
   width: "30%",
 }));
 
-const AddImage = styled("div")(() => ({
-  backgroundColor: "#E1E1E1",
-  width: "147px",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "end",
-  marginTop: "10px",
-  padding: "5px 10px",
-  cursor: "pointer",
+const SuccessButton = styled(Button)(() => ({
+  backgroundColor: "#19B885",
+  "&:hover": {
+    background: "#19B885",
+  },
 }));
 
 export default function SurveyQuestion({
@@ -88,6 +85,7 @@ export default function SurveyQuestion({
   required,
   handleExpanded,
   deleteQuestion,
+  handleAddQuestion,
 }) {
   const {
     register,
@@ -101,7 +99,7 @@ export default function SurveyQuestion({
     { id: 2, label: "Description", value: "description" },
     { id: 3, label: "Email", value: "email" },
     { id: 4, label: "Phone number", value: "contact" },
-    { id: 5, label: "Date picker", value: "date" },
+    { id: 5, label: "Date picker", value: "date_picker" },
     { id: 6, label: "Voice", value: "audio" },
   ];
   const survey = useSurvey();
@@ -174,9 +172,20 @@ export default function SurveyQuestion({
                 }
                 label="Required"
               />
+              {questionNumber === survey.questions.length && (
+                <SuccessButton
+                  size="medium"
+                  variant="contained"
+                  disableElevation
+                  disableRipple
+                  onClick={() => handleAddQuestion()}
+                >
+                  Add Question
+                </SuccessButton>
+              )}
               <DeleteIcon
                 onClick={() => deleteQuestion(id)}
-                sx={{ color: "#9a9cb5" }}
+                sx={{ color: "#9a9cb5", marginLeft: "20px" }}
               />
             </StyledQuestionHeadEndSlot>
           </QuestionAccordionSummary>
