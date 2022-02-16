@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-// import fetcher from '../../hooks/api/fetcher'
-
 import { useRouter } from "next/router";
 
 import Image from "next/image";
@@ -12,12 +10,18 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
+import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 import DashboardH from "../../components/dashboard/DashboardHeader";
 
+import person from "../../images/svg/person.svg";
 import Delete from "@mui/icons-material/Delete";
-import logo from "../../images/logo.png";
 
 import { surveyService } from "../../services/survey.service";
 
@@ -59,12 +63,6 @@ const NavLink = styled(Link)(({}) => ({
   cursor: "pointer",
 }));
 
-const Logo = styled(Image)(({}) => ({
-  height: "30px",
-  display: "flex",
-  justifyContent: "flex-start",
-}));
-
 const CardTitle = styled("div")({
   width: "100%",
   fontSize: "16px",
@@ -89,65 +87,39 @@ const CardIcon = styled(IconButton)({
 });
 
 const Response = styled("div")({
+  display: "flex",
+  alignItems: "center",
   fontSize: "14px",
   fontWeight: 600,
   color: "#00063e",
   marginTop: "16px",
 });
 
+const Logo = styled(Image)(({}) => ({}));
+
+const Text = styled("div")({
+  marginLeft: "4px",
+});
+
 const SurveyCard = styled(Card)({
   cursor: "pointer",
 });
 
-const surveyData = [
-  {
-    id: "1",
-    title: "CSAT",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
-    responses: 12,
+const SuccessButton = styled(Button)(() => ({
+  backgroundColor: "#19B885",
+  "&:hover": {
+    background: "#19B885",
   },
-  {
-    id: "2",
-    title: "Teacher Feedback",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
-    responses: 12,
-  },
-  {
-    id: "3",
-    title: "PMF Survey",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
-    responses: 12,
-  },
-  {
-    id: "4",
-    title: "Course feedback",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
-    responses: 12,
-  },
-  {
-    id: "5",
-    title: "Customer feedback",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
-    responses: 12,
-  },
-  {
-    id: "6",
-    title: "Course feedback",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
-    responses: 12,
-  },
-];
+}));
 
 export default function Index() {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
   const [surveys, setAllSurveys] = useState([]);
-  // const { data, error } = useSWR('/login', fetcher)
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     getSurveyTypes();
@@ -166,7 +138,9 @@ export default function Index() {
       });
   };
 
-  const deleteSurvey = () => {};
+  const deleteSurvey = () => {
+    setOpen(true);
+  };
   return (
     <>
       <DashboardH></DashboardH>
@@ -191,14 +165,44 @@ export default function Index() {
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
                     do et dolore magna aliqua. Amet facilisis magna etiam orci.
                   </Typography>
-                  {survey.responses && (
-                    <Response>{survey.responses} responses</Response>
-                  )}
+                  <Response>
+                    <Logo src={person} width="14" alt="person" />
+                    <Text>2 responses</Text>
+                  </Response>
                 </CardContent>
               </SurveyCard>
             </Grid>
           ))}
         </GridContainer>
+
+        {open && (
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-describedby="alert-dialog-slide-description"
+          >
+            <DialogTitle>{"Delete Survey?"}</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-slide-description">
+                Are you sure you want to delete your survey?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button size="medium" onClick={handleClose}>
+                No
+              </Button>
+              <SuccessButton
+                size="medium"
+                variant="contained"
+                disableElevation
+                disableRipple
+                onClick={handleClose}
+              >
+                Yes, Delete
+              </SuccessButton>
+            </DialogActions>
+          </Dialog>
+        )}
       </FullBackground>
     </>
   );
