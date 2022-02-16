@@ -49,7 +49,8 @@ const initialState = {
   selectedSurveyTheme: {
     id: 1,
     theme: theme1,
-    themeName: "BLUE",
+    name: "BLUE",
+    themeName: "Theme Blue",
     color: "linear-gradient(to right, #1EA798, #2D4C93)!important;",
   },
   previousSurveyType: null,
