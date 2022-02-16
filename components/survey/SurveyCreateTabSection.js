@@ -52,7 +52,7 @@ export default function SurveyCreateTabSection({
   children,
 }) {
   const goToPreview = () => {
-    router.push("/survey");
+    router.push("/survey/preview/1");
   };
   return (
     <>

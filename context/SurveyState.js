@@ -2,6 +2,10 @@ import React, { useReducer, useContext, createContext } from "react";
 
 import produce from "immer";
 
+import theme1 from "../images/themes/theme1.png";
+import theme2 from "../images/themes/theme2.png";
+import theme3 from "../images/themes/theme3.png";
+
 const SurveyStateContext = createContext();
 const SurveyDispatchContext = createContext();
 
@@ -10,7 +14,26 @@ const initialState = {
   accessMembers: [],
   surveyType: "",
   surveyWelcomeText: "",
-  surveyTheme: "BLUE",
+  themes: [
+    {
+      id: 1,
+      theme: theme1,
+      themeName: "Theme Blue",
+      color: "linear-gradient(to right, #1EA798, #2D4C93)!important;",
+    },
+    {
+      id: 2,
+      theme: theme2,
+      themeName: "Theme Pink",
+      color: "linear-gradient(to right, #EC2E89, #9540E4)!important;",
+    },
+    {
+      id: 3,
+      theme: theme3,
+      themeName: "Theme Orange",
+      color: "linear-gradient(to right, #350F69, #BA824C)!important;",
+    },
+  ],
   questions: [
     {
       qid: 1,
@@ -20,6 +43,12 @@ const initialState = {
       expandStatus: true,
     },
   ],
+  selectedSurveyTheme: {
+    id: 1,
+    theme: theme1,
+    themeName: "Theme Blue",
+    color: "linear-gradient(to right, #1EA798, #2D4C93)!important;",
+  },
   previousSurveyType: null,
 };
 
@@ -48,7 +77,7 @@ const reducer = produce((draft, action) => {
       break;
 
     case "SET_THEME":
-      draft.surveyTheme = action.value;
+      draft.selectedSurveyTheme = action.value;
       break;
     default:
       throw new Error(`Unknown action: ${action.type}`);
