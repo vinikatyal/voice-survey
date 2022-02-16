@@ -63,7 +63,7 @@ export default function SurveyThemeSection({ logo }) {
       survey_title: survey.surveyTitle,
       access_list_emails: members || "",
       survey_type: survey.surveyType,
-      survey_theme: survey.surveyTheme,
+      survey_theme: survey.selectedSurveyTheme.name,
       welcome_text: survey.surveyWelcomeText,
       survey_questions: survey.questions,
     };
