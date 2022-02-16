@@ -18,19 +18,22 @@ const initialState = {
     {
       id: 1,
       theme: theme1,
+      name: "BLUE",
       themeName: "Theme Blue",
       color: "linear-gradient(to right, #1EA798, #2D4C93)!important;",
     },
     {
       id: 2,
       theme: theme2,
+      name: "PINK",
       themeName: "Theme Pink",
       color: "linear-gradient(to right, #EC2E89, #9540E4)!important;",
     },
     {
       id: 3,
       theme: theme3,
-      themeName: "Theme Orange",
+      name: "YELLOW",
+      themeName: "Theme Yellow",
       color: "linear-gradient(to right, #350F69, #BA824C)!important;",
     },
   ],
@@ -46,7 +49,7 @@ const initialState = {
   selectedSurveyTheme: {
     id: 1,
     theme: theme1,
-    themeName: "Theme Blue",
+    themeName: "BLUE",
     color: "linear-gradient(to right, #1EA798, #2D4C93)!important;",
   },
   previousSurveyType: null,
