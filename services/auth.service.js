@@ -28,9 +28,15 @@ export const authService = {
   getAll,
 };
 
-const getFromStorage = (key) => {
+export const getFromStorage = (key) => {
   if (typeof window !== "undefined") {
     return JSON.parse(window.localStorage.getItem(key));
+  }
+};
+
+const addToStorage = (key, value) => {
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(key, value);
   }
 };
 
@@ -41,7 +47,8 @@ function login(email, password) {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
 
       if (res.code === 200) {
-        localStorage.setItem("token", JSON.stringify(res.data.token));
+        console.log(res.data.token)
+        addToStorage("token", JSON.stringify(res.data.token));
         tokenSubject.next(res);
 
         return res;
@@ -59,7 +66,7 @@ function signup(email, password, mobile) {
 
       if (res.code === 200) {
         console.log(res);
-        localStorage.setItem("token", JSON.stringify(res.data.token));
+        addToStorage("token", JSON.stringify(res.data.token));
         tokenSubject.next(res);
 
         return res;
