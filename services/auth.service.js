@@ -47,7 +47,7 @@ function login(email, password) {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
 
       if (res.code === 200) {
-        console.log(res.data.token)
+        console.log(res.data.token);
         addToStorage("token", JSON.stringify(res.data.token));
         tokenSubject.next(res);
 
@@ -55,6 +55,9 @@ function login(email, password) {
       } else {
         errorHandler({}, res);
       }
+    })
+    .catch((error) => {
+      errorHandler(error, {});
     });
 }
 
@@ -73,6 +76,9 @@ function signup(email, password, mobile) {
       } else {
         errorHandler({}, res);
       }
+    })
+    .catch((error) => {
+      errorHandler(error, {});
     });
 }
 
