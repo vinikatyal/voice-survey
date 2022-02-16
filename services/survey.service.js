@@ -4,6 +4,7 @@ import getConfig from "next/config";
 import get from "lodash.get";
 
 import { fetchWrapper } from "../helpers/fetch-wrapper";
+import { getFromStorage } from "./auth.service";
 
 const { publicRuntimeConfig } = getConfig();
 const baseUrl = `${publicRuntimeConfig.apiUrl}`;
@@ -12,10 +13,6 @@ const tokenSubject = new BehaviorSubject(
 );
 
 export const surveyService = {
-  token: tokenSubject.asObservable(),
-  get tokenValue() {
-    return tokenSubject.value;
-  },
   create_survey,
   get_survey_template_metadata,
   get_survey_template_data,
@@ -26,7 +23,7 @@ export const surveyService = {
 
 async function create_survey(data) {
   return await fetchWrapper
-    .post(`${baseUrl}/create_survey`, data, { token: tokenSubject.value })
+    .post(`${baseUrl}/create_survey`, data, { token: getFromStorage("token") })
     .then((res) => {
       if (get(res, "code.survey_id")) {
         return res;
@@ -39,7 +36,7 @@ async function create_survey(data) {
 function get_all_surveys(page) {
   return fetchWrapper
     .get(`${baseUrl}/get_all_surveys`, {
-      token: tokenSubject.value,
+      token: getFromStorage("token"),
       pageno: page,
       max_records: 9,
     })
@@ -55,7 +52,7 @@ function get_all_surveys(page) {
 function get_my_surveys(page) {
   return fetchWrapper
     .get(`${baseUrl}/get_my_surveys`, {
-      token: tokenSubject.value,
+      token: getFromStorage("token"),
       pageno: page,
       max_records: 9,
     })
@@ -71,7 +68,7 @@ function get_my_surveys(page) {
 function get_survey_template_metadata() {
   return fetchWrapper
     .get(`${baseUrl}/get_survey_template_metadata`, {
-      token: tokenSubject.value,
+      token: getFromStorage("token"),
     })
     .then((res) => {
       if (get(res, "code") === 200) {
@@ -85,7 +82,7 @@ function get_survey_template_metadata() {
 async function get_survey_template_data(data) {
   return await fetchWrapper
     .post(`${baseUrl}/get_survey_template_data`, data, {
-      token: tokenSubject.value,
+      token: getFromStorage("token"),
     })
     .then((res) => {
       if (get(res, "code") === 200) {
