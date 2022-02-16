@@ -36,10 +36,12 @@ async function create_survey(data) {
     });
 }
 
-function get_all_surveys() {
+function get_all_surveys(page) {
   return fetchWrapper
     .get(`${baseUrl}/get_all_surveys`, {
       token: tokenSubject.value,
+      pageno: page,
+      max_records: 9,
     })
     .then((res) => {
       if (get(res, "code") === 200) {
@@ -50,11 +52,12 @@ function get_all_surveys() {
     });
 }
 
-
-function get_my_surveys() {
+function get_my_surveys(page) {
   return fetchWrapper
     .get(`${baseUrl}/get_my_surveys`, {
       token: tokenSubject.value,
+      pageno: page,
+      max_records: 9,
     })
     .then((res) => {
       if (get(res, "code") === 200) {
