@@ -49,7 +49,7 @@ export default function Share() {
   return (
     <Layout>
       <SurveyHeader headerTitle="Survey's Name Here" currentTab="SHARE">
-        <SurveySubHeader title={"Welcome Back, Harsha!"} />
+        <SurveySubHeader title={"Welcome Back!"} />
         <ShareSection>
           <FormSection>
             <FormLabel>Share via link</FormLabel>
