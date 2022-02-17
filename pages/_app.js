@@ -50,6 +50,8 @@ export default function MyApp(props) {
       "/dashboard/settings",
       "/details",
       "/survey/preview/1",
+      "/survey/create/questions",
+      "/survey/create/themes"
     ];
     const path = url.split("?")[0];
     if (!authService.tokenValue && !publicPaths.includes(path)) {

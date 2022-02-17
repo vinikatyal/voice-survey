@@ -39,27 +39,27 @@ export default function create({ currentTab }) {
   const dispatch = useDispatchSurvey();
 
   useEffect(async () => {
-    if (!survey.surveyType) {
-      router.push("/survey/create");
-      return;
-    }
+    // if (!survey.surveyType) {
+    //   router.push("/survey/create");
+    //   return;
+    // }
 
-    const profile = await authService.get_user_profile();
-    profile.data.logo && setLogo(profile.data.logo);
+    // const profile = await authService.get_user_profile();
+    // profile.data.logo && setLogo(profile.data.logo);
 
-    if (survey.previousSurveyType !== survey.surveyType) {
-      const res = await surveyService.get_survey_template_data({
-        survey_type: survey.surveyType,
-      });
-      const modifiedArr = res.data.questions.map((obj, index) => {
-        return index === 0
-          ? { ...obj, expandStatus: true, required: false }
-          : { ...obj, expandStatus: false, required: false };
-      });
-      modifiedArr.length &&
-        dispatch({ type: "SET_QUESTIONS", value: modifiedArr });
-      dispatch({ type: "SET_PREV_SURVEYTYPE", value: survey.surveyType });
-    }
+    // if (survey.previousSurveyType !== survey.surveyType) {
+    //   const res = await surveyService.get_survey_template_data({
+    //     survey_type: survey.surveyType,
+    //   });
+    //   const modifiedArr = res.data.questions.map((obj, index) => {
+    //     return index === 0
+    //       ? { ...obj, expandStatus: true, required: false }
+    //       : { ...obj, expandStatus: false, required: false };
+    //   });
+    //   modifiedArr.length &&
+    //     dispatch({ type: "SET_QUESTIONS", value: modifiedArr });
+    //   dispatch({ type: "SET_PREV_SURVEYTYPE", value: survey.surveyType });
+    // }
   }, [survey.surveyType]);
 
   const handleChangeTab = (currentTab) => {
