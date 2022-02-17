@@ -37,6 +37,14 @@ const initialState = {
       color: "linear-gradient(to right, #350F69, #BA824C)!important;",
     },
   ],
+  questionTypeList: [
+    { id: 1, label: "Textfield", value: "text" },
+    { id: 2, label: "Description", value: "description" },
+    { id: 3, label: "Email", value: "email" },
+    { id: 4, label: "Phone number", value: "contact" },
+    { id: 5, label: "Date picker", value: "date_picker" },
+    { id: 6, label: "Voice", value: "audio" },
+  ],
   questions: [
     {
       qid: 1,

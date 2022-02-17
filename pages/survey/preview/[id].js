@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 
 import { useRouter } from "next/router";
+import get from "lodash.get";
 
-import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
 import SpeedDial from "@mui/material/SpeedDial";
-import Typography from "@mui/material/Typography";
 
 import CloseIcon from "@mui/icons-material/Close";
+import MultiLineTextField from "../../../components/questions/MultiLineTextField";
+import SingleLineTextField from "../../../components/questions/SingleLineTextField";
+import EmailTextField from "../../../components/questions/EmailTextField";
+import DateField from "../../../components/questions/DateField";
+import VoiceInput from "../../../components/questions/VoiceInput";
 
 import { useSurvey } from "../../../context/SurveyState";
 
@@ -48,9 +51,6 @@ export default function questions() {
     }
   }, [id]);
 
-  const handleNext = () => {
-    router.push(`/survey/preview/${+id + 1}`);
-  };
   const handleClose = () => {
     router.push(`/survey/create/questions`);
   };
@@ -68,33 +68,61 @@ export default function questions() {
         icon={<CloseIcon />}
       ></SpeedDial>
       <StyledContainer maxWidth="lg">
-        <Grid
-          container
-          height="100%"
-          direction="column"
-          justifyContent="space-around"
-          alignItems="center"
-        >
-          <Grid item>
-            <Typography color="#00063e" fontSize="28px" fontWeight="500">
-              {question.question || ""}
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Button
-              sx={{ width: "140px", marginRight: "30px" }}
-              variant="outlined"
-            >
-              Back
-            </Button>
-            <StyledButton
-              disabled={+id === survey.questions.length}
-              onClick={handleNext}
-            >
-              Next
-            </StyledButton>
-          </Grid>
-        </Grid>
+        {get(question, "question_type", "") === "text" && (
+          <SingleLineTextField
+            title={get(question, "question", "")}
+            required={get(question, "required", false)}
+            totalQuestions={survey.questions.length}
+            id={id}
+            secondaryButtonTitle={+id !== 1 && "Back"}
+            primaryButtonTitle="Next"
+            nextRoute={`/survey/preview/${+id + 1}`}
+          />
+        )}
+        {get(question, "question_type", "") === "description" && (
+          <MultiLineTextField
+            title={get(question, "question", "")}
+            required={get(question, "required", false)}
+            totalQuestions={survey.questions.length}
+            id={id}
+            secondaryButtonTitle={+id !== 1 && "Back"}
+            primaryButtonTitle="Next"
+            nextRoute={`/survey/preview/${+id + 1}`}
+          />
+        )}
+        {get(question, "question_type", "") === "email" && (
+          <EmailTextField
+            title={get(question, "question", "")}
+            required={get(question, "required", false)}
+            totalQuestions={survey.questions.length}
+            id={id}
+            secondaryButtonTitle={+id !== 1 && "Back"}
+            primaryButtonTitle="Next"
+            nextRoute={`/survey/preview/${+id + 1}`}
+          />
+        )}
+        {get(question, "question_type", "") === "date_picker" && (
+          <DateField
+            title={get(question, "question", "")}
+            required={get(question, "required", false)}
+            totalQuestions={survey.questions.length}
+            id={id}
+            secondaryButtonTitle={+id !== 1 && "Back"}
+            primaryButtonTitle="Next"
+            nextRoute={`/survey/preview/${+id + 1}`}
+          />
+        )}
+        {get(question, "question_type", "") === "audio" && (
+          <VoiceInput
+            title={get(question, "question", "")}
+            required={get(question, "required", false)}
+            totalQuestions={survey.questions.length}
+            id={id}
+            secondaryButtonTitle={+id !== 1 && "Back"}
+            primaryButtonTitle="Next"
+            nextRoute={`/survey/preview/${+id + 1}`}
+          />
+        )}
       </StyledContainer>
     </FullBackgroundSurvey>
   );
