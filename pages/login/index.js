@@ -19,8 +19,6 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 // image
-import logo from "../../images/logo.png";
-import bck from "../../images/bck.png";
 import google from "../../images/svg/google.svg";
 
 // internal components
@@ -101,10 +99,6 @@ export default function Index() {
         });
       });
   };
-
-  //   const handleKeypress = (e) => {
-  //     console.log(e);
-  //   };
   return (
     <Layout bgColor="#f7fafc">
       <Limiter>
@@ -116,8 +110,18 @@ export default function Index() {
           minHeight="100vh"
         >
           <BannerSection item lg={6} md={6}>
-            <Image src={logo} width={142} height={61} alt="background" />
-            <Image src={bck} width={625} height={369} alt="background" />
+            <Image
+              src={"/images/logo.png"}
+              width={142}
+              height={61}
+              alt="background"
+            />
+            <Image
+              src={"/images/bck.png"}
+              width={625}
+              height={369}
+              alt="background"
+            />
           </BannerSection>
           <FormSection
             display="flex"

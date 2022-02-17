@@ -25,8 +25,6 @@ import Limiter from "../../components/Limiter";
 import StyledButton from "../../components/StyledButton";
 
 // images
-import logo from "../../images/logo.png";
-import bck from "../../images/bck.png";
 import google from "../../images/svg/google.svg";
 
 import styled from "@emotion/styled";
@@ -131,18 +129,16 @@ export default function Index() {
         >
           <BannerSection item lg={6} md={6}>
             <Image
-              src={logo}
+              src={"/images/logo.png"}
               width={142}
               height={61}
               alt="background"
-              loading="lazy"
             />
             <Image
-              src={bck}
+              src={"/images/bck.png"}
               width={625}
               height={369}
               alt="background"
-              loading="lazy"
             />
           </BannerSection>
           <FormSection item md={6} lg={6}>
