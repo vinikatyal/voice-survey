@@ -16,6 +16,12 @@ import styled from "@emotion/styled";
 
 import StyledButton from "../../../components/StyledButton";
 
+// preview
+import SingleLineTextField from "../../../components/questions/SingleLineTextfield";
+import EmailTextField from "../../../components/questions/EmailTextField";
+import MultiLineTextField from "../../../components/questions/MultiLineTextField";
+import DateField from "../../../components/questions/DateField";
+
 const FullBackgroundSurvey = styled("div")(({ bgColor }) => ({
   background: bgColor,
   display: "flex",
@@ -78,6 +84,19 @@ export default function questions() {
           <Grid item>
             <Typography color="#00063e" fontSize="28px" fontWeight="500">
               {question.question || ""}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Typography color="#00063e">
+              {question.question.question_type == "text_field" && (
+                <SingleLineTextField _id={question.question.id} />
+              )}
+              {question.question.question_type == "date_picker" && (
+                <DateField _id={question.question.id} />
+              )}
+              {question.question.question_type == "multiline" && (
+                <MultiLineTextField _id={question.question.id} />
+              )}
             </Typography>
           </Grid>
           <Grid item>
