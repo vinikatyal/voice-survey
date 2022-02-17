@@ -12,7 +12,4 @@ module.exports = {
         : "http://172.16.22.5:8086", // production api
   },
   reactStrictMode: true,
-  experimental: {
-    outputStandalone: true,
-  },
 };
