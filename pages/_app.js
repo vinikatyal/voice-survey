@@ -46,6 +46,7 @@ export default function MyApp(props) {
       "/survey/create",
       "/survey/share",
       "/dashboard/my-surveys",
+      "/dashboard/settings",
       "/details",
       "/survey/preview/1",
     ];
