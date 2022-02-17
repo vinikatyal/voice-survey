@@ -10,7 +10,6 @@ import Link from "@mui/material/Link";
 import StyledButton from "../../components/StyledButton";
 import Header from "../../components/Header";
 
-
 import styled from "@emotion/styled";
 
 const BoxCustom = styled(Container)(({}) => ({
