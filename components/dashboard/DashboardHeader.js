@@ -10,7 +10,6 @@ import Link from "@mui/material/Link";
 import StyledButton from "../../components/StyledButton";
 import Header from "../../components/Header";
 
-import logo from "../../images/logo.png";
 
 import styled from "@emotion/styled";
 
@@ -58,7 +57,7 @@ export default function DashboardHeader() {
       <BoxCustom maxWidth="lg">
         <Logo
           onClick={() => openLink("/dashboard")}
-          src={logo}
+          src={"/images/logo.png"}
           alt="background"
         />
         <Nav>
