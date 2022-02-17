@@ -128,6 +128,52 @@ const SuccessButton = styled(Button)(() => ({
   },
 }));
 
+
+const surveyData = [
+    {
+      id: "1",
+      survey_title: "CSAT",
+      welcome_text:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+      responses: 12,
+    },
+    {
+      id: "2",
+      survey_title: "Teacher Feedback",
+      welcome_text:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+      responses: 12,
+    },
+    {
+      id: "3",
+      survey_title: "PMF Survey",
+      welcome_text:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+      responses: 12,
+    },
+    {
+      id: "4",
+      survey_title: "Course feedback",
+      welcome_text:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+      responses: 12,
+    },
+    {
+      id: "5",
+      survey_title: "Customer feedback",
+      welcome_text:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+      responses: 12,
+    },
+    {
+      id: "6",
+      title: "Course feedback",
+      welcome_text:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+      responses: 12,
+    },
+  ];
+
 export default function Index() {
   const [open, setOpen] = useState(false);
   const [surveys, setMySurveys] = useState([]);
@@ -170,7 +216,7 @@ export default function Index() {
           <Typography variant="h4">My Surveys</Typography>
         </DashboardHeader>
         <GridContainer container spacing={5}>
-          {surveys.map((survey, index) => (
+          {surveyData.map((survey, index) => (
             <Grid key={survey.survey_id} item md={4}>
               <SurveyCard variant="outlined">
                 <CardContent>
