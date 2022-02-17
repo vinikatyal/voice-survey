@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 export { errorHandler };
 
 function errorHandler(err, res) {
-  console.log(res);
   if (get(res, "code") === 500) {
     toast.error(res.message, {
       position: toast.POSITION.TOP_RIGHT,
