@@ -10,19 +10,12 @@ const QuestionTextField = styled(TextField)(({}) => ({}));
 
 const QuestionDiv = styled("div")(({}) => ({}));
 
-const QuestionHeader = styled("h2")(({}) => ({
-  fontSize: "28px",
-  color: "#00063e",
-}));
-
 function MultiLineTextField({
-  title,
   placeholder = "Please enter your response",
   _id,
 }) {
   return (
     <QuestionDiv>
-      <QuestionHeader>{title}</QuestionHeader>
       <QuestionTextField
         placeholder={placeholder}
         name={_id}
@@ -34,7 +27,6 @@ function MultiLineTextField({
 }
 
 MultiLineTextField.propTypes = {
-  title: PropTypes.string,
   placeholder: PropTypes.string,
   _id: PropTypes.string,
 };

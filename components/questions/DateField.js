@@ -9,23 +9,15 @@ const QuestionTextField = styled(TextField)(({}) => ({}));
 
 const QuestionDiv = styled("div")(({}) => ({}));
 
-const QuestionHeader = styled("h2")(({}) => ({
-  fontSize: "28px",
-  color: "#00063e",
-}));
-
-function DateField({ title, _id }) {
+function DateField({ _id }) {
   return (
     <QuestionDiv>
-      <QuestionHeader>{title}</QuestionHeader>
       <QuestionTextField id={_id} name={_id} type="date" />
     </QuestionDiv>
   );
 }
 
 DateField.propTypes = {
-  title: PropTypes.string,
-  placeholder: PropTypes.string,
   _id: PropTypes.string,
 };
 
