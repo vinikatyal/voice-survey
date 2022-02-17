@@ -9,7 +9,6 @@ import { toast } from "react-toastify";
 import Image from "next/image";
 
 // UI
-import logo from "../../images/logo.png";
 import styled from "@emotion/styled";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -183,7 +182,7 @@ export default function Index() {
     <Layout>
       <Limiter>
         <ImageContainer>
-          <Image src={logo} alt="background" />
+          <Image src={"/images/logo.png"} alt="background" />
         </ImageContainer>
       </Limiter>
 

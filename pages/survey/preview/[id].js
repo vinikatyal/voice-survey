@@ -6,7 +6,6 @@ import get from "lodash.get";
 import Container from "@mui/material/Container";
 import SpeedDial from "@mui/material/SpeedDial";
 
-import CloseIcon from "@mui/icons-material/Close";
 import MultiLineTextField from "../../../components/questions/MultiLineTextField";
 import SingleLineTextField from "../../../components/questions/SingleLineTextField";
 import EmailTextField from "../../../components/questions/EmailTextField";
@@ -15,9 +14,11 @@ import VoiceInput from "../../../components/questions/VoiceInput";
 
 import { useSurvey } from "../../../context/SurveyState";
 
+import CloseIcon from "@mui/icons-material/Close";
+
 import styled from "@emotion/styled";
 
-import StyledButton from "../../../components/StyledButton";
+// preview
 
 const FullBackgroundSurvey = styled("div")(({ bgColor }) => ({
   background: bgColor,

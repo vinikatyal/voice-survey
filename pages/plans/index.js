@@ -10,7 +10,6 @@ import Limiter from "../../components/Limiter";
 import StyledButton from "../../components/StyledButton";
 
 // logo
-import logo from "../../images/logo.png";
 import planActive from "../../images/plan-active.svg";
 import planInactive from "../../images/plan-inactive.svg";
 
@@ -52,16 +51,19 @@ export default function Index() {
     <Layout>
       <Limiter>
         <ImageContainer>
-          <Image src={logo} alt="background" />
+          <Image src={"/images/logo.png"} alt="background" />
         </ImageContainer>
       </Limiter>
       <PlanHeader>Choose plan</PlanHeader>
 
       <Limiter>
         <PlansSection>
-          <Image src={planInactive} alt="plan-active-svg"></Image>
-          <Image src={planActive} alt="plan-active-svg"></Image>
-          <Image src={planInactive} alt="plan-active-svg"></Image>
+          <Image
+            src={"/images/plan-inactive.svg"}
+            alt="plan-active-svg"
+          ></Image>
+          <Image src={"/images/plan-active.svg"} alt="plan-active-svg"></Image>
+          <Image src={"images/plan-inactive.svg"} alt="plan-active-svg"></Image>
         </PlansSection>
 
         <NextSection>

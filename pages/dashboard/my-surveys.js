@@ -170,47 +170,61 @@ export default function Index() {
           <Typography variant="h4">My Surveys</Typography>
         </DashboardHeader>
         <GridContainer container spacing={5}>
-          {surveys.map((survey, index) => (
-            <Grid key={survey.survey_id} item md={4}>
-              <SurveyCard variant="outlined">
-                <CardContent>
-                  <CardTitle>
-                    <CardHead>{survey.survey_title}</CardHead>
-                    <CardIconContainer>
-                      <CardIcon onClick={deleteSurvey}>
-                        <Delete />
-                      </CardIcon>
-                    </CardIconContainer>
-                  </CardTitle>
-                  <Typography minHeight={50} variant="body2">
-                    {survey.welcome_text}
-                  </Typography>
-                  <Response>
-                    <Left>
-                      <Logo src={person} width="14" alt="person" />
-                      <Text>2 responses</Text>
-                    </Left>
-                    <Edit>Edit</Edit>
-                  </Response>
-                </CardContent>
-              </SurveyCard>
+          {surveys.length ? (
+            surveys.map((survey, index) => (
+              <Grid key={survey.survey_id} item md={4}>
+                <SurveyCard variant="outlined">
+                  <CardContent>
+                    <CardTitle>
+                      <CardHead>{survey.survey_title}</CardHead>
+                      <CardIconContainer>
+                        <CardIcon onClick={deleteSurvey}>
+                          <Delete />
+                        </CardIcon>
+                      </CardIconContainer>
+                    </CardTitle>
+                    <Typography minHeight={50} variant="body2">
+                      {survey.welcome_text}
+                    </Typography>
+                    <Response>
+                      <Left>
+                        <Logo src={person} width="14" alt="person" />
+                        <Text>2 responses</Text>
+                      </Left>
+                      <Edit>Edit</Edit>
+                    </Response>
+                  </CardContent>
+                </SurveyCard>
+              </Grid>
+            ))
+          ) : (
+            <Grid item>
+              {" "}
+              <h3>No Surveys created</h3>
             </Grid>
-          ))}
+          )}
         </GridContainer>
 
-        <Grid marginTop={5} display={"flex"} justifyContent={"flex-end"}>
-          <Pagination
-            count={5}
-            page={page}
-            onChange={handleChange}
-            renderItem={(item) => (
-              <PaginationItem
-                components={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
-                {...item}
-              />
-            )}
-          />
-        </Grid>
+        {surveys && surveys.length ? (
+          <Grid marginTop={5} display={"flex"} justifyContent={"flex-end"}>
+            <Pagination
+              count={5}
+              page={page}
+              onChange={handleChange}
+              renderItem={(item) => (
+                <PaginationItem
+                  components={{
+                    previous: ArrowBackIcon,
+                    next: ArrowForwardIcon,
+                  }}
+                  {...item}
+                />
+              )}
+            />
+          </Grid>
+        ) : (
+          ""
+        )}
       </FullBackground>
       {open && (
         <Dialog
