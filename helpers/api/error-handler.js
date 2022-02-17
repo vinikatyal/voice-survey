@@ -4,14 +4,15 @@ import { toast } from "react-toastify";
 export { errorHandler };
 
 function errorHandler(err, res) {
-  if (get(res.code) === 500) {
+  console.log(res);
+  if (get(res, "code") === 500) {
     toast.error(res.message, {
       position: toast.POSITION.TOP_RIGHT,
     });
     return;
   }
 
-  if (get(res.code) >= 400) {
+  if (get(res, "code") >= 400) {
     toast.error(res.message, {
       position: toast.POSITION.TOP_RIGHT,
     });
