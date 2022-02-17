@@ -85,6 +85,63 @@ const ErrorLabel = styled("div")({
 
 const CustomSelect = styled(Select)({});
 
+const emailOptions = [
+  { value: "1", label: "dfhgh@gmail.com" },
+  { value: "2", label: "1@gmail.com" },
+  { value: "3", label: "bfbnf@gmail.com" },
+];
+
+const surveyTypes = [
+  {
+    name: "CSAT",
+    title: "CSAT",
+    img: "/survey/csat.png",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+    noOfQuestions: 12,
+  },
+  {
+    name: "TEACHER_FEEDBACK",
+    title: "Teacher Feedback",
+    img: "/survey/teachers.png",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+    noOfQuestions: 12,
+  },
+  {
+    name: "PMF",
+    title: "PMF Survey",
+    img: "/survey/pmf.png",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+    noOfQuestions: 12,
+  },
+  {
+    name: "COURSE",
+    title: "Course feedback",
+    img: "/survey/course_feedback.png",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+    noOfQuestions: 5,
+  },
+  {
+    name: "CUSTOMER",
+    title: "Customer feedback",
+    img: "/survey/customer_feedback.png",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+    noOfQuestions: 12,
+  },
+  {
+    name: "CUSTOM",
+    title: "Custom",
+    img: "/survey/custom.png",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
+    noOfQuestions: 0,
+  },
+];
+
 export default function Create() {
   const {
     register,
@@ -203,7 +260,7 @@ export default function Create() {
                 }),
               }}
               isMulti
-              value={survey.accessMembers}
+              value={emailOptions}
               options={accessEmails}
               onChange={(value) =>
                 dispatch({ type: "SET_MEMBERS", value: value })
@@ -211,8 +268,8 @@ export default function Create() {
             />
           </CustomFormControl>
           <GridContainer container spacing={5}>
-            {questionTypes &&
-              questionTypes.map((survey, index) => (
+            {surveyTypes &&
+              surveyTypes.map((survey, index) => (
                 <Grid key={index} item md={4}>
                   <Card variant="outlined">
                     <CardMedia>
@@ -224,7 +281,7 @@ export default function Create() {
                         }}
                       >
                         <Image
-                          src={"/survey/" + survey.name + ".png"}
+                          src={survey.img}
                           layout="fill"
                           objectFit="cover"
                         />

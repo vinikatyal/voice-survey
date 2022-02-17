@@ -47,6 +47,7 @@ export default function MyApp(props) {
       "/survey/share",
       "/dashboard/my-surveys",
       "/details",
+      "/survey/preview/1",
     ];
     const path = url.split("?")[0];
     if (!authService.tokenValue && !publicPaths.includes(path)) {

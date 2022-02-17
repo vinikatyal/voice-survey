@@ -196,7 +196,6 @@ export default function Index() {
               </SurveyCard>
             </Grid>
           ))}
-          {!surveys && <Grid>No data available</Grid>}
         </GridContainer>
 
         <Grid marginTop={5} display={"flex"} justifyContent={"flex-end"}>
