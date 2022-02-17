@@ -1,5 +1,6 @@
 module.exports = {
   images: {
+    loader: "default",
     domains: ["gnanispeechprod.blob.core.windows.net"],
   },
   serverRuntimeConfig: {

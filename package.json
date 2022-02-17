@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "export": "next export"
+    "export": "yarn build && next export"
   },
   "dependencies": {
     "@emotion/react": "^11.7.1",
