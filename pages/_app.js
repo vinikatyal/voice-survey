@@ -44,6 +44,7 @@ export default function MyApp(props) {
       "/signup",
       "/dashboard",
       "/survey/create",
+      "/survey/report",
       "/survey/share",
       "/dashboard/my-surveys",
       "/dashboard/settings",
