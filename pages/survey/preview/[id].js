@@ -17,7 +17,6 @@ import styled from "@emotion/styled";
 import StyledButton from "../../../components/StyledButton";
 
 // preview
-import SingleLineTextField from "../../../components/questions/SingleLineTextfield";
 import EmailTextField from "../../../components/questions/EmailTextField";
 import MultiLineTextField from "../../../components/questions/MultiLineTextField";
 import DateField from "../../../components/questions/DateField";
@@ -88,9 +87,6 @@ export default function questions() {
           </Grid>
           <Grid item>
             <Typography color="#00063e">
-              {question.question_type == "text" && (
-                <SingleLineTextField _id={question.question.id} />
-              )}
               {question.question_type == "date_picker" && (
                 <DateField _id={question.question.id} />
               )}
