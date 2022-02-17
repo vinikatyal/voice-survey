@@ -103,7 +103,7 @@ const surveyTypes = [
   {
     name: "TEACHER_FEEDBACK",
     title: "Teacher Feedback",
-    img: "/survey/teachers.png",
+    img: "/survey/teacher_feedback.png",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do et",
     noOfQuestions: 12,
