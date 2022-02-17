@@ -94,6 +94,9 @@ function add_user_details(data) {
       } else {
         errorHandler({}, res);
       }
+    })
+    .catch((error) => {
+      errorHandler(error, {});
     });
 }
 
@@ -109,6 +112,9 @@ function update_user_details(data) {
       } else {
         errorHandler({}, res);
       }
+    })
+    .catch((error) => {
+      errorHandler(error, {});
     });
 }
 
@@ -122,6 +128,9 @@ async function get_user_profile() {
       } else {
         errorHandler({}, res);
       }
+    })
+    .catch((error) => {
+      errorHandler(error, {});
     });
 }
 
@@ -135,6 +144,9 @@ function get_user_logo() {
       } else {
         errorHandler({}, res);
       }
+    })
+    .catch((error) => {
+      errorHandler(error, {});
     });
 }
 
@@ -149,6 +161,9 @@ function send_invite(data) {
       } else {
         errorHandler({}, res);
       }
+    })
+    .catch((error) => {
+      errorHandler(error, {});
     });
 }
 
@@ -163,6 +178,9 @@ async function get_team_members() {
       } else {
         errorHandler({}, res);
       }
+    })
+    .catch((error) => {
+      errorHandler(error, {});
     });
 }
 
