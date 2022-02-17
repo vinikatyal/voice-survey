@@ -117,7 +117,7 @@ export default function Index() {
               alt="background"
             />
             <Image
-              src={"/images/bck.png"}
+              src={"/bck.png"}
               width={625}
               height={369}
               alt="background"
