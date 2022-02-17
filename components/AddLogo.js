@@ -100,7 +100,9 @@ export default function AddLogo({ logo, updateLogo, error }) {
               onChange={handleInputChange}
             />
             <LogoAddButton color="primary" variant="contained" component="span">
-              <Typography fontSize={28}>+</Typography>
+              <Typography fontSize={28} color="white">
+                +
+              </Typography>
             </LogoAddButton>
           </label>
           <Typography fontSize={18} color={"#0a23fb"}>
