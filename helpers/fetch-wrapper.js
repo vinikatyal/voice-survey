@@ -13,7 +13,6 @@ export const fetchWrapper = {
 };
 
 function get(url, extraHeaders = {}) {
-  console.log(extraHeaders);
   const requestOptions = {
     method: "GET",
     headers: { ...authHeader(url), ...extraHeaders },

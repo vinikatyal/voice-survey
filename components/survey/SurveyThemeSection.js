@@ -81,6 +81,11 @@ export default function SurveyThemeSection({ logo }) {
     }
   };
 
+  const editSurvey = () => {
+    alert("Edited");
+    router.push("/dashboard");
+  };
+
   return (
     <Container maxWidth="lg">
       {logo && (
@@ -105,8 +110,12 @@ export default function SurveyThemeSection({ logo }) {
         </Grid>
       </Grid>
       <ButtonContainer>
-        <StyledButton type="submit" onClick={createSurvey} variant="contained">
-          Create Survey
+        <StyledButton
+          type="submit"
+          onClick={survey.surveyEditId ? editSurvey : createSurvey}
+          variant="contained"
+        >
+          {survey.surveyEditId ? "Edit Survey" : "Create Survey"}
         </StyledButton>
       </ButtonContainer>
     </Container>
