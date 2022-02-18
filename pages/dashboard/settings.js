@@ -192,7 +192,7 @@ export default function Index() {
             aria-label="scrollable prevent tabs example"
           >
             <TabBasic label="Basic details" />
-            <TabBasic label="Reset password" />
+            {/* <TabBasic label="Reset password" /> */}
             <TabBasic label="Account" />
           </StyledTabs>
 
@@ -247,8 +247,8 @@ export default function Index() {
               </Limiter>
             </Box>
           </TabPanel>
-          <TabPanel value={value} index={1}></TabPanel>
-          <TabPanel value={value} index={2}>
+          {/* <TabPanel value={value} index={1}></TabPanel> */}
+          <TabPanel value={value} index={1}>
             <NextSection>
               <Logout
                 variant="contained"

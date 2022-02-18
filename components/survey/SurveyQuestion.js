@@ -76,6 +76,10 @@ const SuccessButton = styled(Button)(() => ({
   },
 }));
 
+const RequiredCheckbox = styled(Checkbox)({
+  borderRadius: "4px",
+});
+
 export default function SurveyQuestion({
   id,
   questionNumber,
@@ -160,7 +164,11 @@ export default function SurveyQuestion({
             <StyledQuestionHeadEndSlot>
               <FormControlLabel
                 control={
-                  <Checkbox checked={required} onClick={handleRequired} />
+                  <RequiredCheckbox
+                    color="success"
+                    checked={required}
+                    onClick={handleRequired}
+                  />
                 }
                 label="Required"
               />

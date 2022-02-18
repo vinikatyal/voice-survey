@@ -7,7 +7,6 @@ import router from "next/router";
 import isEmpty from "lodash.isempty";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import get from "lodash.get";
 
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -15,11 +14,8 @@ import Paper from "@mui/material/Paper";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-
-// image
-import google from "../../images/svg/google.svg";
+import FormHelperText from "@mui/material/FormHelperText";
 
 // internal components
 import Layout from "../../components/Layout";
@@ -52,12 +48,6 @@ const FormSection = styled(Grid)({
   alignItems: "center",
 });
 
-const GoogleSignin = styled(Button)(({ theme }) => ({
-  border: "1px solid #00063e",
-  borderRadius: "5px",
-  color: "#00063e",
-}));
-
 const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
   marginBottom: "10px",
   marginTop: "10px",
@@ -68,11 +58,7 @@ const ErrorLabel = styled("div")({
   marginTop: "5px",
 });
 
-const SignInText = styled(Typography)({
-  marginBottom: "40px",
-});
-
-export default function Index() {
+export default function ForgotPassword() {
   const {
     register,
     handleSubmit,
@@ -80,22 +66,12 @@ export default function Index() {
     formState: { errors },
   } = useForm();
 
-  useEffect(() => {
-    // redirect to home if already logged in
-    if (authService.tokenValue) {
-      router.push("/dashboard");
-    }
-  }, []);
   const onSubmit = async (data) => {
     return await authService
-      .login(data.email, data.password)
-      .then((res) => {
+      .forgot_password(data.email)
+      .then(() => {
         // get return url from query parameters or default to '/'
-        if (get(res, "data.pwd_flag") === "Y") {
-          router.push("/dashboard/resetpassword");
-        } else {
-          router.push("/dashboard");
-        }
+        router.push("/login");
       })
       .catch((error) => {
         toast.error(error.message, {
@@ -136,11 +112,8 @@ export default function Index() {
           >
             <Item elevation={4}>
               <Typography align="left" variant="h4">
-                Welcome back!
+                Forgot password
               </Typography>
-              <SignInText align="left" variant="h6">
-                Sign in to continue
-              </SignInText>
               <Box
                 component="form"
                 noValidate
@@ -173,70 +146,22 @@ export default function Index() {
                     <ErrorLabel>{errors.email.message}</ErrorLabel>
                   )}
                 </FormControl>
-
-                <FormControl fullWidth>
-                  <LoginFormLabel>Password</LoginFormLabel>
-                  <TextField
-                    required
-                    fullWidth
-                    error={!isEmpty(errors.password)}
-                    id="password"
-                    name="password"
-                    autoComplete="password"
-                    {...register("password", {
-                      required: "You must specify a password",
-                      minLength: {
-                        value: 5,
-                        message: "Password must have at least 5 characters",
-                      },
-                      onChange: async (e) => {
-                        await trigger("password");
-                      },
-                    })}
-                    type="password"
-                    placeholder="Enter your password"
-                  />
-                  {errors.password && (
-                    <ErrorLabel>{errors.password.message}</ErrorLabel>
-                  )}
-                </FormControl>
+                <FormHelperText>
+                  You will recieve a temporary password using which you can
+                  reset your password
+                </FormHelperText>
                 <StyledButton
                   onClick={handleSubmit(onSubmit)}
                   fullWidth
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  {" "}
-                  Sign In{" "}
+                  Reset
                 </StyledButton>
                 <Grid container>
                   <Grid item xs>
-                    Don't have an account{" "}
-                    <Link href="/signup" variant="body2">
-                      Sign up
+                    <Link href="/login" variant="body2">
+                      Go back
                     </Link>
-                  </Grid>
-                </Grid>
-                <Grid container sx={{ mt: 3, textAlign: "center" }}>
-                  <Grid item xs>
-                    <Link href="/login/forgotpassword" variant="body2">
-                      Forgot your password
-                    </Link>
-                    {/* <GoogleSignin
-                      type="submit"
-                      variant="outlined"
-                      fullWidth
-                      startIcon={
-                        <Image
-                          src={google}
-                          width={30}
-                          height={30}
-                          alt="google"
-                        />
-                      }
-                      sx={{ mt: 3, mb: 2 }}
-                    >
-                      Login with google
-                    </GoogleSignin> */}
                   </Grid>
                 </Grid>
               </Box>

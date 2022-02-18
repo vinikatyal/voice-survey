@@ -28,6 +28,7 @@ import person from "../../images/svg/person.svg";
 import Delete from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import EditIcon from "@mui/icons-material/Edit";
 
 import { surveyService } from "../../services/survey.service";
 
@@ -48,20 +49,6 @@ const DashboardHeader = styled("div")(({ theme }) => ({
   marginTop: "30px",
 }));
 
-const Nav = styled("div")(({}) => ({
-  display: "flex",
-  justifyContent: "flex-end",
-  width: "90%",
-  alignItems: "center",
-}));
-
-const NavLink = styled(Link)(({}) => ({
-  color: "#707070",
-  marginLeft: "20px",
-  marginRight: "20px",
-  textDecoration: "none",
-  cursor: "pointer",
-}));
 
 const CardTitle = styled("div")({
   width: "100%",
@@ -73,6 +60,7 @@ const CardTitle = styled("div")({
 
 const CardHead = styled("div")({
   width: "90%",
+  fontSize: "20px",
 });
 
 const CardIconContainer = styled("div")({
@@ -101,16 +89,25 @@ const Left = styled("div")({
   width: "80%",
 });
 
-const Edit = styled("div")({
+const Edit = styled(Button)({
+  fontSize: "16px",
+  padding: "5px",
   display: "flex",
-  justifyContent: "flex-end",
+  justifyContent: "center",
+  color: "#9a9cb5",
   width: "20%",
+  borderRadius: "4px",
+  backgroundColor: "rgba(85, 109, 242, 0.04)",
+  "&:hover": {
+    backgroundColor: "#4e538!important",
+    color: "#0a23fb",
+  },
 });
 
 const Logo = styled(Image)(({}) => ({}));
 
 const Text = styled("div")({
-  marginLeft: "4px",
+  marginLeft: "6px",
 });
 
 const SurveyCard = styled(Card)({
@@ -180,15 +177,18 @@ export default function Index() {
                         </CardIcon>
                       </CardIconContainer>
                     </CardTitle>
-                    <Typography minHeight={50} variant="body2">
-                      {survey.welcome_text}
-                    </Typography>
                     <Response>
                       <Left>
                         <Logo src={person} width="14" alt="person" />
                         <Text>2 responses</Text>
                       </Left>
-                      <Edit>Edit</Edit>
+                      <Edit
+                        disableRipple
+                        disableElevation
+                        startIcon={<EditIcon />}
+                      >
+                        Edit
+                      </Edit>
                     </Response>
                   </CardContent>
                 </SurveyCard>
@@ -203,7 +203,7 @@ export default function Index() {
         </GridContainer>
 
         {surveys && surveys.length ? (
-          <Grid marginTop={5} display={"flex"} justifyContent={"flex-end"}>
+          <Grid marginTop={5} display={"flex"} justifyContent={"center"}>
             <Pagination
               count={5}
               page={page}
