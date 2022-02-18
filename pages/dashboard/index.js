@@ -11,7 +11,6 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Dialog from "@mui/material/Dialog";
@@ -23,6 +22,7 @@ import Pagination from "@mui/material/Pagination";
 import PaginationItem from "@mui/material/PaginationItem";
 
 import DashboardH from "../../components/dashboard/DashboardHeader";
+import NoSurveyScreen from "../../components/survey/NoSurveyScreen";
 
 import person from "../../images/svg/person.svg";
 import Delete from "@mui/icons-material/Delete";
@@ -48,7 +48,6 @@ const DashboardHeader = styled("div")(({ theme }) => ({
   backgroundColor: "#f5f8ff",
   marginTop: "30px",
 }));
-
 
 const CardTitle = styled("div")({
   width: "100%",
@@ -196,8 +195,7 @@ export default function Index() {
             ))
           ) : (
             <Grid item>
-              {" "}
-              <h3>No Surveys created</h3>
+              <NoSurveyScreen />
             </Grid>
           )}
         </GridContainer>

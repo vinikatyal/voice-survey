@@ -20,6 +20,7 @@ import Pagination from "@mui/material/Pagination";
 import PaginationItem from "@mui/material/PaginationItem";
 
 import DashboardH from "../../components/dashboard/DashboardHeader";
+import NoSurveyScreen from "../../components/survey/NoSurveyScreen";
 
 import person from "../../images/svg/person.svg";
 import Delete from "@mui/icons-material/Delete";
@@ -198,8 +199,7 @@ export default function Index() {
             ))
           ) : (
             <Grid item>
-              {" "}
-              <h3>No Surveys created</h3>
+              <NoSurveyScreen />
             </Grid>
           )}
         </GridContainer>
