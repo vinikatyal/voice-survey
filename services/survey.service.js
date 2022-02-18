@@ -18,6 +18,7 @@ export const surveyService = {
   get_survey_template_data,
   get_all_surveys,
   get_my_surveys,
+  get_survey_details,
   getAll,
 };
 
@@ -82,6 +83,20 @@ function get_survey_template_metadata() {
 async function get_survey_template_data(data) {
   return await fetchWrapper
     .post(`${baseUrl}/get_survey_template_data`, data, {
+      token: getFromStorage("token"),
+    })
+    .then((res) => {
+      if (get(res, "code") === 200) {
+        return res;
+      } else {
+        return {};
+      }
+    });
+}
+
+async function get_survey_details(id) {
+  return await fetchWrapper
+    .get(`${baseUrl}/get_survey_details/${id}`, {
       token: getFromStorage("token"),
     })
     .then((res) => {
