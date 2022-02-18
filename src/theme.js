@@ -12,9 +12,13 @@ const theme = createTheme({
       main: "#dfe6f5",
       contrastText: "#707070",
     },
+    success: {
+      main: "#56b764"
+    }
   },
   typography: {
-    fontFamily: "Poppins",
+    fontFamily:
+      '"Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"!important',
     fontSize: 14,
     h2: {
       color: "#00063e",

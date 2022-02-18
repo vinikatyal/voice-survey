@@ -24,6 +24,8 @@ export const authService = {
   get_team_members,
   get_user_logo,
   send_invite,
+  forgot_password,
+  reset_password,
   logout,
   getAll,
 };
@@ -47,7 +49,6 @@ function login(email, password) {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
 
       if (res.code === 200) {
-        console.log(res.data.token);
         addToStorage("token", JSON.stringify(res.data.token));
         tokenSubject.next(res);
 
@@ -68,7 +69,6 @@ function signup(email, password, mobile) {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
 
       if (res.code === 200) {
-        console.log(res);
         addToStorage("token", JSON.stringify(res.data.token));
         tokenSubject.next(res);
 
@@ -173,6 +173,40 @@ async function get_team_members() {
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
 
+      if (res.code === 200) {
+        return res;
+      } else {
+        errorHandler({}, res);
+      }
+    })
+    .catch((error) => {
+      errorHandler(error, {});
+    });
+}
+
+function forgot_password(email) {
+  return fetchWrapper
+    .post(`${baseUrl}/forgot_password`, { email })
+    .then((res) => {
+      if (res.code === 200) {
+        return res;
+      } else {
+        errorHandler({}, res);
+      }
+    })
+    .catch((error) => {
+      errorHandler(error, {});
+    });
+}
+
+function reset_password(email, old_password, new_password) {
+  return fetchWrapper
+    .post(
+      `${baseUrl}/reset_password`,
+      { email, old_password, new_password },
+      { token: getFromStorage("token") }
+    )
+    .then((res) => {
       if (res.code === 200) {
         return res;
       } else {
