@@ -37,7 +37,7 @@ const QuestionAccordionSummary = styled("div")(() => ({
   display: "flex",
   width: "100%",
   justifyContent: "space-between",
-  alignItems: "center"
+  alignItems: "center",
 }));
 
 const Label = styled("span")({
@@ -94,14 +94,6 @@ export default function SurveyQuestion({
     formState: { errors },
   } = useForm();
 
-  const answersList = [
-    { id: 1, label: "Textfield", value: "text" },
-    { id: 2, label: "Description", value: "description" },
-    { id: 3, label: "Email", value: "email" },
-    { id: 4, label: "Phone number", value: "contact" },
-    { id: 5, label: "Date picker", value: "date_picker" },
-    { id: 6, label: "Voice", value: "audio" },
-  ];
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
 
@@ -224,9 +216,11 @@ export default function SurveyQuestion({
                 fullWidth
                 id="combo-box-demo"
                 value={
-                  answersList.filter((obj) => obj.value === questionType)[0]
+                  survey.questionTypeList.filter(
+                    (obj) => obj.value === questionType
+                  )[0]
                 }
-                options={answersList}
+                options={survey.questionTypeList}
                 onChange={handleAnswerTypeChange}
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value

@@ -37,7 +37,7 @@ const Logo = styled(Image)(({}) => ({
   height: "30px",
   display: "flex",
   justifyContent: "flex-start",
-  cursor: "pointer"
+  cursor: "pointer",
 }));
 
 export default function DashboardHeader() {
@@ -56,6 +56,8 @@ export default function DashboardHeader() {
       <BoxCustom maxWidth="lg">
         <Logo
           onClick={() => openLink("/dashboard")}
+          width={135}
+          height={58}
           src={"/images/logo.png"}
           alt="background"
         />
@@ -67,7 +69,10 @@ export default function DashboardHeader() {
           >
             All Surveys
           </NavLink>
-          <NavLink   onClick={() => openLink("/dashboard/my-surveys")} underline="hover">
+          <NavLink
+            onClick={() => openLink("/dashboard/my-surveys")}
+            underline="hover"
+          >
             My Surveys
           </NavLink>
           <NavLink to="/contact" underline="hover">

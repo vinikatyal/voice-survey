@@ -9,10 +9,6 @@ import Layout from "../../components/Layout";
 import Limiter from "../../components/Limiter";
 import StyledButton from "../../components/StyledButton";
 
-// logo
-import planActive from "../../images/plan-active.svg";
-import planInactive from "../../images/plan-inactive.svg";
-
 import styled from "@emotion/styled";
 
 const ImageContainer = styled(Box)({

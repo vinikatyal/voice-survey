@@ -182,7 +182,12 @@ export default function Index() {
     <Layout>
       <Limiter>
         <ImageContainer>
-          <Image src={"/images/logo.png"} alt="background" />
+          <Image
+            width={135}
+            height={58}
+            src={"/images/logo.png"}
+            alt="background"
+          />
         </ImageContainer>
       </Limiter>
 
