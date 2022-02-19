@@ -5,6 +5,14 @@ import get from "lodash.get";
 
 import Container from "@mui/material/Container";
 import SpeedDial from "@mui/material/SpeedDial";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
 
 import MultiLineTextField from "../../../components/questions/MultiLineTextField";
 import SingleLineTextField from "../../../components/questions/SingleLineTextField";
@@ -15,6 +23,7 @@ import VoiceInput from "../../../components/questions/VoiceInput";
 import { useSurvey } from "../../../context/SurveyState";
 
 import CloseIcon from "@mui/icons-material/Close";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
 import styled from "@emotion/styled";
 
@@ -37,12 +46,18 @@ const StyledContainer = styled(Container)({
   borderRadius: "8px",
 });
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 export default function questions() {
   const router = useRouter();
   const { id } = router.query;
   const survey = useSurvey();
 
   const [question, setQuestion] = useState("");
+  const [open, setOpen] = useState(false);
+
   useEffect(() => {
     if (id) {
       const question = survey.questions.find((obj) => obj.qid == +id);
@@ -54,6 +69,17 @@ export default function questions() {
 
   const handleClose = () => {
     router.push(`/survey/create/questions`);
+  };
+
+  const handleEndSurvey = async () => {
+    setOpen(true);
+  };
+
+  const handleResponse = () => {};
+
+  const handleSubmitAnother = async () => {
+    setOpen(false);
+    router.push(`/survey/preview/1`);
   };
 
   return (
@@ -78,6 +104,8 @@ export default function questions() {
             secondaryButtonTitle={+id !== 1 && "Back"}
             primaryButtonTitle="Next"
             nextRoute={`/survey/preview/${+id + 1}`}
+            handleResponse={handleResponse}
+            handleEndSurvey={handleEndSurvey}
           />
         )}
         {get(question, "question_type", "") === "description" && (
@@ -89,6 +117,8 @@ export default function questions() {
             secondaryButtonTitle={+id !== 1 && "Back"}
             primaryButtonTitle="Next"
             nextRoute={`/survey/preview/${+id + 1}`}
+            handleResponse={handleResponse}
+            handleEndSurvey={handleEndSurvey}
           />
         )}
         {get(question, "question_type", "") === "email" && (
@@ -100,6 +130,8 @@ export default function questions() {
             secondaryButtonTitle={+id !== 1 && "Back"}
             primaryButtonTitle="Next"
             nextRoute={`/survey/preview/${+id + 1}`}
+            handleResponse={handleResponse}
+            handleEndSurvey={handleEndSurvey}
           />
         )}
         {get(question, "question_type", "") === "date_picker" && (
@@ -111,6 +143,8 @@ export default function questions() {
             secondaryButtonTitle={+id !== 1 && "Back"}
             primaryButtonTitle="Next"
             nextRoute={`/survey/preview/${+id + 1}`}
+            handleResponse={handleResponse}
+            handleEndSurvey={handleEndSurvey}
           />
         )}
         {get(question, "question_type", "") === "audio" && (
@@ -122,9 +156,38 @@ export default function questions() {
             secondaryButtonTitle={+id !== 1 && "Back"}
             primaryButtonTitle="Next"
             nextRoute={`/survey/preview/${+id + 1}`}
+            handleEndSurvey={handleEndSurvey}
           />
         )}
       </StyledContainer>
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>
+          <Grid container alignItems={"center"}>
+            <CheckCircleOutlineIcon sx={{ color: "green", fontSize: "50px" }} />
+            <Typography fontSize={36} ml={2}>
+              Thank You!
+            </Typography>
+          </Grid>
+        </DialogTitle>
+        <DialogContent>
+          <Grid>
+            <Typography>Your response was submitted successfully</Typography>
+            <Button
+              sx={{ marginTop: "20px" }}
+              onClick={handleSubmitAnother}
+              variant="contained"
+            >
+              Submit another response
+            </Button>
+          </Grid>
+          <DialogContentText id="alert-dialog-slide-description"></DialogContentText>
+        </DialogContent>
+      </Dialog>
     </FullBackgroundSurvey>
   );
 }
