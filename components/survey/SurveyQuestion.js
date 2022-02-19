@@ -253,8 +253,8 @@ export default function SurveyQuestion({
       </QuestionAccordion>
       <ConfirmationDialog
         status={open}
-        title="Delete Question?"
-        message="Your responses might be deleted, still want to continue?"
+        title="Delete Question."
+        message="If you are deleting a question, the responses collected for this question will also be deleted. Are you sure?"
         handleReject={() => setOpen(false)}
         handleAccept={handleAccept}
       />

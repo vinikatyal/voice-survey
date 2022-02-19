@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { toast } from "react-toastify";
-
+import get from "lodash.get";
 import { useRouter } from "next/router";
 
 import Image from "next/image";
@@ -27,10 +27,10 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import EditIcon from "@mui/icons-material/Edit";
 
 import { surveyService } from "../../services/survey.service";
+import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
 
 import styled from "@emotion/styled";
-import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
-import get from "lodash.get";
+
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 
 const FullBackground = styled(Container)(({ theme }) => ({
