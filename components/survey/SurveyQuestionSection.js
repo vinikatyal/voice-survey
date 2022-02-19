@@ -78,6 +78,7 @@ export default function SurveyQuestionSection({ questions }) {
         qid: draft.length + 1,
         question: "",
         question_type: "text",
+        required: false,
         expandStatus: true,
       });
     });

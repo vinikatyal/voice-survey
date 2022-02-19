@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import produce from "immer";
 import isEmpty from "lodash.isempty";
@@ -15,6 +15,8 @@ import Grid from "@mui/material/Grid";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
+
+import ConfirmationDialog from "../ConfirmationDialog";
 
 // icons
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -100,6 +102,7 @@ export default function SurveyQuestion({
 
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     setValue("question", question, {
@@ -133,6 +136,11 @@ export default function SurveyQuestion({
       question.required = e.target.checked;
     });
     dispatch({ type: "SET_QUESTIONS", value: next });
+  };
+
+  const handleAccept = () => {
+    setOpen(false);
+    deleteQuestion(id);
   };
 
   return (
@@ -184,7 +192,9 @@ export default function SurveyQuestion({
                 </SuccessButton>
               )}
               <DeleteIcon
-                onClick={() => deleteQuestion(id)}
+                onClick={() =>
+                  survey.surveyEditId ? setOpen(true) : deleteQuestion(id)
+                }
                 sx={{ color: "#9a9cb5", marginLeft: "20px" }}
               />
             </StyledQuestionHeadEndSlot>
@@ -241,6 +251,13 @@ export default function SurveyQuestion({
           </QuestionAccordionBody>
         </AccordionDetails>
       </QuestionAccordion>
+      <ConfirmationDialog
+        status={open}
+        title="Delete Question."
+        message="If you are deleting a question, the responses collected for this question will also be deleted. Are you sure?"
+        handleReject={() => setOpen(false)}
+        handleAccept={handleAccept}
+      />
     </>
   );
 }

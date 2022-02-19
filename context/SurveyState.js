@@ -62,6 +62,7 @@ const initialState = {
     color: "linear-gradient(to right, #1EA798, #2D4C93)!important;",
   },
   previousSurveyType: null,
+  surveyEditId: null,
 };
 
 const reducer = produce((draft, action) => {
@@ -90,6 +91,34 @@ const reducer = produce((draft, action) => {
 
     case "SET_THEME":
       draft.selectedSurveyTheme = action.value;
+      break;
+    case "SET_SURVEY_EDIT_ID":
+      draft.surveyEditId = action.value;
+      break;
+    case "RESET_SURVEY":
+      {
+        draft.surveyTitle = "";
+        draft.accessMembers = [];
+        draft.surveyEditId = null;
+        draft.surveyType = "";
+        draft.questions = [
+          {
+            qid: 1,
+            question: "",
+            question_type: "text",
+            required: false,
+            expandStatus: true,
+          },
+        ];
+        draft.selectedSurveyTheme = {
+          id: 1,
+          theme: theme1,
+          name: "BLUE",
+          themeName: "Theme Blue",
+          color: "linear-gradient(to right, #1EA798, #2D4C93)!important;",
+        };
+        draft.previousSurveyType = null;
+      }
       break;
     default:
       throw new Error(`Unknown action: ${action.type}`);

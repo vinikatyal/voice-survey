@@ -51,11 +51,13 @@ export default function create({ currentTab }) {
       const res = await surveyService.get_survey_template_data({
         survey_type: survey.surveyType,
       });
-      const modifiedArr = res.data.questions.map((obj, index) => {
-        return index === 0
-          ? { ...obj, expandStatus: true, required: false }
-          : { ...obj, expandStatus: false, required: false };
-      });
+      const modifiedArr = survey.surveyEditId
+        ? survey.questions
+        : res.data.questions.map((obj, index) => {
+            return index === 0
+              ? { ...obj, expandStatus: true, required: false }
+              : { ...obj, expandStatus: false, required: false };
+          });
       modifiedArr.length &&
         dispatch({ type: "SET_QUESTIONS", value: modifiedArr });
       dispatch({ type: "SET_PREV_SURVEYTYPE", value: survey.surveyType });

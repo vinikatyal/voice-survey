@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { toast } from "react-toastify";
-
+import get from "lodash.get";
 import { useRouter } from "next/router";
 
 import Image from "next/image";
@@ -13,11 +13,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+
 import Pagination from "@mui/material/Pagination";
 import PaginationItem from "@mui/material/PaginationItem";
 
@@ -31,8 +27,11 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import EditIcon from "@mui/icons-material/Edit";
 
 import { surveyService } from "../../services/survey.service";
+import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
 
 import styled from "@emotion/styled";
+
+import ConfirmationDialog from "../../components/ConfirmationDialog";
 
 const FullBackground = styled(Container)(({ theme }) => ({
   height: "100vh",
@@ -113,18 +112,14 @@ const SurveyCard = styled(Card)({
   cursor: "pointer",
 });
 
-const SuccessButton = styled(Button)(() => ({
-  backgroundColor: "#19B885",
-  "&:hover": {
-    background: "#19B885",
-  },
-}));
-
 export default function Index() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [surveys, setAllSurveys] = useState([]);
   const [page, setPage] = useState(1);
+
+  const dispatch = useDispatchSurvey();
+  const survey = useSurvey();
 
   const handleChange = (event, value) => {
     setPage(value);
@@ -136,6 +131,7 @@ export default function Index() {
   };
 
   useEffect(() => {
+    dispatch({ type: "RESET_SURVEY" });
     getSurveyTypes(1);
   }, []);
 
@@ -150,6 +146,58 @@ export default function Index() {
           position: toast.POSITION.TOP_RIGHT,
         });
       });
+  };
+
+  const handleEdit = async (survey_id) => {
+    try {
+      const surveyDetails = await surveyService.get_survey_details(survey_id);
+
+      dispatch({
+        type: "SET_TITLE",
+        value: surveyDetails.data.survey_title,
+      });
+
+      const accessMembers = Object.keys(surveyDetails.data.user_access).reduce(
+        (acc, key) => {
+          surveyDetails.data.user_access[key] === "guest" &&
+            acc.push({ value: key, label: key });
+          return acc;
+        },
+        []
+      );
+      dispatch({
+        type: "SET_MEMBERS",
+        value: accessMembers,
+      });
+      dispatch({
+        type: "SET_QUESTIONS",
+        value: surveyDetails.data.survey_questions,
+      });
+      const selectedSurveyTheme = survey.themes.find(
+        (obj) => obj.name === surveyDetails.data.survey_theme
+      );
+      dispatch({
+        type: "SET_SURVEY_EDIT_ID",
+        value: surveyDetails.data.survey_id,
+      });
+      dispatch({
+        type: "SET_THEME",
+        value: selectedSurveyTheme,
+      });
+      dispatch({
+        type: "SET_TYPE",
+        value: surveyDetails.data.survey_type,
+      });
+      dispatch({
+        type: "SET_WELCOME_TEXT",
+        value: get(surveyDetails.data, "welcome_text", ""),
+      });
+      router.push("/survey/create");
+    } catch (error) {
+      toast.error(error.message, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    }
   };
 
   const deleteSurvey = () => {
@@ -185,6 +233,7 @@ export default function Index() {
                         disableRipple
                         disableElevation
                         startIcon={<EditIcon />}
+                        onClick={() => handleEdit(survey.survey_id)}
                       >
                         Edit
                       </Edit>
@@ -221,34 +270,13 @@ export default function Index() {
           ""
         )}
 
-        {open && (
-          <Dialog
-            open={open}
-            onClose={handleClose}
-            aria-describedby="alert-dialog-slide-description"
-          >
-            <DialogTitle>{"Delete Survey?"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-slide-description">
-                Are you sure you want to delete your survey?
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button size="medium" onClick={handleClose}>
-                No
-              </Button>
-              <SuccessButton
-                size="medium"
-                variant="contained"
-                disableElevation
-                disableRipple
-                onClick={handleClose}
-              >
-                Yes, Delete
-              </SuccessButton>
-            </DialogActions>
-          </Dialog>
-        )}
+        <ConfirmationDialog
+          status={open}
+          title="Delete Survey?"
+          message="Are you sure you want to delete your survey?"
+          handleReject={handleClose}
+          handleAccept={handleClose}
+        />
       </FullBackground>
     </>
   );
