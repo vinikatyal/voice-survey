@@ -7,6 +7,7 @@ import Layout from "../../components/Layout";
 import SurveyHeader from "../../components/survey/SurveyHeader";
 
 import styled from "@emotion/styled";
+import { useSurvey } from "../../context/SurveyState";
 
 const StyledCompletionRate = styled("div")({
   width: "100%",
@@ -19,9 +20,14 @@ const StyledCompletionRate = styled("div")({
   backgroundColor: "#fff",
 });
 export default function report() {
+  const survey = useSurvey();
   return (
     <Layout>
-      <SurveyHeader headerTitle="Survey's Name Here" currentTab="REPORT">
+      <SurveyHeader
+        headerTitle={survey.surveyTitle}
+        backRoute="/survey/create"
+        currentTab="REPORT"
+      >
         <Container maxWidth="lg">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>

@@ -59,21 +59,30 @@ export default function SurveyThemeSection({ logo }) {
       })
       .join(",");
 
+    const questions = survey.questions.map((obj, index) => ({
+      ...obj,
+      question_number: index + 1,
+    }));
+
     const surveyPayload = {
       survey_title: survey.surveyTitle,
       access_list_emails: members || "",
       survey_type: survey.surveyType,
       survey_theme: survey.selectedSurveyTheme.name,
       welcome_text: survey.surveyWelcomeText,
-      survey_questions: survey.questions,
+      survey_questions: questions,
     };
 
     try {
-      await surveyService.create_survey(surveyPayload);
+      const survey = await surveyService.create_survey(surveyPayload);
+      dispatch({
+        type: "SET_SURVEY_SHARE_LINK",
+        value: `http://localhost:3000/survey/${survey.code.survey_id}`,
+      });
       toast.success("Survey created successfully", {
         position: toast.POSITION.TOP_RIGHT,
       });
-      router.push("/dashboard");
+      router.push("/survey/share");
     } catch (error) {
       toast.error(error.message, {
         position: toast.POSITION.TOP_RIGHT,

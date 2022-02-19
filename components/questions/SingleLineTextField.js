@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 
 function SingleLineTextField({
   title,
+  value,
   required,
   placeholder = "Please enter your response",
   id,
@@ -21,25 +22,40 @@ function SingleLineTextField({
   primaryButtonTitle,
   secondaryButtonTitle,
   nextRoute,
+  handleResponse,
+  handleEndSurvey,
 }) {
   const {
     register,
     handleSubmit,
     trigger,
     setValue,
+    watch,
     formState: { errors },
   } = useForm();
   const router = useRouter();
 
+  const watchInput = watch("input", "");
+  React.useEffect(() => {
+    setValue("input", value, {
+      shouldDirty: true,
+    });
+  }, []);
+
   const handleNext = () => {
-    router.push(nextRoute);
+    handleResponse(watchInput);
+    if (+id === totalQuestions) {
+      handleEndSurvey();
+    } else {
+      router.push(nextRoute);
+    }
   };
   const handlePrev = () => {
     router.back();
   };
 
   return (
-    <Grid container spacing={5} height="100%" alignItems="center">
+    <Grid container spacing={5} height="90%" alignItems="center">
       {/* question section */}
       <Grid item xs={12}>
         <Typography color="#00063e" fontSize="28px" fontWeight="500">
@@ -86,10 +102,7 @@ function SingleLineTextField({
         </Grid>
       )}
       <Grid item md={secondaryButtonTitle ? 3 : 6} xs={12}>
-        <StyledButton
-          disabled={+id === totalQuestions}
-          onClick={handleSubmit(handleNext)}
-        >
+        <StyledButton onClick={handleSubmit(handleNext)}>
           {primaryButtonTitle}
         </StyledButton>
       </Grid>

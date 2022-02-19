@@ -27,6 +27,7 @@ function VoiceInput({
   primaryButtonTitle,
   secondaryButtonTitle,
   nextRoute,
+  handleEndSurvey,
 }) {
   const [error, setError] = useState(false);
   const router = useRouter();
@@ -44,9 +45,13 @@ function VoiceInput({
       setError(true);
       return;
     }
-
-    router.push(nextRoute);
+    if (+id === totalQuestions) {
+      handleEndSurvey();
+    } else {
+      router.push(nextRoute);
+    }
   };
+
   const handlePrev = () => {
     router.back();
   };
@@ -117,9 +122,7 @@ function VoiceInput({
         </Grid>
       )}
       <Grid item md={secondaryButtonTitle ? 3 : 6} xs={12}>
-        <StyledButton disabled={+id === totalQuestions} onClick={handleNext}>
-          {primaryButtonTitle}
-        </StyledButton>
+        <StyledButton onClick={handleNext}>{primaryButtonTitle}</StyledButton>
       </Grid>
       <Grid item md={3} xs={0}></Grid>
     </Grid>

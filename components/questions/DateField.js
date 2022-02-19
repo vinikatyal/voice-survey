@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 
 function DateField({
   title,
+  value,
   required,
   placeholder = "Please enter your response",
   id,
@@ -21,18 +22,33 @@ function DateField({
   primaryButtonTitle,
   secondaryButtonTitle,
   nextRoute,
+  handleEndSurvey,
+  handleResponse,
 }) {
   const {
     register,
     handleSubmit,
     trigger,
     setValue,
+    watch,
     formState: { errors },
   } = useForm();
   const router = useRouter();
 
+  const watchInput = watch("input", "");
+  React.useEffect(() => {
+    setValue("input", value, {
+      shouldDirty: true,
+    });
+  }, []);
+
   const handleNext = () => {
-    router.push(nextRoute);
+    handleResponse(watchInput);
+    if (+id === totalQuestions) {
+      handleEndSurvey();
+    } else {
+      router.push(nextRoute);
+    }
   };
   const handlePrev = () => {
     router.back();
@@ -87,10 +103,7 @@ function DateField({
         </Grid>
       )}
       <Grid item md={secondaryButtonTitle ? 3 : 6} xs={12}>
-        <StyledButton
-          disabled={+id === totalQuestions}
-          onClick={handleSubmit(handleNext)}
-        >
+        <StyledButton onClick={handleSubmit(handleNext)}>
           {primaryButtonTitle}
         </StyledButton>
       </Grid>
