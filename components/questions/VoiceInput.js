@@ -1,12 +1,10 @@
-import * as React from "react";
+import React, { useState } from "react";
 
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
-import { useState } from "react";
 
 import { useReactMediaRecorder } from "react-media-recorder";
 
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -15,9 +13,21 @@ import Fab from "@mui/material/Fab";
 
 // Icons
 import MicIcon from "@mui/icons-material/Mic";
-import PauseIcon from "@mui/icons-material/Pause";
 import StopIcon from "@mui/icons-material/Stop";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+import Waveform from "./Waveform";
+
+import styled from "@emotion/styled";
+
+const FabAudio = styled(Fab)`
+  background-color: #fd0d1b;
+  color: #fff;
+  &:hover {
+    background-color: #fd0d1b;
+    color: #fff;
+  }
+`;
 
 function VoiceInput({
   title,
@@ -29,15 +39,10 @@ function VoiceInput({
   nextRoute,
 }) {
   const [error, setError] = useState(false);
+
   const router = useRouter();
-  const {
-    status,
-    startRecording,
-    stopRecording,
-    mediaBlobUrl,
-    pauseRecording,
-    resumeRecording,
-  } = useReactMediaRecorder({ audio: true });
+  const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
+    useReactMediaRecorder({ audio: true });
 
   const handleNext = () => {
     if (required && !mediaBlobUrl) {
@@ -49,6 +54,14 @@ function VoiceInput({
   };
   const handlePrev = () => {
     router.back();
+  };
+
+  const playStop = () => {
+    stopRecording();
+  };
+
+  const removeAudio = () => {
+    clearBlobUrl();
   };
 
   return (
@@ -63,35 +76,46 @@ function VoiceInput({
       {/*Input Section  */}
       <Grid item md={2} xs={0}></Grid>
       <Grid item md={8} xs={12}>
-        {mediaBlobUrl && <audio src={mediaBlobUrl} controls />}
-        <p></p>
-        {["idle", "stopped"].includes(status) && (
-          <Fab
-            color="primary"
-            aria-label="add"
-            onClick={() => {
-              startRecording();
-              setError(false);
-            }}
-          >
-            <MicIcon />
-          </Fab>
+        {mediaBlobUrl && <Waveform audio={mediaBlobUrl} />}
+
+        {mediaBlobUrl && (
+          <>
+            <FabAudio
+              aria-label="add"
+              sx={{ mt: 2 }}
+              onClick={() => {
+                removeAudio();
+              }}
+            >
+              <DeleteIcon />
+            </FabAudio>
+          </>
+        )}
+
+        {["idle", "stopped"].includes(status) && !mediaBlobUrl && (
+          <>
+            <FabAudio
+              color="secondary"
+              aria-label="add"
+              sx={{ mt: 2 }}
+              onClick={() => {
+                startRecording();
+                setError(false);
+              }}
+            >
+              <MicIcon />
+            </FabAudio>
+            <div>Hit Record to Start</div>
+          </>
         )}
         {["recording", "paused"].includes(status) && (
           <>
-            <Fab
-              color="primary"
+            <FabAudio
               aria-label="add"
-              sx={{ marginRight: "15px" }}
-              onClick={
-                status === "recording" ? pauseRecording : resumeRecording
-              }
+              onClick={playStop}
             >
-              {status === "recording" ? <PauseIcon /> : <PlayArrowIcon />}
-            </Fab>
-            <Fab color="primary" aria-label="add" onClick={stopRecording}>
               <StopIcon />
-            </Fab>
+            </FabAudio>
           </>
         )}
         {error && (
