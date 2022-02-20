@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import get from "lodash.get";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
 import produce from "immer";
 
 import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
@@ -25,7 +26,6 @@ import SingleLineTextField from "../../components/questions/SingleLineTextField"
 import MultiLineTextField from "../../components/questions/MultiLineTextField";
 import EmailTextField from "../../components/questions/EmailTextField";
 import DateField from "../../components/questions/DateField";
-import VoiceInput from "../../components/questions/VoiceInput";
 
 const FullBackgroundSurvey = styled("div")(({ bgColor }) => ({
   background: bgColor,
@@ -57,6 +57,10 @@ export default function survey() {
   const [surveyId, setSurveyId] = useState("");
   const [questionId, setQuestionId] = useState("");
   const [open, setOpen] = useState(false);
+
+  const VoiceInput = dynamic(() =>
+    import("../../components/questions/VoiceInput")
+  );
 
   useEffect(() => {
     if (params) {

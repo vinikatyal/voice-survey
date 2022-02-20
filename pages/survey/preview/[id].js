@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
 import get from "lodash.get";
 
 import Container from "@mui/material/Container";
@@ -18,7 +19,6 @@ import MultiLineTextField from "../../../components/questions/MultiLineTextField
 import SingleLineTextField from "../../../components/questions/SingleLineTextField";
 import EmailTextField from "../../../components/questions/EmailTextField";
 import DateField from "../../../components/questions/DateField";
-import VoiceInput from "../../../components/questions/VoiceInput";
 
 import { useSurvey } from "../../../context/SurveyState";
 
@@ -57,6 +57,10 @@ export default function questions() {
 
   const [question, setQuestion] = useState("");
   const [open, setOpen] = useState(false);
+
+  const VoiceInput = dynamic(() =>
+    import("../../../components/questions/VoiceInput")
+  );
 
   useEffect(() => {
     if (id) {
