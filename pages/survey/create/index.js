@@ -214,53 +214,55 @@ export default function Create() {
               }
             />
           </CustomFormControl>
-          <GridContainer container spacing={5}>
-            {questionTypes &&
-              questionTypes.map((survey, index) => (
-                <Grid key={index} item md={4}>
-                  <Card variant="outlined">
-                    <CardMedia>
-                      <div
-                        style={{
-                          position: "relative",
-                          width: "100%",
-                          height: "90px",
-                        }}
-                      >
-                        <Image
-                          src={"/survey/" + survey.name + ".png"}
-                          layout="fill"
-                          objectFit="cover"
-                        />
-                      </div>
-                    </CardMedia>
-                    <CardContent>
-                      <CardTitle>
-                        <CardHead>
-                          <Title>{survey.title}</Title>
-                          <RadioButtonSection>
-                            <Radio
-                              name="survey_type"
-                              onChange={handleChange}
-                              value={survey.name}
-                              checked={selectedValue === survey.name}
-                            />
-                          </RadioButtonSection>
-                        </CardHead>
-                      </CardTitle>
-                      <Typography variant="body2">
-                        {survey.description}
-                      </Typography>
-                      {survey.noOfQuestions && (
-                        <QuestionNumber>
-                          {survey.noOfQuestions} questions
-                        </QuestionNumber>
-                      )}
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
-          </GridContainer>
+          {!survey.surveyEditId && (
+            <GridContainer container spacing={5}>
+              {questionTypes &&
+                questionTypes.map((survey, index) => (
+                  <Grid key={index} item md={4}>
+                    <Card variant="outlined">
+                      <CardMedia>
+                        <div
+                          style={{
+                            position: "relative",
+                            width: "100%",
+                            height: "90px",
+                          }}
+                        >
+                          <Image
+                            src={"/survey/" + survey.name + ".png"}
+                            layout="fill"
+                            objectFit="cover"
+                          />
+                        </div>
+                      </CardMedia>
+                      <CardContent>
+                        <CardTitle>
+                          <CardHead>
+                            <Title>{survey.title}</Title>
+                            <RadioButtonSection>
+                              <Radio
+                                name="survey_type"
+                                onChange={handleChange}
+                                value={survey.name}
+                                checked={selectedValue === survey.name}
+                              />
+                            </RadioButtonSection>
+                          </CardHead>
+                        </CardTitle>
+                        <Typography variant="body2">
+                          {survey.description}
+                        </Typography>
+                        {survey.noOfQuestions && (
+                          <QuestionNumber>
+                            {survey.noOfQuestions} questions
+                          </QuestionNumber>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+            </GridContainer>
+          )}
           <ButtonContainer>
             <StyledButton
               type="submit"

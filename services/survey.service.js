@@ -19,6 +19,7 @@ export const surveyService = {
   get_all_surveys,
   get_my_surveys,
   get_survey_details,
+  edit_survey,
   getAll,
 };
 
@@ -101,6 +102,20 @@ async function get_survey_details(id) {
     })
     .then((res) => {
       if (get(res, "code") === 200) {
+        return res;
+      } else {
+        return {};
+      }
+    });
+}
+
+async function edit_survey(id, data) {
+  return await fetchWrapper
+    .post(`${baseUrl}/edit_survey/${id}`, data, {
+      token: getFromStorage("token"),
+    })
+    .then((res) => {
+      if (get(res, "code.survey_id")) {
         return res;
       } else {
         return {};
