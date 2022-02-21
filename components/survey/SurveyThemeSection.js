@@ -1,6 +1,10 @@
 import React from "react";
 
+import get from "lodash.get";
+
 import { useRouter } from "next/router";
+
+import { useSession } from "next-auth/react";
 
 // UI
 import Container from "@mui/material/Container";
@@ -19,7 +23,6 @@ import { surveyService } from "../../services/survey.service";
 // State Manager
 import { useSurvey, useDispatchSurvey } from "../../context/SurveyState";
 import Image from "next/image";
-import { get } from "react-hook-form";
 
 const Label = styled("span")({
   color: "#707070",
@@ -47,6 +50,8 @@ export default function SurveyThemeSection({ logo }) {
   const router = useRouter();
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
+  const { data: session, status } = useSession();
+  const tok = get(session, "accessToken");
 
   const handleChangeSelectedValue = (themeName) => {
     dispatch({ type: "SET_THEME", value: themeName });
@@ -74,7 +79,7 @@ export default function SurveyThemeSection({ logo }) {
     };
 
     try {
-      const survey = await surveyService.create_survey(surveyPayload);
+      const survey = await surveyService.create_survey(surveyPayload, tok);
       dispatch({
         type: "SET_SURVEY_SHARE_LINK",
         value: `http://localhost:3000/survey/${survey.code.survey_id}`,
@@ -111,7 +116,7 @@ export default function SurveyThemeSection({ logo }) {
     };
 
     try {
-      await surveyService.edit_survey(survey.surveyEditId, surveyPayload);
+      await surveyService.edit_survey(survey.surveyEditId, surveyPayload, tok);
       toast.success("Survey edited successfully", {
         position: toast.POSITION.TOP_RIGHT,
       });

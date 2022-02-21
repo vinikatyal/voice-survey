@@ -1,5 +1,7 @@
 import React from "react";
 
+import get from "lodash.get";
+import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 
@@ -24,12 +26,14 @@ export default function InviteInput({ updateTeamMembers }) {
   const {
     register,
     handleSubmit,
-
     formState: { errors },
   } = useForm();
+  const { data: session, status } = useSession();
+  const tok = get(session, "accessToken");
+
   const onSubmit = async (data) => {
     return authService
-      .send_invite(data)
+      .send_invite(data, tok)
       .then((res) => {
         // get return url from query parameters or default to '/'
         toast.success("Invite sent successfully", {

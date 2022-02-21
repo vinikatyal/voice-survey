@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
+import get from "lodash.get";
+
+import { useSession, signOut } from "next-auth/react";
+
 import { toast } from "react-toastify";
 
 import router from "next/router";
@@ -107,6 +111,9 @@ export default function Index() {
   const [value, setVal] = React.useState(0);
   const [existingDetails, setExistingDetails] = useState({});
   const [logoVal, setLogo] = useState();
+  const { data: session, status } = useSession();
+  const tok = get(session, "accessToken");
+
   const {
     register,
     handleSubmit,
@@ -122,7 +129,7 @@ export default function Index() {
     // declare the async data fetching function
     const fetchUserData = async () => {
       // get the data from the api
-      const res = await authService.get_user_profile();
+      const res = await authService.get_user_profile(tok);
       // convert the data to json
       const json = await res.data;
 
@@ -157,7 +164,7 @@ export default function Index() {
     formData.append("user_name", existingDetails.email);
     formData.append("company", data.company);
     return authService
-      .update_user_details(formData)
+      .update_user_details(formData, tok)
       .then(() => {
         toast.success("Details updated successfully", {
           position: toast.POSITION.TOP_RIGHT,
@@ -171,7 +178,7 @@ export default function Index() {
   };
 
   const logOut = () => {
-    authService.logout();
+    signOut();
     router.push("/login");
   };
 

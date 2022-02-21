@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 
+import get from "lodash.get";
+
+import { useSession } from "next-auth/react";
+
 import Layout from "../../../components/Layout";
 import SurveyHeader from "../../../components/survey/SurveyHeader";
 import SurveyCreateTabSection from "../../../components/survey/SurveyCreateTabSection";
@@ -34,6 +38,9 @@ export async function getStaticProps({ params }) {
 export default function create({ currentTab }) {
   const [logo, setLogo] = useState("");
 
+  const { data: session, status } = useSession();
+  const tok = get(session, "accessToken");
+
   const router = useRouter();
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
@@ -44,13 +51,16 @@ export default function create({ currentTab }) {
       return;
     }
 
-    const profile = await authService.get_user_profile();
+    const profile = await authService.get_user_profile(tok);
     profile.data.logo && setLogo(profile.data.logo);
 
     if (survey.previousSurveyType !== survey.surveyType) {
-      const res = await surveyService.get_survey_template_data({
-        survey_type: survey.surveyType,
-      });
+      const res = await surveyService.get_survey_template_data(
+        {
+          survey_type: survey.surveyType,
+        },
+        tok
+      );
       const modifiedArr = survey.surveyEditId
         ? survey.questions
         : res.data.questions.map((obj, index) => {

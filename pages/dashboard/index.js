@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import get from "lodash.get";
 import { useRouter } from "next/router";
 
+import { useSession } from "next-auth/react";
+
 import Image from "next/image";
 
 import Container from "@mui/material/Container";
@@ -117,6 +119,8 @@ export default function Index() {
   const [open, setOpen] = useState(false);
   const [surveys, setAllSurveys] = useState([]);
   const [page, setPage] = useState(1);
+  const { data: session, status } = useSession();
+  const tok = get(session, "accessToken");
 
   const dispatch = useDispatchSurvey();
   const survey = useSurvey();
@@ -131,13 +135,16 @@ export default function Index() {
   };
 
   useEffect(() => {
+    if (!session) {
+      router.push("/login");
+    }
     dispatch({ type: "RESET_SURVEY" });
     getSurveyTypes(1);
   }, []);
 
   const getSurveyTypes = (page) => {
     surveyService
-      .get_all_surveys(page)
+      .get_all_surveys(page, tok)
       .then((res) => {
         setAllSurveys(res.data);
       })
@@ -150,7 +157,10 @@ export default function Index() {
 
   const handleEdit = async (survey_id) => {
     try {
-      const surveyDetails = await surveyService.get_survey_details(survey_id);
+      const surveyDetails = await surveyService.get_survey_details(
+        survey_id,
+        tok
+      );
 
       dispatch({
         type: "SET_SURVEY_SHARE_LINK",

@@ -82,10 +82,10 @@ function signup(email, password, mobile) {
     });
 }
 
-function add_user_details(data) {
+function add_user_details(data, token) {
   return fetchWrapper
     .postFormData(`${baseUrl}/add_user_profile`, data, {
-      token: getFromStorage("token"),
+      token,
     })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
@@ -103,7 +103,7 @@ function add_user_details(data) {
 function update_user_details(data) {
   return fetchWrapper
     .postFormData(`${baseUrl}/update_user_profile`, data, {
-      token: getFromStorage("token"),
+      token,
     })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
@@ -118,9 +118,9 @@ function update_user_details(data) {
     });
 }
 
-async function get_user_profile() {
+async function get_user_profile(token) {
   return await fetchWrapper
-    .get(`${baseUrl}/get_user_profile`, { token: getFromStorage("token") })
+    .get(`${baseUrl}/get_user_profile`, { token })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
       if (res.code === 200) {
@@ -134,9 +134,9 @@ async function get_user_profile() {
     });
 }
 
-function get_user_logo() {
+function get_user_logo(token) {
   return fetchWrapper
-    .get(`${baseUrl}/get_user_logo`, { token: getFromStorage("token") })
+    .get(`${baseUrl}/get_user_logo`, { token })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
       if (res.code === 200) {
@@ -150,9 +150,9 @@ function get_user_logo() {
     });
 }
 
-function send_invite(data) {
+function send_invite(data, token) {
   return fetchWrapper
-    .post(`${baseUrl}/send_invite`, data, { token: getFromStorage("token") })
+    .post(`${baseUrl}/send_invite`, data, { token })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
 
@@ -167,9 +167,9 @@ function send_invite(data) {
     });
 }
 
-async function get_team_members() {
+async function get_team_members(token) {
   return await fetchWrapper
-    .get(`${baseUrl}/get_team_members`, { token: getFromStorage("token") })
+    .get(`${baseUrl}/get_team_members`, { token })
     .then((res) => {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
 
@@ -199,12 +199,12 @@ function forgot_password(email) {
     });
 }
 
-function reset_password(email, old_password, new_password) {
+function reset_password(email, old_password, new_password, token) {
   return fetchWrapper
     .post(
       `${baseUrl}/reset_password`,
       { email, old_password, new_password },
-      { token: getFromStorage("token") }
+      { token }
     )
     .then((res) => {
       if (res.code === 200) {

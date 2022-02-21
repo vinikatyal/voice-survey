@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 
+import get from "lodash.get";
+import { useSession } from "next-auth/react";
+
 import { useRouter } from "next/router";
 import Image from "next/image";
 
@@ -95,6 +98,8 @@ export default function Create() {
   } = useForm();
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
+  const { data: session, status } = useSession();
+  const tok = get(session, "accessToken");
 
   const [selectedValue, setSelectedValue] = useState(
     survey.surveyType || "csat"
@@ -121,7 +126,7 @@ export default function Create() {
 
   const getSurveyTypes = () => {
     surveyService
-      .get_survey_template_metadata()
+      .get_survey_template_metadata(tok)
       .then((res) => {
         const surveyTypes = res.data.map((survey) => ({
           name: survey.name,
@@ -140,7 +145,7 @@ export default function Create() {
 
   const getTeamMembers = () => {
     authService
-      .get_team_members()
+      .get_team_members(tok)
       .then((res) => {
         const emails = res.data.map((item) => ({ value: item, label: item }));
         setAccessEmails(emails);

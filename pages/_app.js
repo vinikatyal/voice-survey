@@ -14,44 +14,14 @@ import "react-toastify/dist/ReactToastify.css";
 import { authService } from "../services/auth.service";
 import { SurveyProvider } from "../context/SurveyState";
 
+import { SessionProvider } from "next-auth/react";
 
 export default function MyApp(props) {
   const router = useRouter();
-  const { Component, pageProps } = props;
-  const [authorized, setAuthorized] = useState(false);
-
-  useEffect(() => {
-    // run auth check on initial load
-    authCheck(router.asPath);
-
-    // set authorized to false to hide page content while changing routes
-    const hideContent = () => setAuthorized(false);
-    router.events.on("routeChangeStart", hideContent);
-
-    // run auth check on route change
-    router.events.on("routeChangeComplete", authCheck);
-
-    // unsubscribe from events in useEffect return function
-    return () => {
-      router.events.off("routeChangeStart", hideContent);
-      router.events.off("routeChangeComplete", authCheck);
-    };
-  }, []);
-
-  function authCheck(url) {
-    // redirect to login page if accessing a private page and not logged in
-    const publicPaths = ["/login", "/signup", "/login/forgotpassword"];
-    const path = url.split("?")[0];
-    if (!authService.tokenValue && !publicPaths.includes(path)) {
-      setAuthorized(false);
-      router.push({
-        pathname: "/login",
-        query: { returnUrl: router.asPath },
-      });
-    } else {
-      setAuthorized(true);
-    }
-  }
+  const {
+    Component,
+    pageProps: { session, ...pageProps },
+  } = props;
 
   return (
     <>
@@ -62,7 +32,15 @@ export default function MyApp(props) {
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <SurveyProvider>
           <CssBaseline />
-          {authorized && <Component {...pageProps} />}
+          <SessionProvider session={session}>
+            {Component.auth ? (
+              <Auth>
+                <Component {...pageProps} />
+              </Auth>
+            ) : (
+              <Component {...pageProps} />
+            )}
+          </SessionProvider>
           <ToastContainer />
         </SurveyProvider>
       </ThemeProvider>
@@ -74,3 +52,16 @@ MyApp.propTypes = {
   Component: PropTypes.elementType.isRequired,
   pageProps: PropTypes.object.isRequired,
 };
+
+function Auth({ children }) {
+  const { data: session, status } = useSession({ required: true });
+  const isUser = !!session?.user;
+
+  if (isUser) {
+    return children;
+  }
+
+  // Session is being fetched, or no user.
+  // If no user, useEffect() will redirect.
+  return <div>Loading...</div>;
+}

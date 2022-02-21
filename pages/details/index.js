@@ -4,6 +4,9 @@ import isEmpty from "lodash.isempty";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 
+import get from "lodash.get";
+import { useSession } from "next-auth/react";
+
 import { toast } from "react-toastify";
 
 import Image from "next/image";
@@ -107,6 +110,8 @@ export default function Index() {
   const router = useRouter();
   const [logoError, setLogoError] = useState(false);
   const [members, setTeamMembers] = useState([]);
+  const { data: session, status } = useSession();
+  const tok = get(session, "accessToken");
 
   const [details, setDetails] = useState({
     company: "",
@@ -129,7 +134,7 @@ export default function Index() {
 
   useEffect(async () => {
     try {
-      const profile = await authService.get_user_profile();
+      const profile = await authService.get_user_profile(tok);
       setDetails({ ...details, ...profile.data });
       await getTeamMembers();
     } catch (error) {
@@ -140,7 +145,7 @@ export default function Index() {
   }, []);
   const getTeamMembers = async () => {
     try {
-      const members = await authService.get_team_members();
+      const members = await authService.get_team_members(tok);
       setTeamMembers(members.data);
     } catch (error) {
       toast.error(error, {
@@ -168,7 +173,7 @@ export default function Index() {
     formData.append("user_name", "vini");
     formData.append("company", details.company);
     return authService
-      .add_user_details(formData)
+      .add_user_details(formData, tok)
       .then(() => {
         router.push("/dashboard");
       })

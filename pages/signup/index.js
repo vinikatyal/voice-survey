@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 
+import get from "lodash.get";
 import isEmpty from "lodash.isempty";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
+import { useSession } from "next-auth/react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -89,6 +91,9 @@ const SignInText = styled(Typography)({
 
 export default function Index() {
   const [mobile, setMobile] = React.useState("");
+  const { data: session, status } = useSession();
+  const tok = get(session, "accessToken");
+
   const {
     register,
     handleSubmit,
@@ -99,7 +104,7 @@ export default function Index() {
 
   useEffect(() => {
     // redirect to home if already logged in
-    if (authService.tokenValue) {
+    if (session) {
       router.push("/dashboard");
     }
   }, []);

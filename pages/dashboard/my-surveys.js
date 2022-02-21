@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-import { toast } from "react-toastify";
-import get from "lodash.get";
+
 import { useRouter } from "next/router";
+
+import { toast } from "react-toastify";
+
+import get from "lodash.get";
+import { useSession } from "next-auth/react";
 
 import Image from "next/image";
 
@@ -121,6 +125,8 @@ export default function Index() {
   const [open, setOpen] = useState(false);
   const [surveys, setMySurveys] = useState([]);
   const [page, setPage] = useState(1);
+  const { data: session, status } = useSession();
+  const tok = get(session, "accessToken");
 
   const router = useRouter();
 
@@ -142,7 +148,7 @@ export default function Index() {
 
   const getSurveyTypes = (page) => {
     surveyService
-      .get_my_surveys(page)
+      .get_my_surveys(page, tok)
       .then((res) => {
         setMySurveys(res.data);
       })
@@ -159,7 +165,7 @@ export default function Index() {
 
   const handleEdit = async (survey_id) => {
     try {
-      const surveyDetails = await surveyService.get_survey_details(survey_id);
+      const surveyDetails = await surveyService.get_survey_details(survey_id, tok);
 
       dispatch({
         type: "SET_TITLE",

@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 
+import { signIn, getCsrfToken, useSession } from "next-auth/react";
+
 import Link from "next/link";
 import Image from "next/image";
 import router from "next/router";
@@ -7,7 +9,6 @@ import router from "next/router";
 import isEmpty from "lodash.isempty";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import get from "lodash.get";
 
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -72,36 +73,40 @@ const SignInText = styled(Typography)({
   marginBottom: "40px",
 });
 
-export default function Index() {
+export default function Index({ csrfToken }) {
+  const { data: session, status } = useSession();
   const {
     register,
     handleSubmit,
     trigger,
+    setError,
     formState: { errors },
   } = useForm();
 
   useEffect(() => {
-    // redirect to home if already logged in
-    if (authService.tokenValue) {
+    if (session) {
       router.push("/dashboard");
     }
   }, []);
   const onSubmit = async (data) => {
-    return await authService
-      .login(data.email, data.password)
-      .then((res) => {
-        // get return url from query parameters or default to '/'
-        if (get(res, "data.pwd_flag") === "Y") {
-          router.push("/dashboard/resetpassword");
-        } else {
-          router.push("/dashboard");
-        }
-      })
-      .catch((error) => {
-        toast.error(error.message, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+    const res = await signIn("credentials", {
+      redirect: false,
+      email: data.email,
+      password: data.password,
+    });
+
+    if (res?.error) {
+      toast.error(res.error, {
+        position: toast.POSITION.TOP_RIGHT,
       });
+      return;
+    } else {
+      setError(null);
+    }
+
+    if (res.status === 200) {
+      router.push("/dashboard");
+    }
   };
   return (
     <Layout bgColor="#f7fafc">
@@ -147,6 +152,11 @@ export default function Index() {
                 onSubmit={(e) => e.preventDefault()}
                 sx={{ mt: 1 }}
               >
+                <input
+                  name="csrfToken"
+                  type="hidden"
+                  defaultValue={csrfToken}
+                />
                 <FormControl fullWidth>
                   <LoginFormLabel>Email Address</LoginFormLabel>
                   <TextField
@@ -246,4 +256,13 @@ export default function Index() {
       </Limiter>
     </Layout>
   );
+}
+
+// This is the recommended way for Next.js 9.3 or newer
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      csrfToken: await getCsrfToken(context),
+    },
+  };
 }

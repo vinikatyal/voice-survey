@@ -1,4 +1,3 @@
-import { BehaviorSubject } from "rxjs";
 import getConfig from "next/config";
 
 import get from "lodash.get";
@@ -8,9 +7,6 @@ import { getFromStorage } from "./auth.service";
 
 const { publicRuntimeConfig } = getConfig();
 const baseUrl = `${publicRuntimeConfig.apiUrl}`;
-const tokenSubject = new BehaviorSubject(
-  process.browser && JSON.parse(localStorage.getItem("token"))
-);
 
 export const surveyService = {
   create_survey,
@@ -23,9 +19,9 @@ export const surveyService = {
   getAll,
 };
 
-async function create_survey(data) {
+async function create_survey(data, token) {
   return await fetchWrapper
-    .post(`${baseUrl}/create_survey`, data, { token: getFromStorage("token") })
+    .post(`${baseUrl}/create_survey`, data, { token })
     .then((res) => {
       if (get(res, "code.survey_id")) {
         return res;
@@ -35,10 +31,10 @@ async function create_survey(data) {
     });
 }
 
-function get_all_surveys(page) {
+function get_all_surveys(page, token) {
   return fetchWrapper
     .get(`${baseUrl}/get_all_surveys`, {
-      token: getFromStorage("token"),
+      token,
       pageno: page,
       max_records: 9,
     })
@@ -51,10 +47,10 @@ function get_all_surveys(page) {
     });
 }
 
-function get_my_surveys(page) {
+function get_my_surveys(page, token) {
   return fetchWrapper
     .get(`${baseUrl}/get_my_surveys`, {
-      token: getFromStorage("token"),
+      token,
       pageno: page,
       max_records: 9,
     })
@@ -67,10 +63,10 @@ function get_my_surveys(page) {
     });
 }
 
-function get_survey_template_metadata() {
+function get_survey_template_metadata(token) {
   return fetchWrapper
     .get(`${baseUrl}/get_survey_template_metadata`, {
-      token: getFromStorage("token"),
+      token,
     })
     .then((res) => {
       if (get(res, "code") === 200) {
@@ -81,10 +77,10 @@ function get_survey_template_metadata() {
     });
 }
 
-async function get_survey_template_data(data) {
+async function get_survey_template_data(data, token) {
   return await fetchWrapper
     .post(`${baseUrl}/get_survey_template_data`, data, {
-      token: getFromStorage("token"),
+      token,
     })
     .then((res) => {
       if (get(res, "code") === 200) {
@@ -95,10 +91,10 @@ async function get_survey_template_data(data) {
     });
 }
 
-async function get_survey_details(id) {
+async function get_survey_details(id, token) {
   return await fetchWrapper
     .get(`${baseUrl}/get_survey_details/${id}`, {
-      token: getFromStorage("token"),
+      token,
     })
     .then((res) => {
       if (get(res, "code") === 200) {
@@ -109,10 +105,10 @@ async function get_survey_details(id) {
     });
 }
 
-async function edit_survey(id, data) {
+async function edit_survey(id, data, token) {
   return await fetchWrapper
     .post(`${baseUrl}/edit_survey/${id}`, data, {
-      token: getFromStorage("token"),
+      token,
     })
     .then((res) => {
       if (get(res, "code.survey_id")) {
