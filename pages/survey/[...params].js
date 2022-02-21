@@ -26,6 +26,7 @@ import SingleLineTextField from "../../components/questions/SingleLineTextField"
 import MultiLineTextField from "../../components/questions/MultiLineTextField";
 import EmailTextField from "../../components/questions/EmailTextField";
 import DateField from "../../components/questions/DateField";
+import WelcomeText from "../../components/questions/WelcomeText";
 
 const FullBackgroundSurvey = styled("div")(({ bgColor }) => ({
   background: bgColor,
@@ -136,18 +137,15 @@ export default function survey() {
           <Grid container mt={5}>
             <Grid item md={12}>
               <Typography fontSize={28} color="#00063e" fontWeight={700}>
-                {survey.surveyWelcomeText || "Welcome to our Survey"}
+                {survey.surveyWelcomeText || "Get start by clicking next!"}
               </Typography>
             </Grid>
           </Grid>
-          <SingleLineTextField
-            title={"Get started by entering your name"}
+          <WelcomeText
             value={get(survey, "surveyUserName", "")}
-            placeholder="Please enter your name"
-            required={true}
             totalQuestions={survey.questions.length}
             id={"1"}
-            primaryButtonTitle="Submit"
+            primaryButtonTitle="Next"
             nextRoute={`/survey/${surveyId}/${survey.questions[0].question_number}`}
             handleResponse={handleNameResponse}
           />
