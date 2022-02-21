@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { authService } from "../services/auth.service";
 import { SurveyProvider } from "../context/SurveyState";
 
+
 export default function MyApp(props) {
   const router = useRouter();
   const { Component, pageProps } = props;
