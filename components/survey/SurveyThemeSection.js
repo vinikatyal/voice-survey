@@ -90,9 +90,37 @@ export default function SurveyThemeSection({ logo }) {
     }
   };
 
-  const editSurvey = () => {
-    alert("Edited");
-    router.push("/dashboard");
+  const editSurvey = async () => {
+    const members = survey.accessMembers
+      .map((item) => {
+        return item.value;
+      })
+      .join(",");
+
+    const questions = survey.questions.map((obj, index) => ({
+      ...obj,
+      question_number: index + 1,
+    }));
+
+    const surveyPayload = {
+      survey_title: survey.surveyTitle,
+      access_list_emails: members || "",
+      survey_theme: survey.selectedSurveyTheme.name,
+      welcome_text: survey.surveyWelcomeText,
+      survey_questions: questions,
+    };
+
+    try {
+      await surveyService.edit_survey(survey.surveyEditId, surveyPayload);
+      toast.success("Survey edited successfully", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      router.push("/dashboard");
+    } catch (error) {
+      toast.error(error.message, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    }
   };
 
   return (

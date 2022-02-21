@@ -45,10 +45,14 @@ function postFormData(url, body, extraHeaders = {}) {
   return fetch(url, requestOptions).then(handleResponse);
 }
 
-function put(url, body) {
+function put(url, body, extraHeaders = {}) {
   const requestOptions = {
     method: "PUT",
-    headers: { "Content-Type": "application/json", ...authHeader(url) },
+    headers: {
+      "Content-Type": "application/json",
+      ...authHeader(url),
+      ...extraHeaders,
+    },
     body: JSON.stringify(body),
   };
   return fetch(url, requestOptions).then(handleResponse);
