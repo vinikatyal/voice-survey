@@ -61,8 +61,10 @@ const initialState = {
     themeName: "Theme Blue",
     color: "linear-gradient(to right, #1EA798, #2D4C93)!important;",
   },
+  surveyUserName: "",
   previousSurveyType: null,
   surveyEditId: null,
+  surveyShareLink: "",
 };
 
 const reducer = produce((draft, action) => {
@@ -94,6 +96,12 @@ const reducer = produce((draft, action) => {
       break;
     case "SET_SURVEY_EDIT_ID":
       draft.surveyEditId = action.value;
+      break;
+    case "SET_SURVEY_SHARE_LINK":
+      draft.surveyShareLink = action.value;
+      break;
+    case "SET_SURVEY_USER_NAME":
+      draft.surveyUserName = action.value;
       break;
     case "RESET_SURVEY":
       {

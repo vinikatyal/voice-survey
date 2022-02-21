@@ -52,10 +52,15 @@ const NavItem = styled("div")(({ active }) => ({
   },
 }));
 
-export default function Index({ headerTitle, currentTab, children }) {
+export default function Index({
+  headerTitle,
+  currentTab,
+  children,
+  backRoute,
+}) {
   const router = useRouter();
   const handleBack = () => {
-    router.back();
+    router.push(backRoute);
   };
   return (
     <>

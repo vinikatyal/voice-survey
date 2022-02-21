@@ -2,6 +2,8 @@ import * as React from "react";
 
 import Image from "next/image";
 
+import { toast } from "react-toastify";
+
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -19,6 +21,7 @@ import linkedin from "../../images/svg/linkedin.svg";
 import facebook from "../../images/svg/facebook.svg";
 
 import styled from "@emotion/styled";
+import { useSurvey } from "../../context/SurveyState";
 
 const ShareSection = styled(Container)(({ theme }) => ({
   marginTop: theme.spacing(3),
@@ -46,9 +49,27 @@ const IconSection = styled("div")(({ theme }) => ({
 }));
 
 export default function Share() {
+  const survey = useSurvey();
+
+  const copyToClipBoard = async () => {
+    try {
+      await navigator.clipboard.writeText(survey.surveyShareLink);
+      toast.success("Link Copied", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    } catch (err) {
+      toast.error("Failed to copy!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    }
+  };
   return (
     <Layout>
-      <SurveyHeader headerTitle="Survey's Name Here" currentTab="SHARE">
+      <SurveyHeader
+        headerTitle={survey.surveyTitle}
+        backRoute="/survey/create"
+        currentTab="SHARE"
+      >
         <SurveySubHeader title={"Welcome Back!"} />
         <ShareSection>
           <FormSection>
@@ -56,11 +77,11 @@ export default function Share() {
             <ShareTextField
               fullWidth
               disabled
-              value="https://app.lorem/ipsum.consectetur/adipiscing"
+              value={survey.surveyShareLink}
               InputProps={{
                 endAdornment: (
                   <InputAdornment>
-                    <IconButton>
+                    <IconButton onClick={copyToClipBoard}>
                       <ContentCopy />
                     </IconButton>
                   </InputAdornment>

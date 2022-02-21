@@ -165,7 +165,11 @@ export default function Create() {
   };
   return (
     <Layout>
-      <SurveyHeader headerTitle="Create a New Survey" currentTab="CREATE">
+      <SurveyHeader
+        headerTitle="Create a New Survey"
+        backRoute="/dashboard"
+        currentTab="CREATE"
+      >
         <CreateSection
           component="form"
           noValidate

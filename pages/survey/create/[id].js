@@ -69,7 +69,11 @@ export default function create({ currentTab }) {
   };
   return (
     <Layout>
-      <SurveyHeader headerTitle={survey.surveyTitle} currentTab="CREATE">
+      <SurveyHeader
+        headerTitle={survey.surveyTitle}
+        backRoute="/survey/create"
+        currentTab="CREATE"
+      >
         <SurveyCreateTabSection
           currentTab={currentTab}
           handleChangeTab={handleChangeTab}
