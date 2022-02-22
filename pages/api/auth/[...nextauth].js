@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 
 const BASE_URL = "http://172.16.22.5:8086";
 
+
 const providers = [
   Credentials({
     id: "credentials",
@@ -13,7 +14,7 @@ const providers = [
         password: credentials.password,
       };
 
-      let res = null;
+      let res = null
 
       if (credentials.isNew) {
         payload.mobile = credentials.mobile;
@@ -100,7 +101,7 @@ const options = {
   providers,
   callbacks,
   pages: {
-    error: "/login",
+    error: "/error",
     signIn: "/login",
     newUser: "/signup",
   },

@@ -4,7 +4,7 @@ import get from "lodash.get";
 import isEmpty from "lodash.isempty";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import { useSession, signIn, getCsrfToken } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -170,11 +170,11 @@ export default function Index({ csrfToken }) {
                 onSubmit={(e) => e.preventDefault()}
                 sx={{ mt: 1 }}
               >
-                <input
+                {/* <input
                   name="csrfToken"
                   type="hidden"
                   defaultValue={csrfToken}
-                />
+                /> */}
                 <FormControl fullWidth>
                   <LoginFormLabel>Email</LoginFormLabel>
                   <TextField
@@ -307,10 +307,10 @@ export default function Index({ csrfToken }) {
 }
 
 // This is the recommended way for Next.js 9.3 or newer
-export async function getServerSideProps(context) {
-  return {
-    props: {
-      csrfToken: await getCsrfToken(context),
-    },
-  };
-}
+// export async function getServerSideProps(context) {
+//   return {
+//     props: {
+//       csrfToken: await getCsrfToken(context),
+//     },
+//   };
+// }
