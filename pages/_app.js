@@ -32,7 +32,7 @@ export default function MyApp(props) {
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <SurveyProvider>
           <CssBaseline />
-          <SessionProvider session={session}>
+          <SessionProvider session={session} basePath="/api/auth">
             {Component.auth ? (
               <Auth>
                 <Component {...pageProps} />
