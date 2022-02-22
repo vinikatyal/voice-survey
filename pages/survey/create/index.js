@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+import get from "lodash.get";
+
 import { useRouter } from "next/router";
 import Image from "next/image";
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 
+// common components
 import Layout from "../../../components/Layout";
 import SurveyHeader from "../../../components/survey/SurveyHeader";
 import SurveyCreateTabSection from "../../../components/survey/SurveyCreateTabSection";

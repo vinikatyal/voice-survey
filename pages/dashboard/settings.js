@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
+import get from "lodash.get";
+
+import { signOut } from "next-auth/react";
+
 import { toast } from "react-toastify";
 
 import router from "next/router";
@@ -107,6 +111,7 @@ export default function Index() {
   const [value, setVal] = React.useState(0);
   const [existingDetails, setExistingDetails] = useState({});
   const [logoVal, setLogo] = useState();
+
   const {
     register,
     handleSubmit,
@@ -171,8 +176,8 @@ export default function Index() {
   };
 
   const logOut = () => {
-    authService.logout();
     router.push("/login");
+    signOut();
   };
 
   const handleChange = (event, newValue) => {

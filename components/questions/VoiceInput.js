@@ -16,7 +16,7 @@ import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import Waveform from "./Waveform";
+// import Waveform from "./Waveform";
 
 import styled from "@emotion/styled";
 
@@ -81,10 +81,12 @@ function VoiceInput({
       {/*Input Section  */}
       <Grid item md={2} xs={0}></Grid>
       <Grid item md={8} xs={12}>
-        {mediaBlobUrl && <Waveform audio={mediaBlobUrl} />}
+        {mediaBlobUrl && <audio src={mediaBlobUrl} controls />}
+
+        {/* {mediaBlobUrl && <Waveform audio={mediaBlobUrl} />} */}
 
         {mediaBlobUrl && (
-          <>
+          <div>
             <FabAudio
               aria-label="add"
               sx={{ mt: 2 }}
@@ -94,7 +96,7 @@ function VoiceInput({
             >
               <DeleteIcon />
             </FabAudio>
-          </>
+          </div>
         )}
 
         {["idle", "stopped"].includes(status) && !mediaBlobUrl && (
@@ -115,10 +117,7 @@ function VoiceInput({
         )}
         {["recording", "paused"].includes(status) && (
           <>
-            <FabAudio
-              aria-label="add"
-              onClick={playStop}
-            >
+            <FabAudio aria-label="add" onClick={playStop}>
               <StopIcon />
             </FabAudio>
           </>

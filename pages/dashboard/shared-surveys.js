@@ -123,11 +123,9 @@ export default function Index() {
   const [open, setOpen] = useState(false);
   const [surveys, setMySurveys] = useState([]);
   const [page, setPage] = useState(1);
-  const [surveyId, setSurveyId] = useState("");
   const [count, setSurveyCount] = useState(0);
 
   const router = useRouter();
-
   const dispatch = useDispatchSurvey();
   const survey = useSurvey();
 
@@ -147,7 +145,7 @@ export default function Index() {
 
   const getSurveyTypes = (page) => {
     surveyService
-      .get_my_surveys(page)
+      .get_shared_surveys(page)
       .then((res) => {
         setMySurveys(res.data);
       })
@@ -160,7 +158,7 @@ export default function Index() {
 
   const getSurveysCount = () => {
     surveyService
-    .get_surveys_count("admin")
+    .get_surveys_count("guest")
     .then((res) => {
       const count = Math.ceil(res.data/10)
       setSurveyCount(count);
@@ -173,21 +171,7 @@ export default function Index() {
     
   }
 
-  const deleteSurvey = (survey_id) => {
-    setSurveyId(survey_id);
-    setOpen(true);
-  };
-
-  const deleteSurveyAccept = async () => {
-    if (surveyId) {
-      await surveyService.delete_survey(surveyId);
-      toast.success("Survey deleted successfully", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
-      setSurveyId("");
-      setOpen(false);
-    }
-  };
+  
 
   const handleEdit = async (survey_id) => {
     try {
@@ -245,7 +229,7 @@ export default function Index() {
       <DashboardH></DashboardH>
       <FullBackground maxWidth="lg">
         <DashboardHeader>
-          <Typography variant="h4">My Surveys</Typography>
+          <Typography variant="h4">Shared Surveys</Typography>
         </DashboardHeader>
         <GridContainer container spacing={5}>
           {surveys.length ? (
@@ -255,13 +239,7 @@ export default function Index() {
                   <CardContent>
                     <CardTitle>
                       <CardHead>{survey.survey_title}</CardHead>
-                      <CardIconContainer>
-                        <CardIcon
-                          onClick={() => deleteSurvey(survey.survey_id)}
-                        >
-                          <Delete />
-                        </CardIcon>
-                      </CardIconContainer>
+                      <CardIconContainer></CardIconContainer>
                     </CardTitle>
                     <Response>
                       <Left>
@@ -314,7 +292,7 @@ export default function Index() {
         title="Delete Survey?"
         message="Are you sure you want to delete your survey?"
         handleReject={handleClose}
-        handleAccept={deleteSurveyAccept}
+        handleAccept={handleClose}
       />
     </>
   );

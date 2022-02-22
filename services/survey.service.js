@@ -1,16 +1,12 @@
-import { BehaviorSubject } from "rxjs";
 import getConfig from "next/config";
 
 import get from "lodash.get";
 
 import { fetchWrapper } from "../helpers/fetch-wrapper";
-import { getFromStorage } from "./auth.service";
+import { getAccessToken } from "./auth.service";
 
 const { publicRuntimeConfig } = getConfig();
 const baseUrl = `${publicRuntimeConfig.apiUrl}`;
-const tokenSubject = new BehaviorSubject(
-  process.browser && JSON.parse(localStorage.getItem("token"))
-);
 
 export const surveyService = {
   create_survey,
@@ -18,14 +14,19 @@ export const surveyService = {
   get_survey_template_data,
   get_all_surveys,
   get_my_surveys,
+  get_shared_surveys,
   get_survey_details,
   edit_survey,
+  delete_survey,
+  get_surveys_count,
+  generateLink,
   getAll,
 };
 
 async function create_survey(data) {
+  const token = await getAccessToken();
   return await fetchWrapper
-    .post(`${baseUrl}/create_survey`, data, { token: getFromStorage("token") })
+    .post(`${baseUrl}/create_survey`, data, { token })
     .then((res) => {
       if (get(res, "code.survey_id")) {
         return res;
@@ -35,10 +36,11 @@ async function create_survey(data) {
     });
 }
 
-function get_all_surveys(page) {
+async function get_all_surveys(page) {
+  const token = await getAccessToken();
   return fetchWrapper
     .get(`${baseUrl}/get_all_surveys`, {
-      token: getFromStorage("token"),
+      token,
       pageno: page,
       max_records: 9,
     })
@@ -51,10 +53,11 @@ function get_all_surveys(page) {
     });
 }
 
-function get_my_surveys(page) {
+async function get_my_surveys(page) {
+  const token = await getAccessToken();
   return fetchWrapper
     .get(`${baseUrl}/get_my_surveys`, {
-      token: getFromStorage("token"),
+      token,
       pageno: page,
       max_records: 9,
     })
@@ -67,10 +70,43 @@ function get_my_surveys(page) {
     });
 }
 
-function get_survey_template_metadata() {
+async function get_shared_surveys(page) {
+  const token = await getAccessToken();
+  return fetchWrapper
+    .get(`${baseUrl}/get_shared_surveys`, {
+      token,
+      pageno: page,
+      max_records: 9,
+    })
+    .then((res) => {
+      if (get(res, "code") === 200) {
+        return res;
+      } else {
+        return {};
+      }
+    });
+}
+
+async function get_surveys_count(type) {
+  const token = await getAccessToken();
+  return fetchWrapper
+    .get(`${baseUrl}/get_surveys_count/${type}`, {
+      token,
+    })
+    .then((res) => {
+      if (get(res, "code") === 200) {
+        return res;
+      } else {
+        return {};
+      }
+    });
+}
+
+async function get_survey_template_metadata() {
+  const token = await getAccessToken();
   return fetchWrapper
     .get(`${baseUrl}/get_survey_template_metadata`, {
-      token: getFromStorage("token"),
+      token,
     })
     .then((res) => {
       if (get(res, "code") === 200) {
@@ -82,9 +118,10 @@ function get_survey_template_metadata() {
 }
 
 async function get_survey_template_data(data) {
+  const token = await getAccessToken();
   return await fetchWrapper
     .post(`${baseUrl}/get_survey_template_data`, data, {
-      token: getFromStorage("token"),
+      token,
     })
     .then((res) => {
       if (get(res, "code") === 200) {
@@ -96,9 +133,10 @@ async function get_survey_template_data(data) {
 }
 
 async function get_survey_details(id) {
+  const token = await getAccessToken();
   return await fetchWrapper
     .get(`${baseUrl}/get_survey_details/${id}`, {
-      token: getFromStorage("token"),
+      token,
     })
     .then((res) => {
       if (get(res, "code") === 200) {
@@ -110,15 +148,50 @@ async function get_survey_details(id) {
 }
 
 async function edit_survey(id, data) {
+  const token = await getAccessToken();
   return await fetchWrapper
     .post(`${baseUrl}/edit_survey/${id}`, data, {
-      token: getFromStorage("token"),
+      token,
     })
     .then((res) => {
       if (get(res, "code.survey_id")) {
         return res;
       } else {
         return {};
+      }
+    });
+}
+
+async function delete_survey(id) {
+  const token = await getAccessToken();
+  return await fetchWrapper
+    .get(`${baseUrl}/delete_survey/${id}`, {
+      token,
+    })
+    .then((res) => {
+      if (get(res, "code") === 200) {
+        return res;
+      } else {
+        return {};
+      }
+    });
+}
+
+async function generateLink(survey_id, url) {
+  const token = await getAccessToken();
+  return await fetchWrapper
+    .post(
+      `${baseUrl}/genarate_survey_bitly_link/${survey_id}`,
+      { url },
+      {
+        token,
+      }
+    )
+    .then((res) => {
+      if (get(res, "code") === 200) {
+        return res;
+      } else {
+        throw new Error("There was an error");
       }
     });
 }

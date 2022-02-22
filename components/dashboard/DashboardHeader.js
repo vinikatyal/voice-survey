@@ -75,7 +75,7 @@ export default function DashboardHeader() {
           >
             My Surveys
           </NavLink>
-          <NavLink to="/contact" underline="hover">
+          <NavLink  onClick={() => openLink("/dashboard/shared-surveys")} underline="hover">
             Shared with me
           </NavLink>
           <NavLink

@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 
-import { toast } from "react-toastify";
 
 // UI
 import Box from "@mui/material/Box";

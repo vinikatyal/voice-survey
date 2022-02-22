@@ -1,6 +1,7 @@
 import React from "react";
-
 import { useRouter } from "next/router";
+
+import getConfig from "next/config";
 
 // UI
 import Container from "@mui/material/Container";
@@ -19,7 +20,6 @@ import { surveyService } from "../../services/survey.service";
 // State Manager
 import { useSurvey, useDispatchSurvey } from "../../context/SurveyState";
 import Image from "next/image";
-import { get } from "react-hook-form";
 
 const Label = styled("span")({
   color: "#707070",
@@ -74,15 +74,28 @@ export default function SurveyThemeSection({ logo }) {
     };
 
     try {
-      const survey = await surveyService.create_survey(surveyPayload);
-      dispatch({
-        type: "SET_SURVEY_SHARE_LINK",
-        value: `http://localhost:3000/survey/${survey.code.survey_id}`,
-      });
-      toast.success("Survey created successfully", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
-      router.push("/survey/share");
+      const surveyData = await surveyService.create_survey(surveyPayload);
+
+      const surveyId = surveyData.code.survey_id;
+      const link = await surveyService.generateLink(
+        surveyId,
+        `http://example.com/survey/${surveyId}`
+      );
+
+      if (get(link, "data.survey_bitly_link")) {
+        dispatch({
+          type: "SET_SURVEY_SHARE_LINK",
+          value: get(link, "data.survey_bitly_link"),
+        });
+        toast.success("Survey created successfully", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        router.push("/survey/share");
+      } else {
+        toast.error("Error while creating link", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
     } catch (error) {
       toast.error(error.message, {
         position: toast.POSITION.TOP_RIGHT,

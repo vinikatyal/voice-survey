@@ -24,9 +24,9 @@ export default function InviteInput({ updateTeamMembers }) {
   const {
     register,
     handleSubmit,
-
     formState: { errors },
   } = useForm();
+
   const onSubmit = async (data) => {
     return authService
       .send_invite(data)
