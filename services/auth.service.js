@@ -1,22 +1,12 @@
-import { BehaviorSubject } from "rxjs";
 import getConfig from "next/config";
-import Router from "next/router";
 
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import { errorHandler } from "../helpers/api/error-handler";
 
 const { publicRuntimeConfig } = getConfig();
 const baseUrl = `${publicRuntimeConfig.apiUrl}`;
-const tokenSubject = new BehaviorSubject(
-  process.browser && JSON.parse(localStorage.getItem("token"))
-);
 
 export const authService = {
-  token: tokenSubject.asObservable(),
-  get tokenValue() {
-    return tokenSubject.value;
-  },
-  login,
   signup,
   add_user_details,
   update_user_details,
@@ -26,41 +16,18 @@ export const authService = {
   send_invite,
   forgot_password,
   reset_password,
-  logout,
   getAll,
 };
 
-export const getFromStorage = (key) => {
-  if (typeof window !== "undefined") {
-    return JSON.parse(window.localStorage.getItem(key));
+export const getAccessToken = async () => {
+  const res = await fetch("/api/auth/session");
+  const session = await res.json()
+  if (res.ok) {
+    return session.accessToken
+  } else {
+    return null
   }
 };
-
-const addToStorage = (key, value) => {
-  if (typeof window !== "undefined") {
-    window.localStorage.setItem(key, value);
-  }
-};
-
-function login(email, password) {
-  return fetchWrapper
-    .post(`${baseUrl}/login`, { email, password })
-    .then((res) => {
-      // publish user to subscribers and store in local storage to stay logged in between page refreshes
-
-      if (res.code === 200) {
-        addToStorage("token", JSON.stringify(res.data.token));
-        tokenSubject.next(res);
-
-        return res;
-      } else {
-        errorHandler({}, res);
-      }
-    })
-    .catch((error) => {
-      errorHandler(error, {});
-    });
-}
 
 function signup(email, password, mobile) {
   return fetchWrapper
@@ -69,9 +36,6 @@ function signup(email, password, mobile) {
       // publish user to subscribers and store in local storage to stay logged in between page refreshes
 
       if (res.code === 200) {
-        addToStorage("token", JSON.stringify(res.data.token));
-        tokenSubject.next(res);
-
         return res;
       } else {
         errorHandler({}, res);
@@ -82,7 +46,8 @@ function signup(email, password, mobile) {
     });
 }
 
-function add_user_details(data, token) {
+async function add_user_details(data) {
+  const token = await getAccessToken();
   return fetchWrapper
     .postFormData(`${baseUrl}/add_user_profile`, data, {
       token,
@@ -100,7 +65,8 @@ function add_user_details(data, token) {
     });
 }
 
-function update_user_details(data) {
+async function update_user_details(data) {
+  const token = await getAccessToken();
   return fetchWrapper
     .postFormData(`${baseUrl}/update_user_profile`, data, {
       token,
@@ -118,7 +84,8 @@ function update_user_details(data) {
     });
 }
 
-async function get_user_profile(token) {
+async function get_user_profile() {
+  const token = await getAccessToken();
   return await fetchWrapper
     .get(`${baseUrl}/get_user_profile`, { token })
     .then((res) => {
@@ -134,7 +101,8 @@ async function get_user_profile(token) {
     });
 }
 
-function get_user_logo(token) {
+async function get_user_logo() {
+  const token = await getAccessToken();
   return fetchWrapper
     .get(`${baseUrl}/get_user_logo`, { token })
     .then((res) => {
@@ -150,7 +118,8 @@ function get_user_logo(token) {
     });
 }
 
-function send_invite(data, token) {
+async function send_invite(data) {
+  const token = await getAccessToken();
   return fetchWrapper
     .post(`${baseUrl}/send_invite`, data, { token })
     .then((res) => {
@@ -167,7 +136,8 @@ function send_invite(data, token) {
     });
 }
 
-async function get_team_members(token) {
+async function get_team_members() {
+  const token = await getAccessToken();
   return await fetchWrapper
     .get(`${baseUrl}/get_team_members`, { token })
     .then((res) => {
@@ -199,7 +169,8 @@ function forgot_password(email) {
     });
 }
 
-function reset_password(email, old_password, new_password, token) {
+async function reset_password(email, old_password, new_password) {
+  const token = await getAccessToken();
   return fetchWrapper
     .post(
       `${baseUrl}/reset_password`,
@@ -216,13 +187,6 @@ function reset_password(email, old_password, new_password, token) {
     .catch((error) => {
       errorHandler(error, {});
     });
-}
-
-function logout() {
-  // remove user from local storage, publish null to user subscribers and redirect to login page
-  localStorage.removeItem("token");
-  tokenSubject.next(null);
-  Router.push("/login");
 }
 
 function getAll() {

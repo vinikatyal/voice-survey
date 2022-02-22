@@ -1,10 +1,8 @@
 import React from "react";
 
-import get from "lodash.get";
 import isEmpty from "lodash.isempty";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 
 import { toast } from "react-toastify";
 
@@ -70,8 +68,6 @@ const NextSection = styled("div")({
 
 export default function Index() {
   const router = useRouter();
-  const { data: session, status } = useSession();
-  const tok = get(session, "accessToken");
   const {
     register,
     handleSubmit,
@@ -82,7 +78,7 @@ export default function Index() {
 
   const onSubmit = async (data) => {
     return await authService
-      .reset_password(data.email, data.old_password, data.new_password, tok)
+      .reset_password(data.email, data.old_password, data.new_password)
       .then(() => {
         router.push("/dashboard");
       })

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 
 import { toast } from "react-toastify";
 import get from "lodash.get";
-import { useSession } from "next-auth/react";
 
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
@@ -62,9 +61,6 @@ export default function survey() {
   const [questionId, setQuestionId] = useState("");
   const [open, setOpen] = useState(false);
 
-  const { data: session, status } = useSession();
-  const tok = get(session, "accessToken");
-
   const VoiceInput = dynamic(() =>
     import("../../components/questions/VoiceInput")
   );
@@ -89,7 +85,7 @@ export default function survey() {
 
   const getSurveyDetails = async (survey_id) => {
     try {
-      const surveyDetails = await surveyService.get_survey_details(survey_id, tok);
+      const surveyDetails = await surveyService.get_survey_details(survey_id);
 
       dispatch({
         type: "SET_QUESTIONS",

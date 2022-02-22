@@ -88,7 +88,6 @@ function handleResponse(response) {
     if (!response.ok) {
       if ([401, 403].includes(response.status)) {
         // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-        authService.logout();
       }
 
       const error = (data && data.message) || response.statusText;

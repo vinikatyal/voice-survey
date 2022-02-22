@@ -3,7 +3,7 @@ import getConfig from "next/config";
 import get from "lodash.get";
 
 import { fetchWrapper } from "../helpers/fetch-wrapper";
-import { getFromStorage } from "./auth.service";
+import { getAccessToken } from "./auth.service";
 
 const { publicRuntimeConfig } = getConfig();
 const baseUrl = `${publicRuntimeConfig.apiUrl}`;
@@ -14,6 +14,7 @@ export const surveyService = {
   get_survey_template_data,
   get_all_surveys,
   get_my_surveys,
+  get_shared_surveys,
   get_survey_details,
   edit_survey,
   getAll,
@@ -31,7 +32,8 @@ async function create_survey(data, token) {
     });
 }
 
-function get_all_surveys(page, token) {
+async function get_all_surveys(page) {
+  const token = await getAccessToken();
   return fetchWrapper
     .get(`${baseUrl}/get_all_surveys`, {
       token,
@@ -47,7 +49,8 @@ function get_all_surveys(page, token) {
     });
 }
 
-function get_my_surveys(page, token) {
+async function get_my_surveys(page) {
+  const token = await getAccessToken();
   return fetchWrapper
     .get(`${baseUrl}/get_my_surveys`, {
       token,
@@ -63,7 +66,25 @@ function get_my_surveys(page, token) {
     });
 }
 
-function get_survey_template_metadata(token) {
+async function get_shared_surveys(page) {
+  const token = await getAccessToken();
+  return fetchWrapper
+    .get(`${baseUrl}/get_shared_surveys`, {
+      token,
+      pageno: page,
+      max_records: 9,
+    })
+    .then((res) => {
+      if (get(res, "code") === 200) {
+        return res;
+      } else {
+        return {};
+      }
+    });
+}
+
+async function get_survey_template_metadata() {
+  const token = await getAccessToken();
   return fetchWrapper
     .get(`${baseUrl}/get_survey_template_metadata`, {
       token,
@@ -77,7 +98,8 @@ function get_survey_template_metadata(token) {
     });
 }
 
-async function get_survey_template_data(data, token) {
+async function get_survey_template_data(data) {
+  const token = await getAccessToken();
   return await fetchWrapper
     .post(`${baseUrl}/get_survey_template_data`, data, {
       token,
@@ -91,7 +113,8 @@ async function get_survey_template_data(data, token) {
     });
 }
 
-async function get_survey_details(id, token) {
+async function get_survey_details(id) {
+  const token = await getAccessToken();
   return await fetchWrapper
     .get(`${baseUrl}/get_survey_details/${id}`, {
       token,
@@ -105,7 +128,8 @@ async function get_survey_details(id, token) {
     });
 }
 
-async function edit_survey(id, data, token) {
+async function edit_survey(id, data) {
+  const token = await getAccessToken();
   return await fetchWrapper
     .post(`${baseUrl}/edit_survey/${id}`, data, {
       token,

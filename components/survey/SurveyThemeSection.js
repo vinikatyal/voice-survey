@@ -1,10 +1,5 @@
 import React from "react";
-
-import get from "lodash.get";
-
 import { useRouter } from "next/router";
-
-import { useSession } from "next-auth/react";
 
 // UI
 import Container from "@mui/material/Container";
@@ -50,8 +45,6 @@ export default function SurveyThemeSection({ logo }) {
   const router = useRouter();
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
-  const { data: session, status } = useSession();
-  const tok = get(session, "accessToken");
 
   const handleChangeSelectedValue = (themeName) => {
     dispatch({ type: "SET_THEME", value: themeName });
@@ -79,7 +72,7 @@ export default function SurveyThemeSection({ logo }) {
     };
 
     try {
-      const survey = await surveyService.create_survey(surveyPayload, tok);
+      const survey = await surveyService.create_survey(surveyPayload);
       dispatch({
         type: "SET_SURVEY_SHARE_LINK",
         value: `http://localhost:3000/survey/${survey.code.survey_id}`,
@@ -116,7 +109,7 @@ export default function SurveyThemeSection({ logo }) {
     };
 
     try {
-      await surveyService.edit_survey(survey.surveyEditId, surveyPayload, tok);
+      await surveyService.edit_survey(survey.surveyEditId, surveyPayload);
       toast.success("Survey edited successfully", {
         position: toast.POSITION.TOP_RIGHT,
       });

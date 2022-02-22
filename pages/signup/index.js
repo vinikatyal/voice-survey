@@ -4,7 +4,7 @@ import get from "lodash.get";
 import isEmpty from "lodash.isempty";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -91,8 +91,7 @@ const SignInText = styled(Typography)({
 
 export default function Index() {
   const [mobile, setMobile] = React.useState("");
-  const { data: session, status } = useSession();
-  const tok = get(session, "accessToken");
+  const { data: session } = useSession();
 
   const {
     register,
@@ -112,9 +111,26 @@ export default function Index() {
   const onSubmit = async (data) => {
     return await authService
       .signup(data.email, data.password, mobile)
-      .then(() => {
-        // get return url from query parameters or default to '/'
-        router.push("/details");
+      .then(async () => {
+        const res = await signIn("credentials", {
+          redirect: false,
+          email: data.email,
+          password: data.password,
+        });
+
+        if (res?.error) {
+          toast.error(res.error, {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+          return;
+        } else {
+          setError(null);
+        }
+
+        if (res.status === 200) {
+          // get return url from query parameters or default to '/'
+          router.push("/details");
+        }
       })
       .catch((error) => {
         toast.error(error, {

@@ -27,8 +27,6 @@ import Layout from "../../components/Layout";
 import Limiter from "../../components/Limiter";
 import StyledButton from "../../components/StyledButton";
 
-import { authService } from "../../services/auth.service";
-
 import styled from "@emotion/styled";
 
 const Item = styled(Paper)(({ theme }) => ({
