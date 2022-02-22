@@ -3,7 +3,6 @@ import Credentials from "next-auth/providers/credentials";
 
 const BASE_URL = "http://172.16.22.5:8086";
 
-
 const providers = [
   Credentials({
     id: "credentials",
@@ -14,7 +13,7 @@ const providers = [
         password: credentials.password,
       };
 
-      let res = null
+      let res = null;
 
       if (credentials.isNew) {
         payload.mobile = credentials.mobile;
@@ -68,31 +67,6 @@ const callbacks = {
 
   async session({ session, token }) {
     session.accessToken = token.accessToken;
-
-    const res = await fetch(BASE_URL + "/get_user_profile", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        token: token.accessToken,
-      },
-    })
-      .then((response) => {
-        // Store userData to Session
-        session.user = response.data;
-      })
-      .catch((error) => {
-        // Error
-        if (error.response) {
-          console.log("error.response: " + error.request);
-        } else if (error.request) {
-          console.log("error.request: " + error.request);
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.log("Error", error.message);
-        }
-        console.log(error.config);
-      });
-
     return session;
   },
 };

@@ -118,6 +118,7 @@ export default function Index() {
   const [open, setOpen] = useState(false);
   const [surveys, setAllSurveys] = useState([]);
   const [page, setPage] = useState(1);
+  const [count, setSurveyCount] = useState(0);
   const { data: session } = useSession();
 
   const dispatch = useDispatchSurvey();
@@ -138,6 +139,7 @@ export default function Index() {
     }
     dispatch({ type: "RESET_SURVEY" });
     getSurveyTypes(1);
+    getSurveysCount();
   }, []);
 
   const getSurveyTypes = (page) => {
@@ -152,6 +154,22 @@ export default function Index() {
         });
       });
   };
+
+
+  const getSurveysCount = () => {
+    surveyService
+    .get_surveys_count("all")
+    .then((res) => {
+      const count = Math.ceil(res.data/10)
+      setSurveyCount(count);
+    })
+    .catch((error) => {
+      toast.error(error.message, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    });
+    
+  }
 
   const handleEdit = async (survey_id) => {
     try {
@@ -263,7 +281,7 @@ export default function Index() {
         {surveys && surveys.length ? (
           <Grid marginTop={5} display={"flex"} justifyContent={"center"}>
             <Pagination
-              count={5}
+              count={count}
               page={page}
               onChange={handleChange}
               renderItem={(item) => (

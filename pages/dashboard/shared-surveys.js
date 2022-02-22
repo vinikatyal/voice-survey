@@ -123,9 +123,9 @@ export default function Index() {
   const [open, setOpen] = useState(false);
   const [surveys, setMySurveys] = useState([]);
   const [page, setPage] = useState(1);
+  const [count, setSurveyCount] = useState(0);
 
   const router = useRouter();
-
   const dispatch = useDispatchSurvey();
   const survey = useSurvey();
 
@@ -136,6 +136,7 @@ export default function Index() {
 
   useEffect(() => {
     getSurveyTypes(page);
+    getSurveysCount();
   }, []);
 
   const handleClose = () => {
@@ -154,6 +155,23 @@ export default function Index() {
         });
       });
   };
+
+  const getSurveysCount = () => {
+    surveyService
+    .get_surveys_count("guest")
+    .then((res) => {
+      const count = Math.ceil(res.data/10)
+      setSurveyCount(count);
+    })
+    .catch((error) => {
+      toast.error(error.message, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    });
+    
+  }
+
+  
 
   const handleEdit = async (survey_id) => {
     try {
@@ -251,7 +269,7 @@ export default function Index() {
         {surveys && surveys.length ? (
           <Grid marginTop={5} display={"flex"} justifyContent={"center"}>
             <Pagination
-              count={5}
+              count={count}
               page={page}
               onChange={handleChange}
               renderItem={(item) => (

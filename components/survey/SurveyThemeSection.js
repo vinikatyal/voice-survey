@@ -72,15 +72,29 @@ export default function SurveyThemeSection({ logo }) {
     };
 
     try {
-      const survey = await surveyService.create_survey(surveyPayload);
-      dispatch({
-        type: "SET_SURVEY_SHARE_LINK",
-        value: `http://localhost:3000/survey/${survey.code.survey_id}`,
-      });
-      toast.success("Survey created successfully", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
-      router.push("/survey/share");
+      const surveyData = await surveyService.create_survey(surveyPayload);
+
+      const surveyId = surveyData.code.survey_id;
+      console.log(surveyId);
+      const link = await surveyService.generateLink(
+        surveyId,
+        `http://localhost:3000/survey/${surveyId}`
+      );
+
+      if (link) {
+        dispatch({
+          type: "SET_SURVEY_SHARE_LINK",
+          value: link.url,
+        });
+        toast.success("Survey created successfully", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        router.push("/survey/share");
+      } else {
+        toast.error("Error while creating link", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
     } catch (error) {
       toast.error(error.message, {
         position: toast.POSITION.TOP_RIGHT,

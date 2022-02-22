@@ -18,10 +18,13 @@ export const surveyService = {
   get_survey_details,
   edit_survey,
   delete_survey,
+  get_surveys_count,
+  generateLink,
   getAll,
 };
 
-async function create_survey(data, token) {
+async function create_survey(data) {
+  const token = await getAccessToken();
   return await fetchWrapper
     .post(`${baseUrl}/create_survey`, data, { token })
     .then((res) => {
@@ -74,6 +77,21 @@ async function get_shared_surveys(page) {
       token,
       pageno: page,
       max_records: 9,
+    })
+    .then((res) => {
+      if (get(res, "code") === 200) {
+        return res;
+      } else {
+        return {};
+      }
+    });
+}
+
+async function get_surveys_count(type) {
+  const token = await getAccessToken();
+  return fetchWrapper
+    .get(`${baseUrl}/get_surveys_count/${type}`, {
+      token,
     })
     .then((res) => {
       if (get(res, "code") === 200) {
@@ -155,6 +173,25 @@ async function delete_survey(id) {
         return res;
       } else {
         return {};
+      }
+    });
+}
+
+async function generateLink(survey_id, url) {
+  const token = await getAccessToken();
+  return await fetchWrapper
+    .post(
+      `${baseUrl}/genarate_survey_bitly_link/${survey_id}`,
+      { url },
+      {
+        token,
+      }
+    )
+    .then((res) => {
+      if (get(res, "code") === 200) {
+        return res;
+      } else {
+        throw new Error("There was an error");
       }
     });
 }
