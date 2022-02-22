@@ -191,7 +191,7 @@ async function generateLink(survey_id, url) {
       if (get(res, "code") === 200) {
         return res;
       } else {
-        throw new Error("There was an error");
+        return "";
       }
     });
 }

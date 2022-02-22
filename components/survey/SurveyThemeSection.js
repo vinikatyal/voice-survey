@@ -1,6 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 
+import get from "lodash.get";
 import getConfig from "next/config";
 
 // UI
@@ -43,6 +44,10 @@ const LogoContainer = styled(Box)({
   marginTop: "10px",
 });
 
+const { publicRuntimeConfig } = getConfig();
+
+const DEV_URL = publicRuntimeConfig.server.DEV_URL;
+
 export default function SurveyThemeSection({ logo }) {
   const router = useRouter();
   const survey = useSurvey();
@@ -79,13 +84,19 @@ export default function SurveyThemeSection({ logo }) {
       const surveyId = surveyData.code.survey_id;
       const link = await surveyService.generateLink(
         surveyId,
-        `http://example.com/survey/${surveyId}`
+        `${DEV_URL}/survey/${surveyId}`
       );
 
-      if (get(link, "data.survey_bitly_link")) {
+      const bitlyLink = get(
+        link,
+        "data.survey_bitly_link",
+        `${DEV_URL}/survey/${surveyId}`
+      );
+
+      if (bitlyLink) {
         dispatch({
           type: "SET_SURVEY_SHARE_LINK",
-          value: get(link, "data.survey_bitly_link"),
+          value: bitlyLink,
         });
         toast.success("Survey created successfully", {
           position: toast.POSITION.TOP_RIGHT,
