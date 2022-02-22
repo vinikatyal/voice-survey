@@ -13,13 +13,26 @@ const providers = [
         password: credentials.password,
       };
 
-      const res = await fetch(BASE_URL + "/login", {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      let res = null;
+
+      if (credentials.isNew) {
+        payload.mobile = credentials.mobile;
+        res = await fetch(BASE_URL + "/register_user", {
+          method: "POST",
+          body: JSON.stringify(payload),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      } else {
+        res = await fetch(BASE_URL + "/login", {
+          method: "POST",
+          body: JSON.stringify(payload),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      }
 
       const user = await res.json();
 

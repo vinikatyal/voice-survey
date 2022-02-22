@@ -4,7 +4,7 @@ import get from "lodash.get";
 import isEmpty from "lodash.isempty";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import { useSession, signIn } from "next-auth/react";
+import { useSession, signIn, getCsrfToken } from "next-auth/react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -89,7 +89,7 @@ const SignInText = styled(Typography)({
   marginBottom: "10px",
 });
 
-export default function Index() {
+export default function Index({ csrfToken }) {
   const [mobile, setMobile] = React.useState("");
   const { data: session } = useSession();
 
@@ -98,6 +98,7 @@ export default function Index() {
     handleSubmit,
     watch,
     trigger,
+    setError,
     formState: { errors },
   } = useForm();
 
@@ -109,34 +110,27 @@ export default function Index() {
   }, []);
 
   const onSubmit = async (data) => {
-    return await authService
-      .signup(data.email, data.password, mobile)
-      .then(async () => {
-        const res = await signIn("credentials", {
-          redirect: false,
-          email: data.email,
-          password: data.password,
-        });
+    const res = await signIn("credentials", {
+      redirect: false,
+      email: data.email,
+      password: data.password,
+      mobile,
+      isNew: true,
+    });
 
-        if (res?.error) {
-          toast.error(res.error, {
-            position: toast.POSITION.TOP_RIGHT,
-          });
-          return;
-        } else {
-          setError(null);
-        }
-
-        if (res.status === 200) {
-          // get return url from query parameters or default to '/'
-          router.push("/details");
-        }
-      })
-      .catch((error) => {
-        toast.error(error, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+    if (res?.error) {
+      toast.error(res.error, {
+        position: toast.POSITION.TOP_RIGHT,
       });
+      return;
+    } else {
+      setError(null);
+    }
+
+    if (res.status === 200) {
+      // get return url from query parameters or default to '/'
+      router.push("/details");
+    }
   };
   return (
     <Layout bgColor="#f7fafc">
@@ -176,6 +170,11 @@ export default function Index() {
                 onSubmit={(e) => e.preventDefault()}
                 sx={{ mt: 1 }}
               >
+                <input
+                  name="csrfToken"
+                  type="hidden"
+                  defaultValue={csrfToken}
+                />
                 <FormControl fullWidth>
                   <LoginFormLabel>Email</LoginFormLabel>
                   <TextField
@@ -305,4 +304,13 @@ export default function Index() {
       </Limiter>
     </Layout>
   );
+}
+
+// This is the recommended way for Next.js 9.3 or newer
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      csrfToken: await getCsrfToken(context),
+    },
+  };
 }

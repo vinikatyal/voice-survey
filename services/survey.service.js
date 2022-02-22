@@ -17,6 +17,7 @@ export const surveyService = {
   get_shared_surveys,
   get_survey_details,
   edit_survey,
+  delete_survey,
   getAll,
 };
 
@@ -136,6 +137,21 @@ async function edit_survey(id, data) {
     })
     .then((res) => {
       if (get(res, "code.survey_id")) {
+        return res;
+      } else {
+        return {};
+      }
+    });
+}
+
+async function delete_survey(id) {
+  const token = await getAccessToken();
+  return await fetchWrapper
+    .get(`${baseUrl}/delete_survey/${id}`, {
+      token,
+    })
+    .then((res) => {
+      if (get(res, "code") === 200) {
         return res;
       } else {
         return {};

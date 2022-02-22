@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-
 import { useRouter } from "next/router";
 
 import { toast } from "react-toastify";
@@ -124,6 +123,7 @@ export default function Index() {
   const [open, setOpen] = useState(false);
   const [surveys, setMySurveys] = useState([]);
   const [page, setPage] = useState(1);
+  const [surveyId, setSurveyId] = useState("");
 
   const router = useRouter();
 
@@ -156,8 +156,20 @@ export default function Index() {
       });
   };
 
-  const deleteSurvey = () => {
+  const deleteSurvey = (survey_id) => {
+    setSurveyId(survey_id);
     setOpen(true);
+  };
+
+  const deleteSurveyAccept = async () => {
+    if (surveyId) {
+      await surveyService.delete_survey(surveyId);
+      toast.success("Survey deleted successfully", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      setSurveyId("");
+      setOpen(false);
+    }
   };
 
   const handleEdit = async (survey_id) => {
@@ -227,7 +239,9 @@ export default function Index() {
                     <CardTitle>
                       <CardHead>{survey.survey_title}</CardHead>
                       <CardIconContainer>
-                        <CardIcon onClick={deleteSurvey}>
+                        <CardIcon
+                          onClick={() => deleteSurvey(survey.survey_id)}
+                        >
                           <Delete />
                         </CardIcon>
                       </CardIconContainer>
@@ -283,7 +297,7 @@ export default function Index() {
         title="Delete Survey?"
         message="Are you sure you want to delete your survey?"
         handleReject={handleClose}
-        handleAccept={handleClose}
+        handleAccept={deleteSurveyAccept}
       />
     </>
   );
