@@ -176,8 +176,8 @@ export default function Index() {
   };
 
   const logOut = () => {
-    signOut();
     router.push("/login");
+    signOut();
   };
 
   const handleChange = (event, newValue) => {

@@ -105,6 +105,7 @@ const options = {
     signIn: "/login",
     newUser: "/signup",
   },
+  secret: "1210e525b4fb4de680a47df25da940bd",
 };
 
 export default (req, res) => NextAuth(req, res, options);

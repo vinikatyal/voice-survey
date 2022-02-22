@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { signIn, useSession } from "next-auth/react";
+import { signIn, getCsrfToken, useSession } from "next-auth/react";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -150,11 +150,11 @@ export default function Index({ csrfToken }) {
                 onSubmit={(e) => e.preventDefault()}
                 sx={{ mt: 1 }}
               >
-                {/* <input
+                <input
                   name="csrfToken"
                   type="hidden"
                   defaultValue={csrfToken}
-                /> */}
+                />
                 <FormControl fullWidth>
                   <LoginFormLabel>Email Address</LoginFormLabel>
                   <TextField
@@ -257,10 +257,12 @@ export default function Index({ csrfToken }) {
 }
 
 // This is the recommended way for Next.js 9.3 or newer
-// export async function getServerSideProps(context) {
-//   return {
-//     props: {
-//       csrfToken: await getCsrfToken(context),
-//     },
-//   };
-// }
+export async function getServerSideProps(context) {
+  const csrfToken = await getCsrfToken(context)
+  console.log(csrfToken)
+  return {
+    props: {
+      csrfToken: csrfToken,
+    },
+  };
+}
