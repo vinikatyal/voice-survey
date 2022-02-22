@@ -1,6 +1,8 @@
 import React from "react";
 import { useRouter } from "next/router";
 
+import getConfig from "next/config";
+
 // UI
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
@@ -75,16 +77,15 @@ export default function SurveyThemeSection({ logo }) {
       const surveyData = await surveyService.create_survey(surveyPayload);
 
       const surveyId = surveyData.code.survey_id;
-      console.log(surveyId);
       const link = await surveyService.generateLink(
         surveyId,
-        `http://localhost:3000/survey/${surveyId}`
+        `http://example.com/survey/${surveyId}`
       );
 
-      if (link) {
+      if (get(link, "data.survey_bitly_link")) {
         dispatch({
           type: "SET_SURVEY_SHARE_LINK",
-          value: link.url,
+          value: get(link, "data.survey_bitly_link"),
         });
         toast.success("Survey created successfully", {
           position: toast.POSITION.TOP_RIGHT,
