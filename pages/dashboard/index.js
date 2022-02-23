@@ -11,13 +11,12 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-
 import Pagination from "@mui/material/Pagination";
 import PaginationItem from "@mui/material/PaginationItem";
 
+// common components
 import DashboardH from "../../components/dashboard/DashboardHeader";
 import NoSurveyScreen from "../../components/survey/NoSurveyScreen";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
@@ -40,14 +39,6 @@ const FullBackground = styled(Container)(({ theme }) => ({
 
 const GridContainer = styled(Grid)(({ theme }) => ({
   marginTop: theme.spacing(1),
-}));
-
-const DashboardHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  height: "60px",
-  padding: theme.spacing(2),
-  backgroundColor: "#f5f8ff",
-  marginTop: "30px",
 }));
 
 const CardTitle = styled("div")({
@@ -114,18 +105,6 @@ const SurveyCard = styled(Card)({
   cursor: "pointer",
 });
 
-const HeaderContainer = styled(Container)(({ theme }) => ({
-  color: "#707070",
-  width: "90%",
-  display: "flex",
-  alignItems: "center",
-}));
-
-const RightImageContainer = styled("div")(({ theme }) => ({
-  display: "flex",
-  justifyContent: "flex-end",
-  width: "10%",
-}));
 
 export default function Index() {
   const router = useRouter();

@@ -133,18 +133,13 @@ async function get_survey_template_data(data) {
 }
 
 async function get_survey_details(id) {
-  const token = await getAccessToken();
-  return await fetchWrapper
-    .get(`${baseUrl}/get_survey_details/${id}`, {
-      token,
-    })
-    .then((res) => {
-      if (get(res, "code") === 200) {
-        return res;
-      } else {
-        return {};
-      }
-    });
+  const res = await fetch(`/api/survey/${id}`);
+  const surveyData = await res.json();
+  if (res.ok) {
+    return surveyData;
+  } else {
+    return {};
+  }
 }
 
 async function edit_survey(id, data) {
