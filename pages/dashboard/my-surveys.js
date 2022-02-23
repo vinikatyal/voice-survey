@@ -12,7 +12,6 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Pagination from "@mui/material/Pagination";
@@ -27,7 +26,9 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import EditIcon from "@mui/icons-material/Edit";
 
+import DashboardSubHeader from "../../components/dashboard/DashboardSubHeader";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
+
 import { surveyService } from "../../services/survey.service";
 import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
 
@@ -186,6 +187,7 @@ export default function Index() {
       });
       setSurveyId("");
       setOpen(false);
+      getSurveyTypes(page);
     }
   };
 
@@ -244,9 +246,7 @@ export default function Index() {
     <>
       <DashboardH></DashboardH>
       <FullBackground maxWidth="lg">
-        <DashboardHeader>
-          <Typography variant="h4">My Surveys</Typography>
-        </DashboardHeader>
+      <DashboardSubHeader title={"My Surveys"} />
         <GridContainer container spacing={5}>
           {surveys.length ? (
             surveys.map((survey, index) => (
