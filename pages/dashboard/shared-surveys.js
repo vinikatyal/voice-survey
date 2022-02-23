@@ -20,14 +20,15 @@ import PaginationItem from "@mui/material/PaginationItem";
 
 import DashboardH from "../../components/dashboard/DashboardHeader";
 import NoSurveyScreen from "../../components/survey/NoSurveyScreen";
+import ConfirmationDialog from "../../components/ConfirmationDialog";
+import DashboardSubHeader from "../../components/dashboard/DashboardSubHeader";
 
 import person from "../../images/svg/person.svg";
-import Delete from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import EditIcon from "@mui/icons-material/Edit";
 
-import ConfirmationDialog from "../../components/ConfirmationDialog";
+
 import { surveyService } from "../../services/survey.service";
 import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
 
@@ -228,9 +229,7 @@ export default function Index() {
     <>
       <DashboardH></DashboardH>
       <FullBackground maxWidth="lg">
-        <DashboardHeader>
-          <Typography variant="h4">Shared Surveys</Typography>
-        </DashboardHeader>
+      <DashboardSubHeader title={"Shared Surveys"} />
         <GridContainer container spacing={5}>
           {surveys.length ? (
             surveys.map((survey, index) => (

@@ -20,9 +20,11 @@ import PaginationItem from "@mui/material/PaginationItem";
 
 import DashboardH from "../../components/dashboard/DashboardHeader";
 import NoSurveyScreen from "../../components/survey/NoSurveyScreen";
+import ConfirmationDialog from "../../components/ConfirmationDialog";
+import DashboardSubHeader from "../../components/dashboard/DashboardSubHeader";
 
+// icons
 import person from "../../images/svg/person.svg";
-import Delete from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import EditIcon from "@mui/icons-material/Edit";
@@ -31,8 +33,6 @@ import { surveyService } from "../../services/survey.service";
 import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
 
 import styled from "@emotion/styled";
-
-import ConfirmationDialog from "../../components/ConfirmationDialog";
 
 const FullBackground = styled(Container)(({ theme }) => ({
   height: "100vh",
@@ -43,6 +43,7 @@ const GridContainer = styled(Grid)(({ theme }) => ({
 }));
 
 const DashboardHeader = styled("div")(({ theme }) => ({
+  display: "flex",
   height: "60px",
   padding: theme.spacing(2),
   backgroundColor: "#f5f8ff",
@@ -113,6 +114,19 @@ const SurveyCard = styled(Card)({
   cursor: "pointer",
 });
 
+const HeaderContainer = styled(Container)(({ theme }) => ({
+  color: "#707070",
+  width: "90%",
+  display: "flex",
+  alignItems: "center",
+}));
+
+const RightImageContainer = styled("div")(({ theme }) => ({
+  display: "flex",
+  justifyContent: "flex-end",
+  width: "10%",
+}));
+
 export default function Index() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -155,27 +169,23 @@ export default function Index() {
       });
   };
 
-
   const getSurveysCount = () => {
     surveyService
-    .get_surveys_count("all")
-    .then((res) => {
-      const count = Math.ceil(res.data/10)
-      setSurveyCount(count);
-    })
-    .catch((error) => {
-      toast.error(error.message, {
-        position: toast.POSITION.TOP_RIGHT,
+      .get_surveys_count("all")
+      .then((res) => {
+        const count = Math.ceil(res.data / 10);
+        setSurveyCount(count);
+      })
+      .catch((error) => {
+        toast.error(error.message, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       });
-    });
-    
-  }
+  };
 
   const handleEdit = async (survey_id) => {
     try {
-      const surveyDetails = await surveyService.get_survey_details(
-        survey_id,
-      );
+      const surveyDetails = await surveyService.get_survey_details(survey_id);
 
       dispatch({
         type: "SET_SURVEY_SHARE_LINK",
@@ -236,9 +246,7 @@ export default function Index() {
     <>
       <DashboardH></DashboardH>
       <FullBackground maxWidth="lg">
-        <DashboardHeader>
-          <Typography variant="h4">All Surveys</Typography>
-        </DashboardHeader>
+        <DashboardSubHeader title={"All Surveys"} />
         <GridContainer container spacing={5}>
           {surveys.length ? (
             surveys.map((survey, index) => (
