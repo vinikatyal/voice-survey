@@ -12,7 +12,6 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Pagination from "@mui/material/Pagination";
@@ -188,6 +187,7 @@ export default function Index() {
       });
       setSurveyId("");
       setOpen(false);
+      getSurveyTypes(page);
     }
   };
 
