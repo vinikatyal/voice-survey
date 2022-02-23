@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-
 import { toast } from "react-toastify";
 import get from "lodash.get";
 
@@ -61,8 +60,9 @@ export default function survey() {
   const [questionId, setQuestionId] = useState("");
   const [open, setOpen] = useState(false);
 
-  const VoiceInput = dynamic(() =>
-    import("../../components/questions/VoiceInput")
+  const VoiceInput = dynamic(
+    () => import("../../components/questions/VoiceInput"),
+    { ssr: false }
   );
 
   useEffect(() => {

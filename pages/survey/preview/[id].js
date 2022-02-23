@@ -58,8 +58,9 @@ export default function questions() {
   const [question, setQuestion] = useState("");
   const [open, setOpen] = useState(false);
 
-  const VoiceInput = dynamic(() =>
-    import("../../../components/questions/VoiceInput")
+  const VoiceInput = dynamic(
+    () => import("../../../components/questions/VoiceInput"),
+    { ssr: false }
   );
 
   useEffect(() => {
