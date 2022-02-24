@@ -85,7 +85,9 @@ export default function survey() {
 
   const getSurveyDetails = async (survey_id) => {
     try {
-      const surveyDetails = await surveyService.get_survey_details(survey_id);
+      const surveyDetails = await surveyService.get_survey_details_link(
+        survey_id
+      );
 
       dispatch({
         type: "SET_QUESTIONS",
@@ -133,7 +135,9 @@ export default function survey() {
   };
 
   return (
-    <FullBackgroundSurvey bgColor={survey.selectedSurveyTheme.color}>
+    <FullBackgroundSurvey
+      bgColor={get(survey, "selectedSurveyTheme.color", "BLUE")}
+    >
       {surveyId && !questionId && (
         <StyledContainer maxWidth="lg">
           <Grid container mt={5}>

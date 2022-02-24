@@ -16,6 +16,7 @@ export const surveyService = {
   get_my_surveys,
   get_shared_surveys,
   get_survey_details,
+  get_survey_details_link,
   edit_survey,
   delete_survey,
   get_surveys_count,
@@ -132,7 +133,8 @@ async function get_survey_template_data(data) {
     });
 }
 
-async function get_survey_details(id) {
+// for external link
+async function get_survey_details_link(id) {
   const res = await fetch(`/api/survey/${id}`);
   const surveyData = await res.json();
   if (res.ok) {
@@ -140,6 +142,21 @@ async function get_survey_details(id) {
   } else {
     return {};
   }
+}
+
+async function get_survey_details(id) {
+  const token = await getAccessToken();
+  return await fetchWrapper
+    .get(`${baseUrl}/get_survey_details/${id}`, {
+      token,
+    })
+    .then((res) => {
+      if (get(res, "code") === 200) {
+        return res;
+      } else {
+        return {};
+      }
+    });
 }
 
 async function edit_survey(id, data) {
