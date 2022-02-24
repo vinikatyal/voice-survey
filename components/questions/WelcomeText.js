@@ -46,7 +46,7 @@ function WelcomeText({
   };
 
   return (
-    <Grid container spacing={5} height="90%" alignItems="center">
+    <Grid container height="200px" alignItems="center">
       {/* Button Section */}
       <Grid item md={3} xs={0}></Grid>
       <Grid item md={secondaryButtonTitle ? 3 : 6} xs={12}>

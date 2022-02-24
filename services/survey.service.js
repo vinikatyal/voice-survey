@@ -22,7 +22,21 @@ export const surveyService = {
   get_surveys_count,
   generateLink,
   getAll,
+  update_user_answer,
 };
+
+async function update_user_answer(surveyId, payload) {
+  const res = await fetch(`/api/survey/${surveyId}`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  const surveyData = await res.json();
+  if (surveyData.code === 200) {
+    return surveyData;
+  } else {
+    throw surveyData;
+  }
+}
 
 async function create_survey(data) {
   const token = await getAccessToken();

@@ -42,12 +42,12 @@ function SingleLineTextField({
     });
   }, []);
 
-  const handleNext = () => {
-    handleResponse(watchInput);
+  const handleNext = async () => {
+    const res = await handleResponse(watchInput);
     if (+id === totalQuestions) {
-      handleEndSurvey();
+      res && handleEndSurvey();
     } else {
-      router.push(nextRoute);
+      res && router.push(nextRoute);
     }
   };
   const handlePrev = () => {
