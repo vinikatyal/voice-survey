@@ -24,7 +24,6 @@ import DashboardSubHeader from "../../components/dashboard/DashboardSubHeader";
 
 import person from "../../images/svg/person.svg";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import EditIcon from "@mui/icons-material/Edit";
 
 import { surveyService } from "../../services/survey.service";
 import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
@@ -90,21 +89,6 @@ const Response = styled("div")({
 const Left = styled("div")({
   display: "flex",
   width: "80%",
-});
-
-const Edit = styled(Button)({
-  fontSize: "16px",
-  padding: "5px",
-  display: "flex",
-  justifyContent: "center",
-  width: "20%",
-  color: "#9a9cb5",
-  borderRadius: "4px",
-  backgroundColor: "#4e538!important",
-  "&:hover": {
-    backgroundColor: "#4e538!important",
-    color: "#0a23fb",
-  },
 });
 
 const Logo = styled(Image)(({}) => ({}));
@@ -239,14 +223,6 @@ export default function Index() {
                         <Logo src={person} width="14" alt="person" />
                         <Text>2 responses</Text>
                       </Left>
-                      <Edit
-                        disableRipple
-                        disableElevation
-                        startIcon={<EditIcon width="14" />}
-                        onClick={() => handleEdit(survey.survey_id)}
-                      >
-                        Edit
-                      </Edit>
                     </Response>
                   </CardContent>
                 </SurveyCard>

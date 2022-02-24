@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-import { useRouter } from "next/router";
-
 import { toast } from "react-toastify";
-
 import get from "lodash.get";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 import Image from "next/image";
 
@@ -17,16 +16,15 @@ import IconButton from "@mui/material/IconButton";
 import Pagination from "@mui/material/Pagination";
 import ButtonGroup from "@mui/material/ButtonGroup";
 
+// common components
 import DashboardH from "../../components/dashboard/DashboardHeader";
 import NoSurveyScreen from "../../components/survey/NoSurveyScreen";
-
-import person from "../../images/svg/person.svg";
-import Delete from "@mui/icons-material/Delete";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import EditIcon from "@mui/icons-material/Edit";
-
-import DashboardSubHeader from "../../components/dashboard/DashboardSubHeader";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
+import DashboardSubHeader from "../../components/dashboard/DashboardSubHeader";
+
+// icons
+import person from "../../images/svg/person.svg";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 import { surveyService } from "../../services/survey.service";
 import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
@@ -39,20 +37,6 @@ const FullBackground = styled(Container)(({ theme }) => ({
 
 const GridContainer = styled(Grid)(({ theme }) => ({
   marginTop: theme.spacing(1),
-}));
-
-const DashboardHeader = styled("div")(({ theme }) => ({
-  height: "60px",
-  padding: theme.spacing(2),
-  backgroundColor: "#f5f8ff",
-  marginTop: "30px",
-}));
-
-const Nav = styled("div")(({}) => ({
-  display: "flex",
-  justifyContent: "flex-end",
-  width: "90%",
-  alignItems: "center",
 }));
 
 const CardTitle = styled("div")({
@@ -99,10 +83,10 @@ const Edit = styled(Button)({
   padding: "5px",
   display: "flex",
   justifyContent: "center",
-  width: "20%",
   color: "#9a9cb5",
+  width: "20%",
   borderRadius: "4px",
-  backgroundColor: "#4e538!important",
+  backgroundColor: "rgba(85, 109, 242, 0.04)",
   "&:hover": {
     backgroundColor: "#4e538!important",
     color: "#0a23fb",
@@ -112,7 +96,7 @@ const Edit = styled(Button)({
 const Logo = styled(Image)(({}) => ({}));
 
 const Text = styled("div")({
-  marginLeft: "4px",
+  marginLeft: "6px",
 });
 
 const SurveyCard = styled(Card)({
@@ -120,13 +104,12 @@ const SurveyCard = styled(Card)({
 });
 
 export default function Index() {
-  const [open, setOpen] = useState(false);
-  const [surveys, setMySurveys] = useState([]);
-  const [page, setPage] = useState(1);
-  const [surveyId, setSurveyId] = useState("");
-  const [count, setSurveyCount] = useState(0);
-
   const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [surveys, setAllSurveys] = useState([]);
+  const [page, setPage] = useState(1);
+  const [count, setSurveyCount] = useState(0);
+  const { data: session } = useSession();
 
   const dispatch = useDispatchSurvey();
   const survey = useSurvey();
@@ -136,20 +119,24 @@ export default function Index() {
     getSurveyTypes(value);
   };
 
-  useEffect(() => {
-    getSurveyTypes(page);
-    getSurveysCount();
-  }, []);
-
   const handleClose = () => {
     setOpen(false);
   };
 
+  useEffect(() => {
+    if (!session) {
+      router.push("/login");
+    }
+    dispatch({ type: "RESET_SURVEY" });
+    getSurveyTypes(1);
+    getSurveysCount();
+  }, []);
+
   const getSurveyTypes = (page) => {
     surveyService
-      .get_my_surveys(page)
+      .get_all_surveys(page)
       .then((res) => {
-        setMySurveys(res.data);
+        setAllSurveys(res.data);
       })
       .catch((error) => {
         toast.error(error.message, {
@@ -160,9 +147,9 @@ export default function Index() {
 
   const getSurveysCount = () => {
     surveyService
-      .get_surveys_count("admin")
+      .get_surveys_count("all")
       .then((res) => {
-        const count = Math.ceil(res.data / 10);
+        const count = Math.ceil(res.data / 9);
         setSurveyCount(count);
       })
       .catch((error) => {
@@ -172,27 +159,14 @@ export default function Index() {
       });
   };
 
-  const deleteSurvey = (survey_id) => {
-    setSurveyId(survey_id);
-    setOpen(true);
-  };
-
-  const deleteSurveyAccept = async () => {
-    if (surveyId) {
-      await surveyService.delete_survey(surveyId);
-      toast.success("Survey deleted successfully", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
-      setSurveyId("");
-      setOpen(false);
-      getSurveyTypes(page);
-    }
-  };
-
   const handleEdit = async (survey_id) => {
     try {
       const surveyDetails = await surveyService.get_survey_details(survey_id);
 
+      dispatch({
+        type: "SET_SURVEY_SHARE_LINK",
+        value: `http://localhost:3000/survey/${survey_id}`,
+      });
       dispatch({
         type: "SET_TITLE",
         value: surveyDetails.data.survey_title,
@@ -240,11 +214,15 @@ export default function Index() {
       });
     }
   };
+
+  const deleteSurvey = () => {
+    setOpen(true);
+  };
   return (
     <>
       <DashboardH></DashboardH>
       <FullBackground maxWidth="lg">
-        <DashboardSubHeader title={"My Surveys"} />
+        <DashboardSubHeader title={"All Surveys"} />
         <GridContainer container spacing={5}>
           {surveys.length ? (
             surveys.map((survey, index) => (
@@ -254,11 +232,9 @@ export default function Index() {
                     <CardTitle>
                       <CardHead>{survey.survey_title}</CardHead>
                       <CardIconContainer>
-                        <CardIcon
-                          onClick={() => deleteSurvey(survey.survey_id)}
-                        >
+                        {/* <CardIcon onClick={deleteSurvey}>
                           <Delete />
-                        </CardIcon>
+                        </CardIcon> */}
                       </CardIconContainer>
                     </CardTitle>
                     <Response>
@@ -266,14 +242,6 @@ export default function Index() {
                         <Logo src={person} width="14" alt="person" />
                         <Text>2 responses</Text>
                       </Left>
-                      <Edit
-                        disableRipple
-                        disableElevation
-                        startIcon={<EditIcon width="14" />}
-                        onClick={() => handleEdit(survey.survey_id)}
-                      >
-                        Edit
-                      </Edit>
                     </Response>
                   </CardContent>
                 </SurveyCard>
@@ -331,14 +299,15 @@ export default function Index() {
         ) : (
           ""
         )}
+
+        <ConfirmationDialog
+          status={open}
+          title="Delete Survey?"
+          message="Are you sure you want to delete your survey?"
+          handleReject={handleClose}
+          handleAccept={handleClose}
+        />
       </FullBackground>
-      <ConfirmationDialog
-        status={open}
-        title="Delete Survey?"
-        message="Are you sure you want to delete your survey?"
-        handleReject={handleClose}
-        handleAccept={deleteSurveyAccept}
-      />
     </>
   );
 }
