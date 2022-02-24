@@ -43,10 +43,9 @@ const providers = [
       // If no error and we have user data, return it
       if (user.code === 200 && user) {
         return user;
+      } else {
+        throw new Error("Error in credentials");
       }
-
-      // Return null if user data could not be retrieved
-      return null;
     },
   }),
 ];
@@ -80,6 +79,10 @@ const options = {
     newUser: "/signup",
   },
   secret: "1210e525b4fb4de680a47df25da940bd",
+  session: {
+    strategy: "jwt",
+    maxAge: 1 * 24 * 60 * 60, // 1d
+  },
 };
 
 export default (req, res) => NextAuth(req, res, options);

@@ -67,15 +67,18 @@ export default function DashboardHeader() {
             onClick={() => openLink("/dashboard")}
             underline="hover"
           >
+            My Surveys
+          </NavLink>
+          <NavLink
+            onClick={() => openLink("/dashboard/all-surveys")}
+            underline="hover"
+          >
             All Surveys
           </NavLink>
           <NavLink
-            onClick={() => openLink("/dashboard/my-surveys")}
+            onClick={() => openLink("/dashboard/shared-surveys")}
             underline="hover"
           >
-            My Surveys
-          </NavLink>
-          <NavLink  onClick={() => openLink("/dashboard/shared-surveys")} underline="hover">
             Shared with me
           </NavLink>
           <NavLink
