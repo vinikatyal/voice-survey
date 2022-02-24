@@ -15,15 +15,14 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Pagination from "@mui/material/Pagination";
-import PaginationItem from "@mui/material/PaginationItem";
+import ButtonGroup from "@mui/material/ButtonGroup";
 
 import DashboardH from "../../components/dashboard/DashboardHeader";
 import NoSurveyScreen from "../../components/survey/NoSurveyScreen";
 
 import person from "../../images/svg/person.svg";
 import Delete from "@mui/icons-material/Delete";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import EditIcon from "@mui/icons-material/Edit";
 
 import DashboardSubHeader from "../../components/dashboard/DashboardSubHeader";
@@ -161,18 +160,17 @@ export default function Index() {
 
   const getSurveysCount = () => {
     surveyService
-    .get_surveys_count("admin")
-    .then((res) => {
-      const count = Math.ceil(res.data/10)
-      setSurveyCount(count);
-    })
-    .catch((error) => {
-      toast.error(error.message, {
-        position: toast.POSITION.TOP_RIGHT,
+      .get_surveys_count("admin")
+      .then((res) => {
+        const count = Math.ceil(res.data / 10);
+        setSurveyCount(count);
+      })
+      .catch((error) => {
+        toast.error(error.message, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       });
-    });
-    
-  }
+  };
 
   const deleteSurvey = (survey_id) => {
     setSurveyId(survey_id);
@@ -246,7 +244,7 @@ export default function Index() {
     <>
       <DashboardH></DashboardH>
       <FullBackground maxWidth="lg">
-      <DashboardSubHeader title={"My Surveys"} />
+        <DashboardSubHeader title={"My Surveys"} />
         <GridContainer container spacing={5}>
           {surveys.length ? (
             surveys.map((survey, index) => (
@@ -291,18 +289,43 @@ export default function Index() {
         {surveys && surveys.length ? (
           <Grid marginTop={5} display={"flex"} justifyContent={"center"}>
             <Pagination
+              variant="outlined"
+              shape="rounded"
               count={count}
               page={page}
+              size="large"
               onChange={handleChange}
-              renderItem={(item) => (
-                <PaginationItem
-                  components={{
-                    previous: ArrowBackIcon,
-                    next: ArrowForwardIcon,
-                  }}
-                  {...item}
-                />
-              )}
+              renderItem={(item) =>
+                ["previous", "next"].includes(item.type) ? (
+                  <Button
+                    variant="outlined"
+                    onClick={item.onClick}
+                    disabled={item.disabled}
+                  >
+                    {item.type === "previous" ? "Prev" : "Next"}
+                  </Button>
+                ) : (
+                  <ButtonGroup
+                    sx={{
+                      marginLeft: `${item.page === 1 && "20px"}`,
+                      marginRight: `${item.page === count && "20px"}`,
+                    }}
+                  >
+                    {item.type === "page" ? (
+                      <Button
+                        variant={item.selected ? "contained" : "text"}
+                        sx={{ backgroundColor: !item.selected && "#f4f5f8" }}
+                        onClick={item.onClick}
+                        disabled={item.disabled}
+                      >
+                        {item.page}
+                      </Button>
+                    ) : (
+                      <MoreHorizIcon />
+                    )}
+                  </ButtonGroup>
+                )
+              }
             />
           </Grid>
         ) : (
