@@ -109,9 +109,6 @@ export default function survey() {
         type: "SET_WELCOME_TEXT",
         value: get(surveyDetails.data, "welcome_text", ""),
       });
-
-      console.log(surveyDetails)
-
       setUniqueId(get(surveyDetails, "id"));
     } catch (error) {
       toast.error(error.message, {
@@ -122,17 +119,16 @@ export default function survey() {
 
   const handleResponse = async (response) => {
     try {
-      const payload = {
-        qid: question.qid,
-      };
+      let formData = new FormData();
+      formData.append("qid", question.qid);
+      if (question.question_type === "audio") {
+        formData.append("answer_audio_file", response);
+      } else {
+        formData.append("user_answer", response);
+      }
+      formData.append("question_type", question.question_type);
 
-      question.question_type === "audio"
-        ? ((payload["qtype"] = "audio"),
-          (payload["answer_audio_file"] = response))
-        : ((payload["question_type"] = question.question_type),
-          (payload["user_answer"] = response));
-
-      const res = await surveyService.update_user_answer(uniqueId, payload);
+      const res = await surveyService.update_user_answer(uniqueId, formData);
     } catch (error) {
       toast.error(error.message, {
         position: toast.POSITION.TOP_RIGHT,

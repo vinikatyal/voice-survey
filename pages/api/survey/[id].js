@@ -4,7 +4,5 @@ export default async function handler(req, res) {
   const resData = await fetch(`${BASE_URL}/get_survey_details_link/${id}`).then(
     (response) => response.json()
   );
-
-  console.log(resData);
   return res.status(200).json(resData);
 }
