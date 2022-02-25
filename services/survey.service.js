@@ -207,12 +207,12 @@ async function delete_survey(id) {
     });
 }
 
-async function generateLink(survey_id, url) {
+async function generateLink(survey_id, survey_type, url) {
   const token = await getAccessToken();
   return await fetchWrapper
     .post(
-      `${baseUrl}/genarate_survey_bitly_link/${survey_id}`,
-      { url },
+      `${baseUrl}/genarate_survey_share_link/${survey_id}`,
+      { url, survey_type },
       {
         token,
       }

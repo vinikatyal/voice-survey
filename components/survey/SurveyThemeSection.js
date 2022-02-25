@@ -84,12 +84,13 @@ export default function SurveyThemeSection({ logo }) {
       const surveyId = surveyData.code.survey_id;
       const link = await surveyService.generateLink(
         surveyId,
+        survey.surveyType,
         `${DEV_URL}/survey/${surveyId}`
       );
 
       const bitlyLink = get(
         link,
-        "data.survey_bitly_link",
+        "data.survey_share_link",
         `${DEV_URL}/survey/${surveyId}`
       );
 

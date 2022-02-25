@@ -190,9 +190,15 @@ export default function Index() {
   const handleEdit = async (survey_id) => {
     try {
       const surveyDetails = await surveyService.get_survey_details(survey_id);
+
+      const survey_link = get(
+        surveyDetails,
+        "data.survey_share_link",
+        "data.actual_link"
+      );
       dispatch({
         type: "SET_SURVEY_SHARE_LINK",
-        value: `http://localhost:3000/survey/${survey_id}`,
+        value: survey_link,
       });
 
       dispatch({
