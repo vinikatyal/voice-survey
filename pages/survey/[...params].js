@@ -64,8 +64,9 @@ export default function survey() {
   const [questionId, setQuestionId] = useState("");
   const [open, setOpen] = useState(false);
 
-  const VoiceInput = dynamic(() =>
-    import("../../components/questions/VoiceInput")
+  const VoiceInput = dynamic(
+    () => import("../../components/questions/VoiceInput"),
+    { ssr: false }
   );
 
   useEffect(() => {
@@ -120,16 +121,17 @@ export default function survey() {
 
   const handleResponse = async (response) => {
     try {
-      let formData = new FormData();
-      formData.append("qid", question.qid);
-      if (question.question_type === "audio") {
-        formData.append("answer_audio_file", response);
-      } else {
-        formData.append("user_answer", response);
-      }
-      formData.append("question_type", question.question_type);
+       const payload = {
+        qid: question.qid,
+      };
 
-      const res = await surveyService.update_user_answer(uniqueId, formData);
+      question.question_type === "audio"
+        ? ((payload["qtype"] = "audio"),
+          (payload["answer_audio_file"] = response))
+        : ((payload["question_type"] = question.question_type),
+          (payload["user_answer"] = response));
+
+      const res = await surveyService.update_user_answer(uniqueId, payload);
     } catch (error) {
       toast.error(error.message, {
         position: toast.POSITION.TOP_RIGHT,
