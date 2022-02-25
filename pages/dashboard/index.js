@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 import { toast } from "react-toastify";
@@ -39,13 +40,6 @@ const FullBackground = styled(Container)(({ theme }) => ({
 
 const GridContainer = styled(Grid)(({ theme }) => ({
   marginTop: theme.spacing(1),
-}));
-
-const DashboardHeader = styled("div")(({ theme }) => ({
-  height: "60px",
-  padding: theme.spacing(2),
-  backgroundColor: "#f5f8ff",
-  marginTop: "30px",
 }));
 
 const Nav = styled("div")(({}) => ({
@@ -125,6 +119,7 @@ export default function Index() {
   const [page, setPage] = useState(1);
   const [surveyId, setSurveyId] = useState("");
   const [count, setSurveyCount] = useState(0);
+  const { data: session } = useSession();
 
   const router = useRouter();
 
@@ -137,6 +132,9 @@ export default function Index() {
   };
 
   useEffect(() => {
+    if (!session) {
+      router.push("/login");
+    }
     getSurveyTypes(page);
     getSurveysCount();
   }, []);

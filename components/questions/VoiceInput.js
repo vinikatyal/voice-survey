@@ -41,6 +41,7 @@ function VoiceInput({
   handleResponse,
 }) {
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const router = useRouter();
   const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
@@ -49,6 +50,13 @@ function VoiceInput({
   const handleNext = async () => {
     if (required && !mediaBlobUrl) {
       setError(true);
+      setErrorMessage("Please record the message");
+      return;
+    }
+
+    if (["recording", "paused"].includes(status)) {
+      setError(true);
+      setErrorMessage("Please stop the recording");
       return;
     }
     const res = await handleResponse(mediaBlobUrl);
@@ -60,14 +68,17 @@ function VoiceInput({
   };
 
   const handlePrev = () => {
+    setError(false);
     router.back();
   };
 
   const playStop = () => {
+    setError(false);
     stopRecording();
   };
 
   const removeAudio = () => {
+    setError(false);
     clearBlobUrl();
   };
 
@@ -126,7 +137,7 @@ function VoiceInput({
         )}
         {error && (
           <Typography mt={2} color="red">
-            Please record the message
+            {errorMessage}
           </Typography>
         )}
       </Grid>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 import { toast } from "react-toastify";
@@ -106,6 +107,7 @@ export default function Index() {
   const [surveys, setMySurveys] = useState([]);
   const [page, setPage] = useState(1);
   const [count, setSurveyCount] = useState(0);
+  const { data: session } = useSession();
 
   const router = useRouter();
   const dispatch = useDispatchSurvey();
@@ -117,6 +119,9 @@ export default function Index() {
   };
 
   useEffect(() => {
+    if (!session) {
+      router.push("/login");
+    }
     getSurveyTypes(page);
     getSurveysCount();
   }, []);

@@ -121,7 +121,7 @@ export default function survey() {
 
   const handleResponse = async (response) => {
     try {
-       const payload = {
+      const payload = {
         qid: question.qid,
       };
 
