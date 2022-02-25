@@ -66,7 +66,7 @@ export default function SurveyThemeSection({ logo }) {
 
     const questions = survey.questions.map((obj, index) => ({
       ...obj,
-      question_number: index + 1,
+      qid: index + 1,
     }));
 
     const surveyPayload = {
@@ -123,7 +123,7 @@ export default function SurveyThemeSection({ logo }) {
 
     const questions = survey.questions.map((obj, index) => ({
       ...obj,
-      question_number: index + 1,
+      qid: index + 1,
     }));
 
     const surveyPayload = {
@@ -151,7 +151,7 @@ export default function SurveyThemeSection({ logo }) {
     <Container maxWidth="lg">
       {logo && (
         <Grid mt={2} container direction="column">
-          <Label>Select any png,svg or jpg file</Label>
+          <Label>Survey Logo</Label>
           <LogoContainer>
             <Image height={140} width={140} src={logo} unoptimized={false} />
           </LogoContainer>

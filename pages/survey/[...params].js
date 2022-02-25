@@ -72,7 +72,6 @@ export default function survey() {
   useEffect(() => {
     if (params) {
       if (params.length === 1) {
-        console.log(params);
         setQuestionId("");
         getSurveyDetails(params[0]);
         setSurveyId(params[0]);
@@ -81,7 +80,7 @@ export default function survey() {
         setSurveyId(params[0]);
         setQuestionId(params[1]);
         const question = survey.questions.find(
-          (obj) => obj.question_number == +params[1]
+          (obj) => obj.qid == +params[1]
         );
         if (!question) router.push(`/survey/${params[0]}`);
         setQuestion(question);
@@ -128,7 +127,7 @@ export default function survey() {
       question.question_type === "audio"
         ? ((payload["qtype"] = "audio"),
           (payload["answer_audio_file"] = response))
-        : ((payload["question_type"] = question.question_type),
+        : ((payload["qtype"] = question.question_type),
           (payload["user_answer"] = response));
 
       const res = await surveyService.update_user_answer(uniqueId, payload);
@@ -140,7 +139,7 @@ export default function survey() {
     }
     const next = produce(survey.questions, (draft) => {
       const question = draft.find(
-        (question) => question.question_number === +questionId
+        (question) => question.qid === +questionId
       );
       question["answer"] = response;
     });
@@ -181,7 +180,7 @@ export default function survey() {
             totalQuestions={survey.questions.length}
             id={"1"}
             primaryButtonTitle="Next"
-            nextRoute={`/survey/${surveyId}/${survey.questions[0].question_number}`}
+            nextRoute={`/survey/${surveyId}/${survey.questions[0].qid}`}
             handleResponse={handleNameResponse}
           />
         </StyledContainer>

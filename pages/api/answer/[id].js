@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   } else {
     form.append("user_answer", req.body.user_answer);
   }
-  form.append("question_type", req.body.qtype);
+  form.append("qtype", req.body.qtype);
 
   const resData = await fetch(`${BASE_URL}/update_user_answer/${id}`, {
     method: "POST",

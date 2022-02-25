@@ -59,21 +59,24 @@ function VoiceInput({
       setErrorMessage("Please stop the recording");
       return;
     }
-    const res = await handleResponse(mediaBlobUrl);
-    if (+id === totalQuestions) {
-      res && handleEndSurvey();
+
+    if (mediaBlobUrl) {
+      const res = await handleResponse(mediaBlobUrl);
+      if (+id === totalQuestions) {
+        res && handleEndSurvey();
+      } else {
+        res && router.push(nextRoute);
+      }
     } else {
-      res && router.push(nextRoute);
+      router.push(nextRoute);
     }
   };
 
   const handlePrev = () => {
-    setError(false);
     router.back();
   };
 
   const playStop = () => {
-    setError(false);
     stopRecording();
   };
 
