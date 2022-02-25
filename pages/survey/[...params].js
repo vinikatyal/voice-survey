@@ -38,7 +38,6 @@ const FullBackgroundSurvey = styled("div")(({ bgColor }) => ({
   background: bgColor,
   display: "flex",
   flexDirection: "column",
-
   alignItems: "center",
   textAlign: "center",
   padding: "50px",
