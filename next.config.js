@@ -4,6 +4,9 @@ module.exports = {
   },
   serverRuntimeConfig: {
     secret: "ABCD",
+    server: {
+      DEV_URL: "http://172.16.22.5:8086",
+    },
   },
   publicRuntimeConfig: {
     apiUrl:

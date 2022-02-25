@@ -28,6 +28,7 @@ import MultiLineTextField from "../../components/questions/MultiLineTextField";
 import EmailTextField from "../../components/questions/EmailTextField";
 import DateField from "../../components/questions/DateField";
 import WelcomeText from "../../components/questions/WelcomeText";
+import Image from "next/image";
 
 const FullBackgroundSurvey = styled("div")(({ bgColor }) => ({
   background: bgColor,
@@ -57,6 +58,7 @@ export default function survey() {
   const { params } = router.query;
   const [question, setQuestion] = useState("");
   const [surveyId, setSurveyId] = useState("");
+  const [uniqueId, setUniqueId] = useState("");
   const [questionId, setQuestionId] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -68,6 +70,8 @@ export default function survey() {
   useEffect(() => {
     if (params) {
       if (params.length === 1) {
+        console.log(params);
+        setQuestionId("");
         getSurveyDetails(params[0]);
         setSurveyId(params[0]);
       }
@@ -105,6 +109,7 @@ export default function survey() {
         type: "SET_WELCOME_TEXT",
         value: get(surveyDetails.data, "welcome_text", ""),
       });
+      setUniqueId(get(surveyDetails, "id"));
     } catch (error) {
       toast.error(error.message, {
         position: toast.POSITION.TOP_RIGHT,
@@ -113,6 +118,23 @@ export default function survey() {
   };
 
   const handleResponse = async (response) => {
+    try {
+      let formData = new FormData();
+      formData.append("qid", question.qid);
+      if (question.question_type === "audio") {
+        formData.append("answer_audio_file", response);
+      } else {
+        formData.append("user_answer", response);
+      }
+      formData.append("question_type", question.question_type);
+
+      const res = await surveyService.update_user_answer(uniqueId, formData);
+    } catch (error) {
+      toast.error(error.message, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return false;
+    }
     const next = produce(survey.questions, (draft) => {
       const question = draft.find(
         (question) => question.question_number === +questionId
@@ -120,6 +142,7 @@ export default function survey() {
       question["answer"] = response;
     });
     dispatch({ type: "SET_QUESTIONS", value: next });
+    return true;
   };
   const handleNameResponse = async (response) => {
     dispatch({ type: "SET_SURVEY_USER_NAME", value: response });
@@ -140,11 +163,14 @@ export default function survey() {
     >
       {surveyId && !questionId && (
         <StyledContainer maxWidth="lg">
-          <Grid container mt={5}>
-            <Grid item md={12}>
+          <Grid container mt={5} spacing={8}>
+            <Grid item xs={12}>
               <Typography fontSize={28} color="#00063e" fontWeight={700}>
                 {survey.surveyWelcomeText || "Get start by clicking next!"}
               </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Image src={"/survey/mic.svg"} width={50} height={50} />
             </Grid>
           </Grid>
           <WelcomeText
@@ -181,7 +207,7 @@ export default function survey() {
               required={get(question, "required", false)}
               totalQuestions={survey.questions.length}
               id={questionId}
-              secondaryButtonTitle={+questionId !== 1 && "Back"}
+              secondaryButtonTitle={"Back"}
               primaryButtonTitle="Next"
               nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
               handleEndSurvey={handleEndSurvey}
@@ -195,7 +221,7 @@ export default function survey() {
               required={get(question, "required", false)}
               totalQuestions={survey.questions.length}
               id={questionId}
-              secondaryButtonTitle={+questionId !== 1 && "Back"}
+              secondaryButtonTitle={"Back"}
               primaryButtonTitle="Next"
               nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
               handleEndSurvey={handleEndSurvey}
@@ -209,7 +235,7 @@ export default function survey() {
               required={get(question, "required", false)}
               totalQuestions={survey.questions.length}
               id={questionId}
-              secondaryButtonTitle={+questionId !== 1 && "Back"}
+              secondaryButtonTitle={"Back"}
               primaryButtonTitle="Next"
               nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
               handleEndSurvey={handleEndSurvey}
@@ -223,7 +249,7 @@ export default function survey() {
               required={get(question, "required", false)}
               totalQuestions={survey.questions.length}
               id={questionId}
-              secondaryButtonTitle={+questionId !== 1 && "Back"}
+              secondaryButtonTitle={"Back"}
               primaryButtonTitle="Next"
               nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
               handleEndSurvey={handleEndSurvey}

@@ -38,6 +38,7 @@ function VoiceInput({
   secondaryButtonTitle,
   nextRoute,
   handleEndSurvey,
+  handleResponse,
 }) {
   const [error, setError] = useState(false);
 
@@ -45,15 +46,16 @@ function VoiceInput({
   const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
     useReactMediaRecorder({ audio: true });
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (required && !mediaBlobUrl) {
       setError(true);
       return;
     }
+    const res = await handleResponse(mediaBlobUrl);
     if (+id === totalQuestions) {
-      handleEndSurvey();
+      res && handleEndSurvey();
     } else {
-      router.push(nextRoute);
+      res && router.push(nextRoute);
     }
   };
 

@@ -192,6 +192,10 @@ export default function Index() {
   const handleEdit = async (survey_id) => {
     try {
       const surveyDetails = await surveyService.get_survey_details(survey_id);
+      dispatch({
+        type: "SET_SURVEY_SHARE_LINK",
+        value: `http://localhost:3000/survey/${survey_id}`,
+      });
 
       dispatch({
         type: "SET_TITLE",

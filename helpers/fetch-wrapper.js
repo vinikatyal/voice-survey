@@ -9,6 +9,7 @@ export const fetchWrapper = {
   post,
   put,
   postFormData,
+  postFormDataWithoutHeader,
   delete: _delete,
 };
 
@@ -38,6 +39,17 @@ function postFormData(url, body, extraHeaders = {}) {
     method: "POST",
     headers: {
       ...authHeader(url),
+      ...extraHeaders,
+    },
+    body: body,
+  };
+  return fetch(url, requestOptions).then(handleResponse);
+}
+
+function postFormDataWithoutHeader(url, body, extraHeaders = {}) {
+  const requestOptions = {
+    method: "POST",
+    headers: {
       ...extraHeaders,
     },
     body: body,

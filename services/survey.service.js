@@ -22,7 +22,27 @@ export const surveyService = {
   get_surveys_count,
   generateLink,
   getAll,
+  update_user_answer,
 };
+
+async function update_user_answer(uniqueId, data) {
+  const token = await getAccessToken();
+  return fetchWrapper
+    .postFormDataWithoutHeader(
+      `${baseUrl}/update_user_answer/${uniqueId}`,
+      data
+    )
+    .then((res) => {
+      if (res.code === 200) {
+        return res;
+      } else {
+        errorHandler({}, res);
+      }
+    })
+    .catch((error) => {
+      errorHandler(error, {});
+    });
+}
 
 async function create_survey(data) {
   const token = await getAccessToken();
