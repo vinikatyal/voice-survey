@@ -16,7 +16,7 @@ import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import Waveform from "./Waveform";
+// import Waveform from "./Waveform";
 
 import styled from "@emotion/styled";
 
@@ -83,9 +83,9 @@ function VoiceInput({
       {/*Input Section  */}
       <Grid item md={2} xs={0}></Grid>
       <Grid item md={8} xs={12}>
-        {/* {mediaBlobUrl && <audio src={mediaBlobUrl} controls />} */}
+        {mediaBlobUrl && <audio src={mediaBlobUrl} controls />}
 
-        {mediaBlobUrl && <Waveform audio={mediaBlobUrl} />}
+        {/* {mediaBlobUrl && <Waveform audio={mediaBlobUrl} />} */}
 
         {mediaBlobUrl && (
           <div>

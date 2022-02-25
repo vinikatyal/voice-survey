@@ -28,6 +28,8 @@ import MultiLineTextField from "../../components/questions/MultiLineTextField";
 import EmailTextField from "../../components/questions/EmailTextField";
 import DateField from "../../components/questions/DateField";
 import WelcomeText from "../../components/questions/WelcomeText";
+// import VoiceInput from "../../components/questions/VoiceInput";
+
 import Image from "next/image";
 
 const FullBackgroundSurvey = styled("div")(({ bgColor }) => ({
@@ -62,9 +64,8 @@ export default function survey() {
   const [questionId, setQuestionId] = useState("");
   const [open, setOpen] = useState(false);
 
-  const VoiceInput = dynamic(
-    () => import("../../components/questions/VoiceInput"),
-    { ssr: false }
+  const VoiceInput = dynamic(() =>
+    import("../../components/questions/VoiceInput")
   );
 
   useEffect(() => {

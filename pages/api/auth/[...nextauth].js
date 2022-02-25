@@ -81,7 +81,7 @@ const options = {
   secret: "1210e525b4fb4de680a47df25da940bd",
   session: {
     strategy: "jwt",
-    maxAge: 1 * 24 * 60 * 60, // 1d
+    maxAge: 10 * 30, // 10mins
   },
 };
 

@@ -1,5 +1,6 @@
 import getConfig from "next/config";
-
+import { signOut } from "next-auth/react";
+import router from "next/router";
 import { authService } from "../services/auth.service";
 
 const { publicRuntimeConfig } = getConfig();
@@ -99,6 +100,9 @@ function handleResponse(response) {
 
     if (!response.ok) {
       if ([401, 403].includes(response.status)) {
+
+        signOut()
+        router.push("/login")
         // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
       }
 
