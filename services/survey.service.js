@@ -28,9 +28,10 @@ export const surveyService = {
 async function update_user_answer(uniqueId, data) {
   const token = await getAccessToken();
   return fetchWrapper
-    .postFormData(`${baseUrl}/update_user_answer/${uniqueId}`, data, {
-      token,
-    })
+    .postFormDataWithoutHeader(
+      `${baseUrl}/update_user_answer/${uniqueId}`,
+      data
+    )
     .then((res) => {
       if (res.code === 200) {
         return res;
