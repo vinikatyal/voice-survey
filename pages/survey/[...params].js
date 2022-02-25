@@ -58,6 +58,7 @@ export default function survey() {
   const { params } = router.query;
   const [question, setQuestion] = useState("");
   const [surveyId, setSurveyId] = useState("");
+  const [uniqueId, setUniqueId] = useState("");
   const [questionId, setQuestionId] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -69,6 +70,7 @@ export default function survey() {
   useEffect(() => {
     if (params) {
       if (params.length === 1) {
+        console.log(params);
         setQuestionId("");
         getSurveyDetails(params[0]);
         setSurveyId(params[0]);
@@ -107,6 +109,10 @@ export default function survey() {
         type: "SET_WELCOME_TEXT",
         value: get(surveyDetails.data, "welcome_text", ""),
       });
+
+      console.log(surveyDetails)
+
+      setUniqueId(get(surveyDetails, "id"));
     } catch (error) {
       toast.error(error.message, {
         position: toast.POSITION.TOP_RIGHT,
@@ -126,7 +132,7 @@ export default function survey() {
         : ((payload["question_type"] = question.question_type),
           (payload["user_answer"] = response));
 
-      const res = await surveyService.update_user_answer(surveyId, payload);
+      const res = await surveyService.update_user_answer(uniqueId, payload);
     } catch (error) {
       toast.error(error.message, {
         position: toast.POSITION.TOP_RIGHT,

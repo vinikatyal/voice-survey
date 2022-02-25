@@ -26,11 +26,12 @@ export const surveyService = {
 };
 
 async function update_user_answer(surveyId, payload) {
-  const res = await fetch(`/api/survey/${surveyId}`, {
+  const res = await fetch(`/api/answer/${surveyId}`, {
     method: "POST",
     body: JSON.stringify(payload),
   });
   const surveyData = await res.json();
+  console.log(surveyData)
   if (surveyData.code === 200) {
     return surveyData;
   } else {
