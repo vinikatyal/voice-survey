@@ -59,7 +59,7 @@ function EmailTextField({
     <Grid container spacing={5} height="100%" alignItems="center">
       {/* question section */}
       <Grid item xs={12}>
-        <Typography color="#00063e" fontSize="28px" fontWeight="500">
+        <Typography variant="h2" fontWeight={550}>
           {title}
         </Typography>
       </Grid>
@@ -109,7 +109,7 @@ function EmailTextField({
       )}
       <Grid item md={secondaryButtonTitle ? 3 : 6} xs={12}>
         <StyledButton onClick={handleSubmit(handleNext)}>
-          {primaryButtonTitle}
+          {+id === totalQuestions ? "Submit" : primaryButtonTitle}
         </StyledButton>
       </Grid>
       <Grid item md={3} xs={0}></Grid>

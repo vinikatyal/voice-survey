@@ -68,7 +68,11 @@ function VoiceInput({
         res && router.push(nextRoute);
       }
     } else {
-      router.push(nextRoute);
+      if (+id === totalQuestions) {
+        handleEndSurvey();
+      } else {
+        router.push(nextRoute);
+      }
     }
   };
 
@@ -89,7 +93,7 @@ function VoiceInput({
     <Grid container spacing={5} height="100%" alignItems="center">
       {/* question section */}
       <Grid item xs={12}>
-        <Typography color="#00063e" fontSize="28px" fontWeight="500">
+        <Typography variant="h2" fontWeight={550}>
           {title}
         </Typography>
       </Grid>
@@ -128,7 +132,7 @@ function VoiceInput({
             >
               <MicIcon />
             </FabAudio>
-            <div>Hit Record to Start</div>
+            <Typography mt={2}>Hit Record to Start</Typography>
           </>
         )}
         {["recording", "paused"].includes(status) && (
@@ -161,7 +165,9 @@ function VoiceInput({
         </Grid>
       )}
       <Grid item md={secondaryButtonTitle ? 3 : 6} xs={12}>
-        <StyledButton onClick={handleNext}>{primaryButtonTitle}</StyledButton>
+        <StyledButton onClick={handleNext}>
+          {+id === totalQuestions ? "Submit" : primaryButtonTitle}
+        </StyledButton>
       </Grid>
       <Grid item md={3} xs={0}></Grid>
     </Grid>

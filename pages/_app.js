@@ -8,6 +8,7 @@ import "../styles/app.css";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import theme from "../src/theme";
+import { responsiveFontSizes } from "@mui/material";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,6 +16,8 @@ import { authService } from "../services/auth.service";
 import { SurveyProvider } from "../context/SurveyState";
 
 import { SessionProvider } from "next-auth/react";
+
+const responsiveTheme = responsiveFontSizes(theme);
 
 export default function MyApp(props) {
   const router = useRouter();
@@ -28,7 +31,7 @@ export default function MyApp(props) {
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={responsiveTheme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <SurveyProvider>
           <CssBaseline />

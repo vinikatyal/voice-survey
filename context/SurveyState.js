@@ -47,7 +47,7 @@ const initialState = {
   ],
   questions: [
     {
-      qid: 1,
+      qid: "tempId",
       question: "",
       question_type: "text",
       required: false,
