@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 import { toast } from "react-toastify";
+
+import isEmpty from "lodash.isempty";
 import get from "lodash.get";
 
 import { useRouter } from "next/router";
@@ -95,23 +97,27 @@ export default function survey() {
         survey_id
       );
 
-      dispatch({
-        type: "SET_QUESTIONS",
-        value: surveyDetails.data.survey_questions,
-      });
-      const selectedSurveyTheme = survey.themes.find(
-        (obj) => obj.name === surveyDetails.data.survey_theme
-      );
-      dispatch({
-        type: "SET_THEME",
-        value: selectedSurveyTheme,
-      });
+      if (!isEmpty(surveyDetails)) {
+        dispatch({
+          type: "SET_QUESTIONS",
+          value: surveyDetails.data.survey_questions,
+        });
+        const selectedSurveyTheme = survey.themes.find(
+          (obj) => obj.name === surveyDetails.data.survey_theme
+        );
+        dispatch({
+          type: "SET_THEME",
+          value: selectedSurveyTheme,
+        });
 
-      dispatch({
-        type: "SET_WELCOME_TEXT",
-        value: get(surveyDetails.data, "welcome_text", ""),
-      });
-      setUniqueId(get(surveyDetails, "id"));
+        dispatch({
+          type: "SET_WELCOME_TEXT",
+          value: get(surveyDetails.data, "welcome_text", ""),
+        });
+        setUniqueId(get(surveyDetails, "id"));
+      } else {
+        router.push("/404");
+      }
     } catch (error) {
       toast.error(error.message, {
         position: toast.POSITION.TOP_RIGHT,
@@ -163,7 +169,7 @@ export default function survey() {
       bgColor={get(survey, "selectedSurveyTheme.color", "BLUE")}
     >
       <Grid container>
-        <Grid item xs={12} mb={5}>
+        <Grid item xs={12} mb={3}>
           <Image src={"/images/logo.png"} width={169} height={70} />
         </Grid>
       </Grid>

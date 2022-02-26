@@ -19,7 +19,6 @@ import Grid from "@mui/material/Grid";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
-import Avatar from "@mui/material/Avatar";
 
 // Logo
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -81,7 +80,6 @@ const MemberDetails = ({ img, email }) => (
   <React.Fragment>
     <Grid container mt={2}>
       <Grid item xs={8} display="flex" alignItems={"center"}>
-        {/* <Avatar alt="avatar" src={img} /> */}
         <Typography ml={2}>{email}</Typography>
       </Grid>
       <Grid
@@ -91,13 +89,6 @@ const MemberDetails = ({ img, email }) => (
         alignItems="center"
         justifyContent="flex-end"
       >
-        {/* <Typography
-          variant="subtitle2"
-          color="#bfbfbf"
-          sx={{ textDecoration: "underline", cursor: "pointer" }}
-        >
-          Remove
-        </Typography> */}
       </Grid>
     </Grid>
   </React.Fragment>
