@@ -44,8 +44,14 @@ function VoiceInput({
   const [errorMessage, setErrorMessage] = useState("");
 
   const router = useRouter();
-  const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
-    useReactMediaRecorder({ audio: true });
+  const {
+    status,
+    startRecording,
+    stopRecording,
+    mediaBlobUrl,
+    clearBlobUrl,
+    onStop,
+  } = useReactMediaRecorder({ audio: true });
 
   const handleNext = async () => {
     if (required && !mediaBlobUrl) {
@@ -61,7 +67,11 @@ function VoiceInput({
     }
 
     if (mediaBlobUrl) {
-      const res = await handleResponse(mediaBlobUrl);
+      const audiofile = new File([mediaBlobUrl], `${id}.mp3`, {
+        type: "audio/mp3",
+      });
+      console.log(audiofile);
+      const res = await handleResponse(audiofile);
       if (+id === totalQuestions) {
         res && handleEndSurvey();
       } else {
