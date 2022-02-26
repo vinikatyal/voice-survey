@@ -109,7 +109,7 @@ export default function questions() {
       ></SpeedDial>
 
       <Grid container>
-        <Grid item xs={12} mb={12}>
+        <Grid item xs={12} mb={5}>
           <Image src={"/images/logo.png"} width={169} height={70} />
         </Grid>
       </Grid>
