@@ -33,20 +33,23 @@ import WelcomeText from "../../components/questions/WelcomeText";
 import Image from "next/image";
 
 const FullBackgroundSurvey = styled("div")(({ bgColor }) => ({
+  overflow: "auto",
+  minHeight: "100vh",
   background: bgColor,
   display: "flex",
   flexDirection: "column",
-  justifyContent: "center",
   alignItems: "center",
-  height: "100vh",
   textAlign: "center",
   padding: "50px",
 }));
 
-const StyledContainer = styled(Container)({
-  backgroundColor: "white",
+const StyledDiv = styled("div")({
+  width: "100%",
   minHeight: "519px",
-  borderRadius: "8px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  padding: "20px 10px",
 });
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -79,9 +82,7 @@ export default function survey() {
       if (params.length === 2) {
         setSurveyId(params[0]);
         setQuestionId(params[1]);
-        const question = survey.questions.find(
-          (obj) => obj.qid == +params[1]
-        );
+        const question = survey.questions.find((obj) => obj.qid == +params[1]);
         if (!question) router.push(`/survey/${params[0]}`);
         setQuestion(question);
       }
@@ -138,9 +139,7 @@ export default function survey() {
       return false;
     }
     const next = produce(survey.questions, (draft) => {
-      const question = draft.find(
-        (question) => question.qid === +questionId
-      );
+      const question = draft.find((question) => question.qid === +questionId);
       question["answer"] = response;
     });
     dispatch({ type: "SET_QUESTIONS", value: next });
@@ -163,102 +162,117 @@ export default function survey() {
     <FullBackgroundSurvey
       bgColor={get(survey, "selectedSurveyTheme.color", "BLUE")}
     >
+      <Grid container>
+        <Grid item xs={12} mb={5}>
+          <Image src={"/images/logo.png"} width={169} height={70} />
+        </Grid>
+      </Grid>
       {surveyId && !questionId && (
-        <StyledContainer maxWidth="lg">
-          <Grid container mt={5} spacing={8}>
-            <Grid item xs={12}>
-              <Typography fontSize={28} color="#00063e" fontWeight={700}>
-                {survey.surveyWelcomeText || "Get start by clicking next!"}
-              </Typography>
+        <Container
+          maxWidth="lg"
+          sx={{ backgroundColor: "white", borderRadius: "8px" }}
+        >
+          <StyledDiv>
+            <Grid container mt={5} spacing={8}>
+              <Grid item xs={12}>
+                <Typography variant="h2">
+                  {survey.surveyWelcomeText || "Get start by clicking next!"}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Image src={"/survey/mic.svg"} width={50} height={50} />
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <Image src={"/survey/mic.svg"} width={50} height={50} />
-            </Grid>
-          </Grid>
-          <WelcomeText
-            value={get(survey, "surveyUserName", "")}
-            totalQuestions={survey.questions.length}
-            id={"1"}
-            primaryButtonTitle="Next"
-            nextRoute={`/survey/${surveyId}/${survey.questions[0].qid}`}
-            handleResponse={handleNameResponse}
-          />
-        </StyledContainer>
+            <WelcomeText
+              value={get(survey, "surveyUserName", "")}
+              totalQuestions={survey.questions.length}
+              id={"1"}
+              primaryButtonTitle="Next"
+              nextRoute={`/survey/${surveyId}/${survey.questions[0].qid}`}
+              handleResponse={handleNameResponse}
+            />
+          </StyledDiv>
+        </Container>
       )}
 
       {questionId && (
-        <StyledContainer maxWidth="lg">
-          {get(question, "question_type", "") === "text" && (
-            <SingleLineTextField
-              title={get(question, "question", "")}
-              value={get(question, "answer", "")}
-              required={get(question, "required", false)}
-              totalQuestions={survey.questions.length}
-              id={questionId}
-              secondaryButtonTitle={"Back"}
-              primaryButtonTitle="Next"
-              nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
-              handleEndSurvey={handleEndSurvey}
-              handleResponse={handleResponse}
-            />
-          )}
-          {get(question, "question_type", "") === "description" && (
-            <MultiLineTextField
-              title={get(question, "question", "")}
-              value={get(question, "answer", "")}
-              required={get(question, "required", false)}
-              totalQuestions={survey.questions.length}
-              id={questionId}
-              secondaryButtonTitle={"Back"}
-              primaryButtonTitle="Next"
-              nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
-              handleEndSurvey={handleEndSurvey}
-              handleResponse={handleResponse}
-            />
-          )}
-          {get(question, "question_type", "") === "email" && (
-            <EmailTextField
-              title={get(question, "question", "")}
-              value={get(question, "answer", "")}
-              required={get(question, "required", false)}
-              totalQuestions={survey.questions.length}
-              id={questionId}
-              secondaryButtonTitle={"Back"}
-              primaryButtonTitle="Next"
-              nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
-              handleEndSurvey={handleEndSurvey}
-              handleResponse={handleResponse}
-            />
-          )}
-          {get(question, "question_type", "") === "date_picker" && (
-            <DateField
-              title={get(question, "question", "")}
-              value={get(question, "answer", "")}
-              required={get(question, "required", false)}
-              totalQuestions={survey.questions.length}
-              id={questionId}
-              secondaryButtonTitle={"Back"}
-              primaryButtonTitle="Next"
-              nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
-              handleEndSurvey={handleEndSurvey}
-              handleResponse={handleResponse}
-            />
-          )}
-          {get(question, "question_type", "") === "audio" && (
-            <VoiceInput
-              title={get(question, "question", "")}
-              value={get(question, "answer", "")}
-              required={get(question, "required", false)}
-              totalQuestions={survey.questions.length}
-              id={questionId}
-              secondaryButtonTitle={"Back"}
-              primaryButtonTitle="Next"
-              nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
-              handleEndSurvey={handleEndSurvey}
-              handleResponse={handleResponse}
-            />
-          )}
-        </StyledContainer>
+        <Container
+          maxWidth="lg"
+          sx={{ backgroundColor: "white", borderRadius: "8px" }}
+        >
+          <StyledDiv>
+            {get(question, "question_type", "") === "text" && (
+              <SingleLineTextField
+                title={get(question, "question", "")}
+                value={get(question, "answer", "")}
+                required={get(question, "required", false)}
+                totalQuestions={survey.questions.length}
+                id={questionId}
+                secondaryButtonTitle={"Back"}
+                primaryButtonTitle="Next"
+                nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
+                handleEndSurvey={handleEndSurvey}
+                handleResponse={handleResponse}
+              />
+            )}
+            {get(question, "question_type", "") === "description" && (
+              <MultiLineTextField
+                title={get(question, "question", "")}
+                value={get(question, "answer", "")}
+                required={get(question, "required", false)}
+                totalQuestions={survey.questions.length}
+                id={questionId}
+                secondaryButtonTitle={"Back"}
+                primaryButtonTitle="Next"
+                nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
+                handleEndSurvey={handleEndSurvey}
+                handleResponse={handleResponse}
+              />
+            )}
+            {get(question, "question_type", "") === "email" && (
+              <EmailTextField
+                title={get(question, "question", "")}
+                value={get(question, "answer", "")}
+                required={get(question, "required", false)}
+                totalQuestions={survey.questions.length}
+                id={questionId}
+                secondaryButtonTitle={"Back"}
+                primaryButtonTitle="Next"
+                nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
+                handleEndSurvey={handleEndSurvey}
+                handleResponse={handleResponse}
+              />
+            )}
+            {get(question, "question_type", "") === "date_picker" && (
+              <DateField
+                title={get(question, "question", "")}
+                value={get(question, "answer", "")}
+                required={get(question, "required", false)}
+                totalQuestions={survey.questions.length}
+                id={questionId}
+                secondaryButtonTitle={"Back"}
+                primaryButtonTitle="Next"
+                nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
+                handleEndSurvey={handleEndSurvey}
+                handleResponse={handleResponse}
+              />
+            )}
+            {get(question, "question_type", "") === "audio" && (
+              <VoiceInput
+                title={get(question, "question", "")}
+                value={get(question, "answer", "")}
+                required={get(question, "required", false)}
+                totalQuestions={survey.questions.length}
+                id={questionId}
+                secondaryButtonTitle={"Back"}
+                primaryButtonTitle="Next"
+                nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
+                handleEndSurvey={handleEndSurvey}
+                handleResponse={handleResponse}
+              />
+            )}
+          </StyledDiv>
+        </Container>
       )}
       <Dialog
         open={open}
