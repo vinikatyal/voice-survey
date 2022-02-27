@@ -3,6 +3,8 @@ import getConfig from "next/config";
 import get from "lodash.get";
 
 import { fetchWrapper } from "../helpers/fetch-wrapper";
+import { errorHandler } from "../helpers/api/error-handler";
+
 import { getAccessToken } from "./auth.service";
 
 const { publicRuntimeConfig } = getConfig();
@@ -35,20 +37,12 @@ async function update_user_answer(uniqueId, data) {
       if (get(res, "code") === 200) {
         return res;
       } else {
-        return {};
+        errorHandler({}, res);
       }
+    })
+    .catch((error) => {
+      return error;
     });
-  // const requestOptions = {
-  //   method: "POST",
-  //   body: data,
-  // };
-  // const res = await fetch(`/api/answer/${uniqueId}`, requestOptions);
-  // const surveyData = await res.json();
-  // if (res.ok) {
-  //   return surveyData;
-  // } else {
-  //   return {};
-  // }
 }
 
 async function create_survey(data) {
@@ -59,7 +53,7 @@ async function create_survey(data) {
       if (get(res, "code.survey_id")) {
         return res;
       } else {
-        return {};
+        errorHandler({}, res);
       }
     });
 }
@@ -76,7 +70,7 @@ async function get_all_surveys(page) {
       if (get(res, "code") === 200) {
         return res;
       } else {
-        return {};
+        errorHandler({}, res);
       }
     });
 }
@@ -93,7 +87,7 @@ async function get_my_surveys(page) {
       if (get(res, "code") === 200) {
         return res;
       } else {
-        return {};
+        errorHandler({}, res);
       }
     });
 }
@@ -110,7 +104,7 @@ async function get_shared_surveys(page) {
       if (get(res, "code") === 200) {
         return res;
       } else {
-        return {};
+        errorHandler({}, res);
       }
     });
 }
@@ -125,7 +119,7 @@ async function get_surveys_count(type) {
       if (get(res, "code") === 200) {
         return res;
       } else {
-        return {};
+        errorHandler({}, res);
       }
     });
 }
@@ -140,7 +134,7 @@ async function get_survey_template_metadata() {
       if (get(res, "code") === 200) {
         return res;
       } else {
-        return {};
+        errorHandler({}, res);
       }
     });
 }
@@ -155,7 +149,7 @@ async function get_survey_template_data(data) {
       if (get(res, "code") === 200) {
         return res;
       } else {
-        return {};
+        errorHandler({}, res);
       }
     });
 }
@@ -181,7 +175,7 @@ async function get_survey_details(id) {
       if (get(res, "code") === 200) {
         return res;
       } else {
-        return {};
+        errorHandler({}, res);
       }
     });
 }
@@ -211,7 +205,7 @@ async function delete_survey(id) {
       if (get(res, "code") === 200) {
         return res;
       } else {
-        return {};
+        errorHandler({}, res);
       }
     });
 }
@@ -230,7 +224,7 @@ async function generateLink(survey_id, survey_type, url) {
       if (get(res, "code") === 200) {
         return res;
       } else {
-        return "";
+        errorHandler({}, res);
       }
     });
 }
