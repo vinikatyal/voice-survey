@@ -114,7 +114,11 @@ function VoiceInput({
     }
 
     if (mediaBlobUrl) {
-      const res = await handleResponse(mediaBlobUrl);
+      const audiofile = new File([mediaBlobUrl], `${id}.mp3`, {
+        type: "audio/mp3",
+      });
+      console.log(audiofile);
+      const res = await handleResponse(audiofile);
       if (+id === totalQuestions) {
         res && handleEndSurvey();
       } else {
