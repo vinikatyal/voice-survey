@@ -127,17 +127,16 @@ export default function survey() {
 
   const handleResponse = async (response) => {
     try {
-      const payload = {
-        qid: question.qid,
-      };
+      let form = new FormData();
+      form.append("qid", question.qid);
+      if (question.question_type === "audio") {
+        form.append("answer_audio_file", response);
+      } else {
+        form.append("user_answer", question.user_answer);
+      }
+      form.append("qtype", question.question_type);
 
-      question.question_type === "audio"
-        ? ((payload["qtype"] = "audio"),
-          (payload["answer_audio_file"] = response))
-        : ((payload["qtype"] = question.question_type),
-          (payload["user_answer"] = response));
-
-      const res = await surveyService.update_user_answer(uniqueId, payload);
+      const res = await surveyService.update_user_answer(uniqueId, form);
     } catch (error) {
       toast.error(error.message, {
         position: toast.POSITION.TOP_RIGHT,

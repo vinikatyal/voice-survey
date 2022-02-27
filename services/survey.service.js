@@ -26,20 +26,29 @@ export const surveyService = {
 };
 
 async function update_user_answer(uniqueId, data) {
-  const requestOptions = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  };
-  const res = await fetch(`/api/answer/${uniqueId}`, requestOptions);
-  const surveyData = await res.json();
-  if (res.ok) {
-    return surveyData;
-  } else {
-    return {};
-  }
+  return await fetchWrapper
+    .postFormDataWithoutHeader(
+      `${baseUrl}/update_user_answer/${uniqueId}`,
+      data
+    )
+    .then((res) => {
+      if (get(res, "code") === 200) {
+        return res;
+      } else {
+        return {};
+      }
+    });
+  // const requestOptions = {
+  //   method: "POST",
+  //   body: data,
+  // };
+  // const res = await fetch(`/api/answer/${uniqueId}`, requestOptions);
+  // const surveyData = await res.json();
+  // if (res.ok) {
+  //   return surveyData;
+  // } else {
+  //   return {};
+  // }
 }
 
 async function create_survey(data) {
