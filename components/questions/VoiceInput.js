@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
+// import uuid from "uuid";
+
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
 import WaveSurfer from "wavesurfer.js";
@@ -114,8 +116,10 @@ function VoiceInput({
     }
 
     if (mediaBlobUrl) {
-      const audiofile = new File([mediaBlobUrl], `${id}.mp3`, {
-        type: "audio/mp3",
+      const uniqueId =
+        Date.now().toString(36) + Math.random().toString(36).substring(2);
+      const audiofile = new File([mediaBlobUrl], `${uniqueId}.mp3`, {
+        type: "audio/wav",
       });
       console.log(audiofile);
       const res = await handleResponse(audiofile);
