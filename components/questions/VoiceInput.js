@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
+import { useReactMediaRecorder } from "react-media-recorder";
 import WaveSurfer from "wavesurfer.js";
 import MicrophonePlugin from "wavesurfer.js/dist/plugin/wavesurfer.microphone";
 
@@ -45,13 +46,13 @@ function VoiceInput({
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [status, setStatus] = useState("idle");
-  const [mediaBlobUrl, setMediaBlobUrl] = useState(null);
-
   const router = useRouter();
 
   const waveSurferRef = useRef();
   const containerRef = useRef();
+
+  const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
+    useReactMediaRecorder({ audio: true });
 
   useEffect(() => {
     if (status === "recording") {
@@ -69,21 +70,7 @@ function VoiceInput({
         waveColor: "red",
         plugins: [MicrophonePlugin.create()],
       });
-      waveSurferRef.current.microphone.on("deviceReady", function (stream) {
-        let mediaRecorder;
-        const audioChunks = [];
-        mediaRecorder = new MediaRecorder(stream);
-        mediaRecorder.start();
-        mediaRecorder.addEventListener("dataavailable", (event) => {
-          audioChunks.push(event.data);
-        });
 
-        mediaRecorder.addEventListener("stop", () => {
-          const audioBlob = new Blob(audioChunks);
-          const audioUrl = URL.createObjectURL(audioBlob);
-          setMediaBlobUrl(audioUrl);
-        });
-      });
       const microphone = waveSurferRef.current.microphone;
       microphone.start();
     }
@@ -141,16 +128,9 @@ function VoiceInput({
     router.back();
   };
 
-  const startRecording = () => {
-    setStatus("recording");
-  };
-  const stopRecording = () => {
-    setStatus("stopped");
-  };
-
   const removeAudio = () => {
     setError(false);
-    setMediaBlobUrl(null);
+    clearBlobUrl();
   };
 
   return (
@@ -165,8 +145,6 @@ function VoiceInput({
       {/*Input Section  */}
       <Grid item md={2} xs={0}></Grid>
       <Grid item md={8} xs={12}>
-        {/* {mediaBlobUrl && <audio src={mediaBlobUrl} controls />} */}
-
         {mediaBlobUrl && <Waveform audio={mediaBlobUrl} />}
         {["recording", "paused"].includes(status) && (
           <Grid container>
@@ -176,13 +154,7 @@ function VoiceInput({
 
         {mediaBlobUrl && (
           <div>
-            <FabAudio
-              aria-label="add"
-              sx={{ mt: 2 }}
-              onClick={() => {
-                removeAudio();
-              }}
-            >
+            <FabAudio aria-label="add" sx={{ mt: 2 }} onClick={removeAudio}>
               <DeleteIcon />
             </FabAudio>
           </div>
