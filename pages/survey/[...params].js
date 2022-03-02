@@ -132,7 +132,7 @@ export default function survey() {
       if (question.question_type === "audio") {
         form.append("answer_audio_file", response);
       } else {
-        form.append("user_answer", question.user_answer);
+        form.append("user_answer", response);
       }
       form.append("qtype", question.question_type);
 

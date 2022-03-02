@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
-const BASE_URL = "http://172.16.22.5:8086";
+const BASE_URL = "https://surveycallback.gnani.site";
 
 const providers = [
   Credentials({

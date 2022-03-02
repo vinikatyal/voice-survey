@@ -45,6 +45,17 @@ async function update_user_answer(uniqueId, data) {
     });
 }
 
+// for external link
+async function get_survey_details_link(id) {
+  const res = await fetch(`/api/survey/${id}`);
+  const surveyData = await res.json();
+  if (res.ok) {
+    return surveyData;
+  } else {
+    return {};
+  }
+}
+
 async function create_survey(data) {
   const token = await getAccessToken();
   return await fetchWrapper
@@ -152,17 +163,6 @@ async function get_survey_template_data(data) {
         errorHandler({}, res);
       }
     });
-}
-
-// for external link
-async function get_survey_details_link(id) {
-  const res = await fetch(`/api/survey/${id}`);
-  const surveyData = await res.json();
-  if (res.ok) {
-    return surveyData;
-  } else {
-    return {};
-  }
 }
 
 async function get_survey_details(id) {
