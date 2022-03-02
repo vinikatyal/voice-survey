@@ -8,6 +8,7 @@ import { signOut } from "next-auth/react";
 import { toast } from "react-toastify";
 
 import router from "next/router";
+import getConfig from "next/config";
 
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
@@ -26,6 +27,10 @@ import Limiter from "../../components/Limiter";
 import AddLogo from "../../components/AddLogo";
 import InviteInput from "../../components/InviteInput";
 import StyledButton from "../../components/StyledButton";
+
+const { publicRuntimeConfig } = getConfig();
+
+const DEV_URL = publicRuntimeConfig.server.DEV_URL;
 
 // styles
 import styled from "@emotion/styled";
@@ -175,9 +180,15 @@ export default function Index() {
       });
   };
 
-  const logOut = () => {
-    router.push("/login");
-    signOut();
+  const logoutSite = async () => {
+    const data = await signOut({
+      redirect: false,
+      callbackUrl: `${DEV_URL}/login`,
+    });
+
+    if (get(data, "url")) {
+      router.push(`${DEV_URL}/login`);
+    }
   };
 
   const handleChange = (event, newValue) => {
@@ -259,7 +270,7 @@ export default function Index() {
                 variant="contained"
                 color="secondary"
                 type="submit"
-                onClick={logOut}
+                onClick={logoutSite}
                 disableElevation
                 disableRipple
               >

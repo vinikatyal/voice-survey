@@ -8,6 +8,7 @@ import StyledButton from "../StyledButton";
 
 import { useForm } from "react-hook-form";
 
+
 function WelcomeText({
   title,
   value,
@@ -38,7 +39,7 @@ function WelcomeText({
 
   const handleNext = () => {
     handleResponse(watchInput);
-    if (+id === totalQuestions) {
+    if (+id > totalQuestions) {
       handleEndSurvey();
     } else {
       router.push(nextRoute);

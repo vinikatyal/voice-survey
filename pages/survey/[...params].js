@@ -30,6 +30,7 @@ import MultiLineTextField from "../../components/questions/MultiLineTextField";
 import EmailTextField from "../../components/questions/EmailTextField";
 import DateField from "../../components/questions/DateField";
 import WelcomeText from "../../components/questions/WelcomeText";
+import PhoneTextField from "../../components/questions/PhoneTextField";
 // import VoiceInput from "../../components/questions/VoiceInput";
 
 import Image from "next/image";
@@ -250,6 +251,20 @@ export default function survey() {
             )}
             {get(question, "question_type", "") === "date_picker" && (
               <DateField
+                title={get(question, "question", "")}
+                value={get(question, "answer", "")}
+                required={get(question, "required", false)}
+                totalQuestions={survey.questions.length}
+                id={questionId}
+                secondaryButtonTitle={"Back"}
+                primaryButtonTitle="Next"
+                nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
+                handleEndSurvey={handleEndSurvey}
+                handleResponse={handleResponse}
+              />
+            )}
+             {get(question, "question_type", "") === "contact" && (
+              <PhoneTextField
                 title={get(question, "question", "")}
                 value={get(question, "answer", "")}
                 required={get(question, "required", false)}

@@ -5,17 +5,17 @@ module.exports = {
   serverRuntimeConfig: {
     secret: "ABCD",
     server: {
-      DEV_URL: "http://172.16.22.5:8086",
+      DEV_URL: "https://surveycallback.gnani.site",
     },
   },
   publicRuntimeConfig: {
     apiUrl:
       process.env.NODE_ENV === "development"
-        ? "http://172.16.22.5:8086" // development api
-        : "http://172.16.22.5:8086", // production api
+        ? "https://surveycallback.gnani.site" // development api
+        : "https://surveycallback.gnani.site", // production api
 
     server: {
-      DEV_URL: "http://172.16.22.5:3000",
+      DEV_URL: "https://surveyv2.gnani.site",
     },
   },
   reactStrictMode: true,
