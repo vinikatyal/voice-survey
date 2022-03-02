@@ -3,6 +3,7 @@ import * as React from "react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import get from "lodash.get";
 
 import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";

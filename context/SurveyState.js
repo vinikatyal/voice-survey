@@ -10,6 +10,7 @@ const SurveyStateContext = createContext();
 const SurveyDispatchContext = createContext();
 
 const initialState = {
+  userEmail: "",
   surveyTitle: "",
   accessMembers: [],
   surveyType: "",
@@ -69,6 +70,9 @@ const initialState = {
 
 const reducer = produce((draft, action) => {
   switch (action.type) {
+    case "SET_USER_EMAIL":
+      draft.userEmail = action.value;
+      break;
     case "SET_TITLE":
       draft.surveyTitle = action.value;
       break;

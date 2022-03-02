@@ -26,6 +26,8 @@ import { authService } from "../../services/auth.service";
 
 import styled from "@emotion/styled";
 
+import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
+
 const Item = styled(Paper)(({ theme }) => ({
   padding: "30px",
   maxWidth: "450px",
@@ -63,10 +65,23 @@ export default function ForgotPassword() {
     register,
     handleSubmit,
     trigger,
+    setValue,
     formState: { errors },
   } = useForm();
 
+  const survey = useSurvey();
+  const dispatch = useDispatchSurvey();
+
+  useEffect(() => {
+    if (survey.userEmail) {
+      setValue("email", survey.userEmail, {
+        shouldDirty: true,
+      });
+    }
+  }, []);
+
   const onSubmit = async (data) => {
+    dispatch({ type: "SET_USER_EMAIL", value: data.email });
     return await authService
       .forgot_password(data.email)
       .then(() => {
