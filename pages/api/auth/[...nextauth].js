@@ -35,7 +35,7 @@ const providers = [
       }
 
       const user = await res.json();
-      
+
       // If no error and we have user data, return it
       if (user.code === 200 && user) {
         return user;
@@ -54,6 +54,7 @@ const callbacks = {
       return {
         ...token,
         accessToken: user.data.token,
+        user: user.data,
       };
     }
 
@@ -62,6 +63,7 @@ const callbacks = {
 
   async session({ session, token }) {
     session.accessToken = token.accessToken;
+    session.user = token.user;
     return session;
   },
 };

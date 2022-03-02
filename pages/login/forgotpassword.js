@@ -70,6 +70,12 @@ export default function ForgotPassword() {
     return await authService
       .forgot_password(data.email)
       .then(() => {
+        toast.success(
+          "A temporary password has been sent to your email provided",
+          {
+            position: toast.POSITION.TOP_RIGHT,
+          }
+        );
         // get return url from query parameters or default to '/'
         router.push("/login");
       })

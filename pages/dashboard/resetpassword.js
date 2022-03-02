@@ -2,6 +2,9 @@ import React from "react";
 
 import isEmpty from "lodash.isempty";
 import { useForm } from "react-hook-form";
+
+import get from "lodash.get";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 
 import { toast } from "react-toastify";
@@ -22,6 +25,8 @@ import Layout from "../../components/Layout";
 import Limiter from "../../components/Limiter";
 import StyledButton from "../../components/StyledButton";
 
+import LogoutIcon from "@mui/icons-material/Logout";
+
 import { authService } from "../../services/auth.service";
 
 const ImageContainer = styled(Box)({
@@ -29,7 +34,7 @@ const ImageContainer = styled(Box)({
   display: "flex",
   justifyContent: "center",
 });
-const DetailHeader = styled(Typography)({
+const DetailHeader = styled("div")({
   marginTop: "30px",
   padding: "19px 0",
   display: "flex",
@@ -38,15 +43,19 @@ const DetailHeader = styled(Typography)({
   fontFamily: "Poppins",
   fontSize: "24px",
   fontWeight: "600",
+  width: "100%",
 });
 
-const FormSection = styled(Grid)({
-  height: "80%",
+const TextContainer = styled("div")({
   display: "flex",
-  marginTop: "20px",
-  marginBottom: "50px",
   justifyContent: "center",
   alignItems: "center",
+  width: "100%",
+});
+
+const LogOff = styled(LogoutIcon)({
+  marginLeft: "100px",
+  cursor: "pointer",
 });
 
 const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
@@ -76,11 +85,25 @@ export default function Index() {
     formState: { errors },
   } = useForm();
 
+  const logoutSite = async () => {
+    const data = await signOut({
+      redirect: false,
+      callbackUrl: `/login`,
+    });
+
+    if (get(data, "url")) {
+      router.push(`/login`);
+    }
+  };
+
   const onSubmit = async (data) => {
     return await authService
       .reset_password(data.email, data.old_password, data.new_password)
       .then(() => {
-        router.push("/dashboard");
+        toast.success("Password Reset, Please login with your new password", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        logoutSite();
       })
       .catch((error) => {
         toast.error(error, {
@@ -101,7 +124,13 @@ export default function Index() {
         </ImageContainer>
       </Limiter>
 
-      <DetailHeader>Reset Password</DetailHeader>
+      <DetailHeader>
+        <TextContainer>
+          {" "}
+          Reset Password
+          <LogOff onClick={logoutSite} />
+        </TextContainer>
+      </DetailHeader>
 
       <Limiter>
         <Box

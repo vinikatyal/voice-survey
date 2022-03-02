@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import router from "next/router";
 
+import get from "lodash.get";
 import isEmpty from "lodash.isempty";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
@@ -258,7 +259,7 @@ export default function Index({ csrfToken }) {
 
 // This is the recommended way for Next.js 9.3 or newer
 export async function getServerSideProps(context) {
-  const csrfToken = await getCsrfToken(context)
+  const csrfToken = await getCsrfToken(context);
   return {
     props: {
       csrfToken: csrfToken,

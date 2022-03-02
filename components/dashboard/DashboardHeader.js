@@ -1,7 +1,7 @@
 import * as React from "react";
 
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
-
 import Image from "next/image";
 
 import Container from "@mui/material/Container";
@@ -9,6 +9,9 @@ import Link from "@mui/material/Link";
 
 import StyledButton from "../../components/StyledButton";
 import Header from "../../components/Header";
+
+//icons
+import LogoutIcon from "@mui/icons-material/Logout";
 
 import styled from "@emotion/styled";
 
@@ -40,9 +43,12 @@ const Logo = styled(Image)(({}) => ({
   cursor: "pointer",
 }));
 
+const LogOff = styled(LogoutIcon)({
+  cursor: "pointer",
+});
+
 export default function DashboardHeader() {
   const router = useRouter();
-  const handleSubmit = () => {};
 
   const handleClickOpen = () => {
     router.push("/survey/create");
@@ -50,6 +56,17 @@ export default function DashboardHeader() {
 
   const openLink = (link) => {
     router.push(link);
+  };
+
+  const logoutSite = async () => {
+    const data = await signOut({
+      redirect: false,
+      callbackUrl: `/login`,
+    });
+
+    if (get(data, "url")) {
+      router.push(`/login`);
+    }
   };
   return (
     <Header>
@@ -90,6 +107,7 @@ export default function DashboardHeader() {
           <StyledButton onClick={handleClickOpen}>New Survey</StyledButton>
         </Nav>
       </BoxCustom>
+      <LogOff onClick={logoutSite} />
     </Header>
   );
 }

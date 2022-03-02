@@ -135,6 +135,10 @@ export default function Index() {
     if (!session) {
       router.push("/login");
     }
+
+    if (get(session, "user.pwd_flag") === "Y") {
+      router.push("/dashboard/resetpassword");
+    }
     getSurveyTypes(page);
     getSurveysCount();
   }, []);
