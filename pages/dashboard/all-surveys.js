@@ -240,7 +240,7 @@ export default function Index() {
                     <Response>
                       <Left>
                         <Logo src={person} width="14" alt="person" />
-                        <Text>2 responses</Text>
+                        <Text>{survey.responses} responses</Text>
                       </Left>
                     </Response>
                   </CardContent>

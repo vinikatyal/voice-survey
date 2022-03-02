@@ -35,16 +35,12 @@ const providers = [
       }
 
       const user = await res.json();
-
-      if (!res.ok) {
-        throw new Error("Error in login");
-      }
-
+      
       // If no error and we have user data, return it
       if (user.code === 200 && user) {
         return user;
       } else {
-        throw new Error("Error in credentials");
+        throw new Error(user.message);
       }
     },
   }),
