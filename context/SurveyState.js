@@ -48,7 +48,7 @@ const initialState = {
   ],
   questions: [
     {
-      qid: "tempId",
+      qid: 0,
       question: "",
       question_type: "text",
       required: false,
@@ -115,7 +115,7 @@ const reducer = produce((draft, action) => {
         draft.surveyType = "";
         draft.questions = [
           {
-            qid: 1,
+            qid: 0,
             question: "",
             question_type: "text",
             required: false,

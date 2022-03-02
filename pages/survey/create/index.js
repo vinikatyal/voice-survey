@@ -131,6 +131,12 @@ export default function Create() {
           description: survey.description,
           noOfQuestions: survey.no_of_ques,
         }));
+        surveyTypes.push({
+          name: "custom",
+          title: "Custom Feedback",
+          description: "Create Custom Survey",
+          noOfQuestions: 1,
+        });
         setQuestionTypes(surveyTypes);
       })
       .catch((error) => {
