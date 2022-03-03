@@ -19,7 +19,6 @@ import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
-import Accordion from "@mui/material/Accordion";
 import Button from "@mui/material/Button";
 
 import DashboardHeader from "../../components/dashboard/DashboardHeader";
@@ -27,10 +26,6 @@ import Limiter from "../../components/Limiter";
 import AddLogo from "../../components/AddLogo";
 import InviteInput from "../../components/InviteInput";
 import StyledButton from "../../components/StyledButton";
-
-const { publicRuntimeConfig } = getConfig();
-
-const DEV_URL = publicRuntimeConfig.server.DEV_URL;
 
 // styles
 import styled from "@emotion/styled";
@@ -183,11 +178,11 @@ export default function Index() {
   const logoutSite = async () => {
     const data = await signOut({
       redirect: false,
-      callbackUrl: `${DEV_URL}/login`,
+      callbackUrl: `/login`,
     });
 
     if (get(data, "url")) {
-      router.push(`${DEV_URL}/login`);
+      router.push(`/login`);
     }
   };
 

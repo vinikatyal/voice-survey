@@ -71,7 +71,7 @@ export default function survey() {
   const [open, setOpen] = useState(false);
 
   const VoiceInput = dynamic(
-    () => import("../../components/questions/VoiceInput"),
+    () => import("../../components/questions/VoiceInputTemp"),
     { ssr: false }
   );
 

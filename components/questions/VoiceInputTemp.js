@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
-import { useReactMediaRecorder } from "react-media-recorder";
 import WaveSurfer from "wavesurfer.js";
 import MicrophonePlugin from "wavesurfer.js/dist/plugin/wavesurfer.microphone";
 
@@ -23,6 +22,8 @@ import Waveform from "./Waveform";
 
 import styled from "@emotion/styled";
 
+import Recorder from "recorder-js";
+
 const FabAudio = styled(Fab)`
   background-color: #fd0d1b;
   color: #fff;
@@ -31,6 +32,8 @@ const FabAudio = styled(Fab)`
     color: #fff;
   }
 `;
+
+let recorder;
 
 function VoiceInput({
   title,
@@ -51,11 +54,39 @@ function VoiceInput({
   const waveSurferRef = useRef();
   const containerRef = useRef();
 
-  const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
-    useReactMediaRecorder({ audio: true });
+  const [stop, setStop] = useState(false);
+  const [blob, setBlob] = useState(null);
+  const [mediaBlobUrl, setMediaBlobUrl] = useState("");
+  const [analyserData, setAnalyserData] = useState({ data: [], lineTo: 0 });
+  const [isRecording, setIsRecording] = useState(false);
+  const [stream, setStream] = useState(null);
+
+  const getMedia = async () => {
+    try {
+      return await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: false,
+      });
+    } catch (err) {
+      console.log("Error:", err);
+    }
+  };
 
   useEffect(() => {
-    if (status === "recording") {
+    const audioContext = new (window.AudioContext ||
+      window.webkitAudioContext)();
+    recorder = new Recorder(audioContext, {
+      onAnalysed: (data) => setAnalyserData(data),
+    });
+
+    getMedia()
+      .then((stream) => {
+        setStream(stream);
+        recorder.init(stream);
+      })
+      .catch(() => console.log("No stream"));
+
+    if (isRecording) {
       waveSurferRef.current = WaveSurfer.create({
         container: containerRef.current,
         responsive: true,
@@ -74,20 +105,28 @@ function VoiceInput({
       const microphone = waveSurferRef.current.microphone;
       microphone.start();
     }
-    if (status === "stopped") {
+    if (stop) {
       const microphone = waveSurferRef.current.microphone;
       microphone.stop();
       waveSurferRef.current.destroy();
     }
 
     return () => {
-      if (status === "recording") {
+      if (isRecording) {
         const microphone = waveSurferRef.current.microphone;
         microphone.stop();
         waveSurferRef.current.destroy();
       }
+
+      if (audioContext) {
+        audioContext.close();
+      }
     };
-  }, [status]);
+  }, []);
+
+  const download = () => {
+    Recorder.download(blob, "react-audio");
+  };
 
   const handleNext = async () => {
     if (required && !mediaBlobUrl) {
@@ -96,7 +135,7 @@ function VoiceInput({
       return;
     }
 
-    if (["recording", "paused"].includes(status)) {
+    if (isRecording) {
       setError(true);
       setErrorMessage("Please stop the recording");
       return;
@@ -105,11 +144,14 @@ function VoiceInput({
     if (mediaBlobUrl) {
       const uniqueId =
         Date.now().toString(36) + Math.random().toString(36).substring(2);
-      const audiofile = new File([mediaBlobUrl], `${uniqueId}.wav`, {
-        type: "audio/wav",
-      });
+      const audiofile = new File([blob], `${uniqueId}.wav`);
       console.log(audiofile);
       const res = await handleResponse(audiofile);
+
+      setIsRecording(false);
+      setBlob(null);
+      setMediaBlobUrl("");
+      setStop(false);
       if (+id === totalQuestions) {
         res && handleEndSurvey();
       } else {
@@ -130,7 +172,27 @@ function VoiceInput({
 
   const removeAudio = () => {
     setError(false);
-    clearBlobUrl();
+    setIsRecording(false);
+    setBlob(null);
+    setMediaBlobUrl("");
+    setStop(false);
+  };
+
+  const startRecording = () => {
+    recorder.start().then(() => {
+      setIsRecording(true);
+      setStop(false)
+    });
+  };
+
+  const stopRecording = () => {
+    recorder.stop().then(({ blob }) => {
+      let url = (window.URL || window.webkitURL).createObjectURL(blob);
+      setIsRecording(false);
+      setBlob(blob);
+      setMediaBlobUrl(url);
+      setStop(true);
+    });
   };
 
   return (
@@ -146,7 +208,7 @@ function VoiceInput({
       <Grid item md={2} xs={0}></Grid>
       <Grid item md={8} xs={12}>
         {mediaBlobUrl && <Waveform audio={mediaBlobUrl} />}
-        {["recording", "paused"].includes(status) && (
+        {isRecording && (
           <Grid container>
             <Grid item xs={12} ref={containerRef}></Grid>
           </Grid>
@@ -160,7 +222,7 @@ function VoiceInput({
           </div>
         )}
 
-        {["idle", "stopped"].includes(status) && !mediaBlobUrl && (
+        {!isRecording && !mediaBlobUrl && (
           <>
             <FabAudio
               color="secondary"
@@ -176,7 +238,7 @@ function VoiceInput({
             <Typography mt={2}>Hit Record to Start</Typography>
           </>
         )}
-        {["recording", "paused"].includes(status) && (
+        {isRecording && (
           <>
             <FabAudio aria-label="add" onClick={stopRecording}>
               <StopIcon />
@@ -187,6 +249,21 @@ function VoiceInput({
           <Typography mt={2} color="red">
             {errorMessage}
           </Typography>
+        )}
+
+        {mediaBlobUrl && !isRecording && (
+          <>
+            <FabAudio
+              color="secondary"
+              aria-label="add"
+              sx={{ mt: 2 }}
+              onClick={() => {
+                download();
+              }}
+            >
+              Download
+            </FabAudio>
+          </>
         )}
       </Grid>
 
