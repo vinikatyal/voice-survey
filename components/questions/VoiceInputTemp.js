@@ -17,6 +17,7 @@ import Fab from "@mui/material/Fab";
 import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
 import DeleteIcon from "@mui/icons-material/Delete";
+import DownloadIcon from "@mui/icons-material/Download";
 
 import Waveform from "./Waveform";
 
@@ -54,12 +55,9 @@ function VoiceInput({
   const waveSurferRef = useRef();
   const containerRef = useRef();
 
-  const [stop, setStop] = useState(false);
   const [blob, setBlob] = useState(null);
   const [mediaBlobUrl, setMediaBlobUrl] = useState("");
-  const [analyserData, setAnalyserData] = useState({ data: [], lineTo: 0 });
-  const [isRecording, setIsRecording] = useState(false);
-  const [stream, setStream] = useState(null);
+  const [status, setStatus] = useState("idle");
 
   const getMedia = async () => {
     try {
@@ -75,18 +73,22 @@ function VoiceInput({
   useEffect(() => {
     const audioContext = new (window.AudioContext ||
       window.webkitAudioContext)();
-    recorder = new Recorder(audioContext, {
-      onAnalysed: (data) => setAnalyserData(data),
-    });
+    recorder = new Recorder(audioContext);
 
     getMedia()
       .then((stream) => {
-        setStream(stream);
         recorder.init(stream);
       })
       .catch(() => console.log("No stream"));
+    return async () => {
+      if (["idle", "stopped"].includes(status)) {
+        await audioContext.close();
+      }
+    };
+  }, []);
 
-    if (isRecording) {
+  useEffect(() => {
+    if (status === "recording") {
       waveSurferRef.current = WaveSurfer.create({
         container: containerRef.current,
         responsive: true,
@@ -105,24 +107,20 @@ function VoiceInput({
       const microphone = waveSurferRef.current.microphone;
       microphone.start();
     }
-    if (stop) {
+    if (status === "stopped") {
       const microphone = waveSurferRef.current.microphone;
       microphone.stop();
       waveSurferRef.current.destroy();
     }
 
     return () => {
-      if (isRecording) {
+      if (status === "recording") {
         const microphone = waveSurferRef.current.microphone;
         microphone.stop();
         waveSurferRef.current.destroy();
       }
-
-      if (audioContext) {
-        audioContext.close();
-      }
     };
-  }, []);
+  }, [status]);
 
   const download = () => {
     Recorder.download(blob, "react-audio");
@@ -135,7 +133,7 @@ function VoiceInput({
       return;
     }
 
-    if (isRecording) {
+    if (status === "recording") {
       setError(true);
       setErrorMessage("Please stop the recording");
       return;
@@ -144,14 +142,11 @@ function VoiceInput({
     if (mediaBlobUrl) {
       const uniqueId =
         Date.now().toString(36) + Math.random().toString(36).substring(2);
-      const audiofile = new File([blob], `${uniqueId}.wav`);
-      console.log(audiofile);
-      const res = await handleResponse(audiofile);
+      const audioFile = new File([blob], `${uniqueId}.wav`);
+      const res = await handleResponse(audioFile);
 
-      setIsRecording(false);
       setBlob(null);
       setMediaBlobUrl("");
-      setStop(false);
       if (+id === totalQuestions) {
         res && handleEndSurvey();
       } else {
@@ -172,26 +167,23 @@ function VoiceInput({
 
   const removeAudio = () => {
     setError(false);
-    setIsRecording(false);
     setBlob(null);
     setMediaBlobUrl("");
-    setStop(false);
   };
 
   const startRecording = () => {
     recorder.start().then(() => {
-      setIsRecording(true);
-      setStop(false)
+      setStatus("recording");
     });
   };
 
   const stopRecording = () => {
     recorder.stop().then(({ blob }) => {
       let url = (window.URL || window.webkitURL).createObjectURL(blob);
-      setIsRecording(false);
+      setStatus("stopped");
       setBlob(blob);
+      setError(false);
       setMediaBlobUrl(url);
-      setStop(true);
     });
   };
 
@@ -208,7 +200,7 @@ function VoiceInput({
       <Grid item md={2} xs={0}></Grid>
       <Grid item md={8} xs={12}>
         {mediaBlobUrl && <Waveform audio={mediaBlobUrl} />}
-        {isRecording && (
+        {["recording", "paused"].includes(status) && (
           <Grid container>
             <Grid item xs={12} ref={containerRef}></Grid>
           </Grid>
@@ -219,10 +211,22 @@ function VoiceInput({
             <FabAudio aria-label="add" sx={{ mt: 2 }} onClick={removeAudio}>
               <DeleteIcon />
             </FabAudio>
+            {mediaBlobUrl && ["idle", "stopped"].includes(status) && (
+              <FabAudio
+                color="secondary"
+                aria-label="add"
+                sx={{ mt: 2, ml: 2 }}
+                onClick={() => {
+                  download();
+                }}
+              >
+                <DownloadIcon />
+              </FabAudio>
+            )}
           </div>
         )}
 
-        {!isRecording && !mediaBlobUrl && (
+        {["idle", "stopped"].includes(status) && !mediaBlobUrl && (
           <>
             <FabAudio
               color="secondary"
@@ -238,7 +242,7 @@ function VoiceInput({
             <Typography mt={2}>Hit Record to Start</Typography>
           </>
         )}
-        {isRecording && (
+        {["recording", "paused"].includes(status) && (
           <>
             <FabAudio aria-label="add" onClick={stopRecording}>
               <StopIcon />
@@ -249,21 +253,6 @@ function VoiceInput({
           <Typography mt={2} color="red">
             {errorMessage}
           </Typography>
-        )}
-
-        {mediaBlobUrl && !isRecording && (
-          <>
-            <FabAudio
-              color="secondary"
-              aria-label="add"
-              sx={{ mt: 2 }}
-              onClick={() => {
-                download();
-              }}
-            >
-              Download
-            </FabAudio>
-          </>
         )}
       </Grid>
 
