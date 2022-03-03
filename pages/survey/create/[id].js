@@ -8,6 +8,7 @@ import SurveyQuestionSection from "../../../components/survey/SurveyQuestionSect
 import SurveyThemeSection from "../../../components/survey/SurveyThemeSection";
 
 import { useRouter } from "next/router";
+import get from "lodash.get";
 
 import { surveyService } from "../../../services/survey.service";
 
@@ -52,15 +53,24 @@ export default function create({ currentTab }) {
       const res = await surveyService.get_survey_template_data({
         survey_type: survey.surveyType,
       });
+
       const modifiedArr = survey.surveyEditId
         ? survey.questions
-        : res.data.questions.map((obj, index) => {
+        : get(res.data, "questions", []).map((obj, index) => {
             return index === 0
               ? { ...obj, expandStatus: true, required: false }
               : { ...obj, expandStatus: false, required: false };
           });
-      modifiedArr.length &&
-        dispatch({ type: "SET_QUESTIONS", value: modifiedArr });
+      if (modifiedArr.length === 0) {
+        modifiedArr.push({
+          qid: 1,
+          question: "",
+          question_type: "text",
+          required: false,
+          expandStatus: true,
+        });
+      }
+      dispatch({ type: "SET_QUESTIONS", value: modifiedArr });
       dispatch({ type: "SET_PREV_SURVEYTYPE", value: survey.surveyType });
     }
   }, [survey.surveyType]);

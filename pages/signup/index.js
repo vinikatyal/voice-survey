@@ -32,7 +32,7 @@ import google from "../../images/svg/google.svg";
 import styled from "@emotion/styled";
 import "react-phone-input-2/lib/material.css";
 
-import { authService } from "../../services/auth.service";
+import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
 
 const Item = styled(Paper)(({ theme }) => ({
   padding: "30px",
@@ -98,18 +98,27 @@ export default function Index({ csrfToken }) {
     handleSubmit,
     watch,
     trigger,
-    setError,
+    setValue,
     formState: { errors },
   } = useForm();
+
+  const survey = useSurvey();
+  const dispatch = useDispatchSurvey();
 
   useEffect(() => {
     // redirect to home if already logged in
     if (session) {
       router.push("/dashboard");
     }
+    if (survey.userEmail) {
+      setValue("email", survey.userEmail, {
+        shouldDirty: true,
+      });
+    }
   }, []);
 
   const onSubmit = async (data) => {
+    dispatch({ type: "SET_USER_EMAIL", value: data.email });
     const res = await signIn("credentials", {
       redirect: false,
       email: data.email,
@@ -123,8 +132,6 @@ export default function Index({ csrfToken }) {
         position: toast.POSITION.TOP_RIGHT,
       });
       return;
-    } else {
-      setError(null);
     }
 
     if (res.status === 200) {

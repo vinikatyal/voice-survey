@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import isEmpty from "lodash.isempty";
 import { useForm } from "react-hook-form";
@@ -28,6 +28,7 @@ import StyledButton from "../../components/StyledButton";
 import LogoutIcon from "@mui/icons-material/Logout";
 
 import { authService } from "../../services/auth.service";
+import { useSurvey } from "../../context/SurveyState";
 
 const ImageContainer = styled(Box)({
   paddingTop: "30px",
@@ -84,6 +85,15 @@ export default function Index() {
     setValue,
     formState: { errors },
   } = useForm();
+  const survey = useSurvey();
+
+  useEffect(() => {
+    if (survey.userEmail) {
+      setValue("email", survey.userEmail, {
+        shouldDirty: true,
+      });
+    }
+  }, []);
 
   const logoutSite = async () => {
     const data = await signOut({
