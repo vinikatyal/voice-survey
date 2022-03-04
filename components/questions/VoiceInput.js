@@ -45,6 +45,7 @@ function VoiceInput({
 }) {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [blob, setBlob] = useState(null);
 
   const router = useRouter();
 
@@ -52,7 +53,12 @@ function VoiceInput({
   const containerRef = useRef();
 
   const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
-    useReactMediaRecorder({ audio: true });
+    useReactMediaRecorder({
+      audio: true,
+      onStop: (blobUrl, blob) => {
+        setBlob(blob);
+      },
+    });
 
   useEffect(() => {
     if (status === "recording") {
@@ -105,8 +111,8 @@ function VoiceInput({
     if (mediaBlobUrl) {
       const uniqueId =
         Date.now().toString(36) + Math.random().toString(36).substring(2);
-      const audiofile = new File([mediaBlobUrl], `${uniqueId}.mp3`, {
-        type: "audio/wav",
+      const audiofile = new File([blob], `${uniqueId}.webm`, {
+        type: "audio/webm",
       });
       console.log(audiofile);
       const res = await handleResponse(audiofile);
@@ -131,6 +137,7 @@ function VoiceInput({
   const removeAudio = () => {
     setError(false);
     clearBlobUrl();
+    setBlob(null);
   };
 
   return (
