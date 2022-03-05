@@ -67,6 +67,7 @@ export default function survey() {
   const [question, setQuestion] = useState("");
   const [surveyId, setSurveyId] = useState("");
   const [uniqueId, setUniqueId] = useState("");
+  const [welcomeLogo, SetWelcomeLogo] = useState("");
   const [questionId, setQuestionId] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -115,6 +116,15 @@ export default function survey() {
           type: "SET_WELCOME_TEXT",
           value: get(surveyDetails.data, "welcome_text", ""),
         });
+
+
+        if (get(surveyDetails, "logo_link")) {
+          const image = get(surveyDetails, "logo_link");
+          SetWelcomeLogo(image);
+        } else {
+          SetWelcomeLogo("/images/logo.png");
+        }
+
         setUniqueId(get(surveyDetails, "id"));
       } else {
         router.push("/404");
@@ -170,7 +180,11 @@ export default function survey() {
     >
       <Grid container>
         <Grid item xs={12} mb={3}>
-          <Image src={"/images/logo.png"} width={169} height={70} />
+          <img
+            src={welcomeLogo}
+            width={169}
+            height={70}
+          />
         </Grid>
       </Grid>
       {surveyId && !questionId && (
@@ -263,7 +277,7 @@ export default function survey() {
                 handleResponse={handleResponse}
               />
             )}
-             {get(question, "question_type", "") === "contact" && (
+            {get(question, "question_type", "") === "contact" && (
               <PhoneTextField
                 title={get(question, "question", "")}
                 value={get(question, "answer", "")}

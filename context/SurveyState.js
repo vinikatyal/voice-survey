@@ -113,6 +113,7 @@ const reducer = produce((draft, action) => {
         draft.accessMembers = [];
         draft.surveyEditId = null;
         draft.surveyType = "";
+        draft.surveyWelcomeText = "";
         draft.questions = [
           {
             qid: 0,
