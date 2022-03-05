@@ -4,6 +4,7 @@ import React from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
+import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
 import styled from "@emotion/styled";
@@ -34,6 +35,22 @@ const StyledQuestionHead = styled("div")({
   width: "70%",
 });
 
+const StyledQuestionHeadEndSlot = styled(Grid)({
+  display: "flex",
+  alignItems: "center",
+});
+
+const QuestionTypeDiv = styled("div")({
+  fontSize: "14px",
+  borderRadius: "20px",
+  color: "#0a23fb",
+  paddingTop: "5px",
+  paddingBottom: "5px",
+  paddingLeft: "10px",
+  paddingRight: "10px",
+  backgroundColor: "#EFF2FF",
+});
+
 export default function UserSurveyQuesAns({ question }) {
   return (
     <>
@@ -54,14 +71,14 @@ export default function UserSurveyQuesAns({ question }) {
                 {question.qname}
               </Typography>
             </StyledQuestionHead>
+            <StyledQuestionHeadEndSlot>
+              <QuestionTypeDiv>{question.answer.type} response</QuestionTypeDiv>
+            </StyledQuestionHeadEndSlot>
           </QuestionAccordionSummary>
         </AccordionSummary>
 
         <AccordionDetails>
-          <QuestionAccordionBody>
-            {question.answer.text}
-            
-          </QuestionAccordionBody>
+          <QuestionAccordionBody>{question.answer.text}</QuestionAccordionBody>
         </AccordionDetails>
       </QuestionAccordion>
     </>

@@ -1,7 +1,8 @@
 import React from "react";
 
+import { useSurvey } from "../../context/SurveyState";
+
 import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
 
 import Layout from "../../components/Layout";
 import SurveyHeader from "../../components/survey/SurveyHeader";
@@ -10,9 +11,12 @@ import UserSurveyQuesAnsSection from "../../components/survey/UserSurveyQuesAnsS
 import styled from "@emotion/styled";
 
 export default function answers() {
+  const survey = useSurvey();
   return (
     <Layout>
-      <SurveyHeader headerTitle="Survey's Name Here" currentTab="REPORT">
+      <SurveyHeader headerTitle={survey.surveyTitle}
+        backRoute="/survey/create"
+        currentTab="ANSWERS">
         <Container maxWidth="lg">
           <UserSurveyQuesAnsSection />
         </Container>
