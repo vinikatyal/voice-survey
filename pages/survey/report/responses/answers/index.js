@@ -1,12 +1,12 @@
 import React from "react";
 
-import { useSurvey } from "../../../context/SurveyState";
+import { useSurvey } from "../../../../../context/SurveyState";
 
 import Container from "@mui/material/Container";
 
-import Layout from "../../../components/Layout";
-import SurveyHeader from "../../../components/survey/SurveyHeader";
-import UserSurveyQuesAnsSection from "../../../components/survey/UserSurveyQuesAnsSection";
+import Layout from "../../../../../components/Layout";
+import SurveyHeader from "../../../../../components/survey/SurveyHeader";
+import UserSurveyQuesAnsSection from "../../../../../components/survey/UserSurveyQuesAnsSection";
 
 import styled from "@emotion/styled";
 
@@ -16,7 +16,7 @@ export default function answers() {
     <Layout>
       <SurveyHeader
         headerTitle={survey.surveyTitle}
-        backRoute="/survey/create"
+        backRoute="/survey/report/responses"
         currentTab="REPORT"
       >
         <Container maxWidth="lg">
