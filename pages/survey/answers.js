@@ -5,6 +5,7 @@ import Grid from "@mui/material/Grid";
 
 import Layout from "../../components/Layout";
 import SurveyHeader from "../../components/survey/SurveyHeader";
+import UserSurveyQuesAnsSection from "../../components/survey/UserSurveyQuesAnsSection";
 
 import styled from "@emotion/styled";
 
@@ -13,12 +14,7 @@ export default function answers() {
     <Layout>
       <SurveyHeader headerTitle="Survey's Name Here" currentTab="REPORT">
         <Container maxWidth="lg">
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-            </Grid>
-          </Grid>
+          <UserSurveyQuesAnsSection />
         </Container>
       </SurveyHeader>
     </Layout>
