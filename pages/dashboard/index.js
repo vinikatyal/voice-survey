@@ -262,7 +262,10 @@ export default function Index() {
           {surveys.length ? (
             surveys.map((survey, index) => (
               <Grid key={survey.survey_id} item md={4}>
-                <SurveyCard variant="outlined">
+                <SurveyCard
+                  variant="outlined"
+                  onClick={() => handleEdit(survey.survey_id)}
+                >
                   <CardContent>
                     <CardTitle>
                       <CardHead>{survey.survey_title}</CardHead>
