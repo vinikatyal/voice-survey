@@ -189,7 +189,19 @@ export default function UserSurveyQuesAns({ question }) {
               </StyledAnswerTableHead>
               <StyledAnswerTableBody>
                 <StyledAnswerRow>
-                  <Answer>{question.answer.text}</Answer>
+                  {question.answer.type === "voice" && (
+                    <Answer>
+                      <audio
+                        src={
+                          "https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3"
+                        }
+                        controls
+                      />
+                    </Answer>
+                  )}
+                  {question.answer.type !== "voice" && (
+                    <Answer>{question.answer.text}</Answer>
+                  )}
                   <Date>26/09/2022</Date>
                   <Lead>Something</Lead>
                   <Sentiment>
