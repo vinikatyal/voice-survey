@@ -52,6 +52,8 @@ function VoiceInput({
   const waveSurferRef = useRef();
   const containerRef = useRef();
 
+  let timeout;
+
   const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
     useReactMediaRecorder({
       audio: true,
@@ -78,12 +80,18 @@ function VoiceInput({
       });
 
       const microphone = waveSurferRef.current.microphone;
+      timeout = setTimeout(() => {
+        microphone.stop();
+        stopRecording();
+        waveSurferRef.current.destroy();
+      }, 60000);
       microphone.start();
     }
     if (status === "stopped") {
       const microphone = waveSurferRef.current.microphone;
       microphone.stop();
       waveSurferRef.current.destroy();
+      clearTimeout(timeout);
     }
 
     return () => {
@@ -91,6 +99,7 @@ function VoiceInput({
         const microphone = waveSurferRef.current.microphone;
         microphone.stop();
         waveSurferRef.current.destroy();
+        clearTimeout(timeout);
       }
     };
   }, [status]);
@@ -114,7 +123,6 @@ function VoiceInput({
       const audiofile = new File([blob], `${uniqueId}.webm`, {
         type: "audio/webm",
       });
-      console.log(audiofile);
       const res = await handleResponse(audiofile);
       if (+id === totalQuestions) {
         res && handleEndSurvey();
