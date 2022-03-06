@@ -103,7 +103,7 @@ export default function report() {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <StyledContainer>
-                <Typography variant="h4">Survey Statics</Typography>
+                <Typography variant="h4">Survey Statistics</Typography>
                 <Statics value={75} staticTitle="Viewed" />
                 <Statics value={50} staticTitle="Opened" />
               </StyledContainer>

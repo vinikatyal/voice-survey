@@ -29,6 +29,10 @@ const SingleSentiment = styled("div")({
   alignItems: "center",
 });
 
+const SentimentChip = styled(Chip)({
+  color: "#fff",
+});
+
 const Sentiment = ({ sentimentTitle }) => (
   <React.Fragment>
     <SingleSentiment>
@@ -39,7 +43,7 @@ const Sentiment = ({ sentimentTitle }) => (
           ? "🙁"
           : "🙄"}
       </Typography>
-      <Chip
+      <SentimentChip
         label={sentimentTitle}
         color={
           sentimentTitle === "Positive"
