@@ -38,12 +38,6 @@ const AddQuestionSection = styled(Container)({
   marginTop: "30px",
 });
 
-const ButtonContainer = styled(Container)({
-  display: "flex",
-  justifyContent: "flex-end",
-  alignItems: "center",
-  marginTop: "30px",
-});
 
 export default function SurveyQuestionSection({ questions }) {
   const {
