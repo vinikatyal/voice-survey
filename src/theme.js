@@ -15,6 +15,12 @@ const theme = createTheme({
     success: {
       main: "#56b764",
     },
+    error: {
+      main: "#EE5752",
+    },
+    warning: {
+      main: "#F7A237",
+    },
   },
   typography: {
     fontFamily:

@@ -192,7 +192,7 @@ export default function Index() {
     }
   };
 
-  const handleEdit = async (survey_id) => {
+  const handleEdit = async (survey_id, route) => {
     try {
       const surveyDetails = await surveyService.get_survey_details(survey_id);
 
@@ -246,7 +246,7 @@ export default function Index() {
         type: "SET_WELCOME_TEXT",
         value: get(surveyDetails.data, "welcome_text", ""),
       });
-      router.push("/survey/create");
+      router.push(route);
     } catch (error) {
       toast.error(error.message, {
         position: toast.POSITION.TOP_RIGHT,
@@ -264,7 +264,7 @@ export default function Index() {
               <Grid key={survey.survey_id} item md={4}>
                 <SurveyCard
                   variant="outlined"
-                  onClick={() => handleEdit(survey.survey_id)}
+                  onClick={() => handleEdit(survey.survey_id, "/survey/report")}
                 >
                   <CardContent>
                     <CardTitle>
@@ -286,7 +286,9 @@ export default function Index() {
                         disableRipple
                         disableElevation
                         startIcon={<EditIcon width="14" />}
-                        onClick={() => handleEdit(survey.survey_id)}
+                        onClick={() =>
+                          handleEdit(survey.survey_id, "/survey/create")
+                        }
                       >
                         Edit
                       </Edit>

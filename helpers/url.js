@@ -1,1 +1,0 @@
-export const VOICE_API_BASE_URL = 'https://surveycallback.gnani.site'
