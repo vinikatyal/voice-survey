@@ -58,9 +58,7 @@ export default function SurveyQuesAnsSection() {
       <Container maxWidth="lg" sx={{ marginTop: "30px" }}>
         <Label>Questions</Label>
         {questAns.map((q, index) => (
-          <>
-            <UserSurveyQuesAns question={q} />
-          </>
+          <UserSurveyQuesAns key={index} question={q} />
         ))}
       </Container>
     </>
