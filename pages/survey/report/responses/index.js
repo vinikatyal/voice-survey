@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useRouter } from "next/router";
+
 import Container from "@mui/material/Container";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -12,8 +14,11 @@ import Typography from "@mui/material/Typography";
 
 import Layout from "../../../../components/Layout";
 import SurveyHeader from "../../../../components/survey/SurveyHeader";
+import BreadCrumbHeader from "../../../../components/survey/BreadCrumbHeader";
+import BreadCrumbs from "../../../../components/survey/BreadCrumbs";
 
 import { useSurvey } from "../../../../context/SurveyState";
+
 import styled from "@emotion/styled";
 
 const StyledTableContainer = styled(TableContainer)({
@@ -59,6 +64,7 @@ const Sentiment = ({ sentimentTitle }) => (
 
 export default function index() {
   const survey = useSurvey();
+  const router = useRouter();
   return (
     <Layout>
       <SurveyHeader
@@ -67,6 +73,17 @@ export default function index() {
         currentTab="REPORT"
       >
         <Container maxWidth="lg">
+          <BreadCrumbHeader>
+            <BreadCrumbs
+              breadCrumbsList={[
+                {
+                  title: "All Response",
+                  active: true,
+                  route: "/survey/report/responses",
+                },
+              ]}
+            />
+          </BreadCrumbHeader>
           <StyledTableContainer>
             <Table sx={{ minWidth: 650 }}>
               <TableHead>
@@ -77,22 +94,38 @@ export default function index() {
                 </TableRow>
               </TableHead>
 
-              <TableBody sx={{ backgroundColor: "#f8f9fd" }}>
-                <TableRow>
+              <TableBody sx={{ backgroundColor: "#f8f9fd", cursor: "pointer" }}>
+                <TableRow
+                  onClick={() =>
+                    router.push("/survey/report/responses/answers?id=Brijesh")
+                  }
+                >
                   <TableCell align="left">Brijesh Kumar</TableCell>
                   <TableCell align="left">Lorem Ipsum dolor</TableCell>
                   <TableCell align="left">
                     <Sentiment sentimentTitle="Positive" />
                   </TableCell>
                 </TableRow>
-                <TableRow>
+                <TableRow
+                  onClick={() =>
+                    router.push(
+                      "/survey/report/responses/answers?id=Sachin Sharma"
+                    )
+                  }
+                >
                   <TableCell align="left">Sachin Sharma</TableCell>
                   <TableCell align="left">Lorem Ipsum dolor</TableCell>
                   <TableCell align="left">
                     <Sentiment sentimentTitle="Negative" />
                   </TableCell>
                 </TableRow>
-                <TableRow>
+                <TableRow
+                  onClick={() =>
+                    router.push(
+                      "/survey/report/responses/answers?id=Rohit Prasad"
+                    )
+                  }
+                >
                   <TableCell align="left">Rohit Prasad</TableCell>
                   <TableCell align="left">Lorem Ipsum dolor</TableCell>
                   <TableCell align="left">

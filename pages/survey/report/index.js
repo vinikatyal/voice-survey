@@ -1,15 +1,21 @@
 import React from "react";
 
+import { useRouter } from "next/router";
+
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import LinearProgress from "@mui/material/LinearProgress";
+import Button from "@mui/material/Button";
 
 import Layout from "../../../components/Layout";
 import SurveyHeader from "../../../components/survey/SurveyHeader";
+import BreadCrumbs from "../../../components/survey/BreadCrumbs";
+import BreadCrumbHeader from "../../../components/survey/BreadCrumbHeader";
 
 import styled from "@emotion/styled";
+
 import { useSurvey } from "../../../context/SurveyState";
 
 const StyledContainer = styled("div")({
@@ -92,14 +98,28 @@ const Statics = ({ value, staticTitle }) => (
 
 export default function report() {
   const survey = useSurvey();
+  const router = useRouter();
+
   return (
     <Layout>
       <SurveyHeader
         headerTitle={survey.surveyTitle}
-        backRoute="/survey/create"
+        backRoute="/dashboard"
         currentTab="REPORT"
       >
         <Container maxWidth="lg">
+          <BreadCrumbHeader
+            component={
+              <Button
+                variant="contained"
+                onClick={() => router.push("/survey/report/responses")}
+              >
+                View All Response
+              </Button>
+            }
+          >
+            <BreadCrumbs breadCrumbsList={[]} />
+          </BreadCrumbHeader>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <StyledContainer>
