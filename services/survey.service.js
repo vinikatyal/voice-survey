@@ -27,6 +27,7 @@ export const surveyService = {
   update_user_answer,
   getSurveyResults,
   getSurveyResponseCount,
+  getSurveySentiment,
 };
 
 async function update_user_answer(uniqueId, data) {
@@ -252,6 +253,21 @@ async function getSurveyResponseCount(data) {
   const token = await getAccessToken();
   return await fetchWrapper
     .post(`${baseUrl}/get_surveys_response_count`, data, {
+      token,
+    })
+    .then((res) => {
+      if (get(res, "code") === 200) {
+        return res;
+      } else {
+        errorHandler({}, res);
+      }
+    });
+}
+
+async function getSurveySentiment(id, data) {
+  const token = await getAccessToken();
+  return await fetchWrapper
+    .post(`${baseUrl}/get_survey_sentiment_result/${id}`, data, {
       token,
     })
     .then((res) => {

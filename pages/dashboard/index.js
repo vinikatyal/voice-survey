@@ -265,7 +265,9 @@ export default function Index() {
               <Grid key={survey.survey_id} item md={4}>
                 <SurveyCard
                   variant="outlined"
-                  onClick={(e) => handleEdit(e, survey.survey_id, "/survey/report")}
+                  onClick={(e) =>
+                    handleEdit(e, survey.survey_id, "/survey/report")
+                  }
                 >
                   <CardContent>
                     <CardTitle>

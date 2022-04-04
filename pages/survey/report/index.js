@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 
 import { useRouter } from "next/router";
 
-import { addDays } from 'date-fns';
+import { addDays } from "date-fns";
 import { DateRangePicker } from "react-date-range";
 
 import Container from "@mui/material/Container";
@@ -98,7 +98,7 @@ const Statics = ({ value, staticTitle }) => (
           <LinearProgress variant="determinate" value={value} />
         </Grid>
         <Grid item xs={12} sm={2}>
-          <Typography>2637</Typography>
+          <Typography>{value}</Typography>
         </Grid>
       </Grid>
     </Grid>
@@ -110,6 +110,7 @@ export default function report() {
   const router = useRouter();
 
   const [reportData, setReportData] = useState({});
+  const [sentimentData, setSentimentData] = useState({});
   const [state, setState] = useState([
     {
       startDate: new Date(),
@@ -130,7 +131,10 @@ export default function report() {
     // declare the async data fetching function
     const fetchSurveyReportData = async () => {
       // get the data from the api
-      const res = await surveyService.getSurveyResponseCount();
+      const res = await surveyService.getSurveyResponseCount({
+        start_date: "2022-01-01 00:00:00.566525+05:30",
+        end_date: "2022-04-01 23:59:59.566525+05:30",
+      });
       // convert the data to json
       const json = await res.data;
 
@@ -148,7 +152,34 @@ export default function report() {
         });
       });
 
-    return () => (isSubscribed = false);
+    // redirect to home if already logged in
+    let fetchedSentiment = true;
+    // declare the async data fetching function
+    const fetchSentimentData = async () => {
+      // get the data from the api
+      const id = "e79c9211fcb04285b3f1ed24600142fb_dev";
+      const res = await surveyService.getSurveySentiment(id, {
+        start_date: "2022-01-01 00:00:00.566525+05:30",
+        end_date: "2022-04-01 23:59:59.566525+05:30",
+      });
+      // convert the data to json
+      const json = await res.data;
+
+      if (fetchedSentiment) {
+        setSentimentData(json);
+      }
+    };
+
+    // call the function
+    fetchSentimentData()
+      // make sure to catch any error
+      .catch((error) => {
+        toast.error(error, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
+
+    return () => ((isSubscribed = false), (fetchedSentiment = false));
   }, []);
 
   return (
