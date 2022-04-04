@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 
 import { toast } from "react-toastify";
 
+import dayjs from "dayjs";
+import get from "lodash.get";
+
 import { useRouter } from "next/router";
 
-import { addDays } from "date-fns";
 import { DateRangePicker } from "react-date-range";
 
 import Container from "@mui/material/Container";
@@ -80,7 +82,7 @@ const Sentiment = ({
   </React.Fragment>
 );
 
-const Statics = ({ value, staticTitle }) => (
+const Statics = ({ value, progressValue, staticTitle }) => (
   <React.Fragment>
     <Grid>
       <Typography mt={1}>{staticTitle}</Typography>
@@ -95,7 +97,7 @@ const Statics = ({ value, staticTitle }) => (
         columnSpacing={2}
       >
         <Grid item xs={12} sm={10}>
-          <LinearProgress variant="determinate" value={value} />
+          <LinearProgress variant="determinate" value={progressValue} />
         </Grid>
         <Grid item xs={12} sm={2}>
           <Typography>{value}</Typography>
@@ -111,19 +113,26 @@ export default function report() {
 
   const [reportData, setReportData] = useState({});
   const [sentimentData, setSentimentData] = useState({});
-  const [state, setState] = useState([
+  const [date, setDate] = useState([
     {
-      startDate: new Date(),
-      endDate: addDays(new Date(), 7),
+      startDate: dayjs().subtract(7, "days").toDate(),
+      endDate: dayjs().toDate(),
       key: "selection",
     },
   ]);
 
-  const selectionRange = {
-    startDate: new Date(),
-    endDate: new Date(),
-    key: "selection",
+  const handleDateChange = async (item) => {
+    setDate([item.selection]);
+    const res = await surveyService.getSurveyResponseCount({
+      start_date: item.selection.startDate,
+      end_date: item.selection.endDate,
+    });
+
+    const json = await res.data;
+    setReportData(json);
   };
+
+  const fetchSurveyReportData = async (startDate, endDate) => {};
 
   useEffect(() => {
     // redirect to home if already logged in
@@ -132,9 +141,13 @@ export default function report() {
     const fetchSurveyReportData = async () => {
       // get the data from the api
       const res = await surveyService.getSurveyResponseCount({
-        start_date: "2022-01-01 00:00:00.566525+05:30",
-        end_date: "2022-04-01 23:59:59.566525+05:30",
+        start_date: date[0].startDate,
+        end_date: date[0].endDate,
       });
+      //   const res1 = await surveyService.getSurveySentiment(survey.surveyEditId, {
+      //     start_date: date[0].startDate,
+      //     end_date: date[0].endDate,
+      //   });
       // convert the data to json
       const json = await res.data;
 
@@ -142,7 +155,6 @@ export default function report() {
         setReportData(json);
       }
     };
-
     // call the function
     fetchSurveyReportData()
       // make sure to catch any error
@@ -182,6 +194,12 @@ export default function report() {
     return () => ((isSubscribed = false), (fetchedSentiment = false));
   }, []);
 
+  const handleProgress = (progressValue) => {
+    if (progressValue > 100)
+      return (progressValue / (progressValue + 100)) * 100;
+    return progressValue;
+  };
+
   return (
     <Layout>
       <SurveyHeader
@@ -205,11 +223,11 @@ export default function report() {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12}>
               <DateRangePicker
-                onChange={(item) => setState([item.selection])}
+                onChange={handleDateChange}
                 showSelectionPreview={true}
                 moveRangeOnFirstSelection={false}
                 months={2}
-                ranges={state}
+                ranges={date}
                 direction="horizontal"
               />
             </Grid>
@@ -217,11 +235,17 @@ export default function report() {
               <StyledContainer>
                 <Typography variant="h4">Survey Statistics</Typography>
                 <Statics
-                  value={reportData.total_viewed_surveys}
+                  progressValue={handleProgress(
+                    get(reportData, "total_viewed_surveys", 0)
+                  )}
+                  value={get(reportData, "total_viewed_surveys", 0)}
                   staticTitle="Viewed"
                 />
                 <Statics
-                  value={reportData.total_completed_count}
+                  progressValue={handleProgress(
+                    get(reportData, "total_completed_count", 0)
+                  )}
+                  value={get(reportData, "total_completed_count", 0)}
                   staticTitle="Completed"
                 />
               </StyledContainer>
