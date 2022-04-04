@@ -182,7 +182,7 @@ export default function survey() {
         <Grid item xs={12} mb={3}>
           <img
             src={welcomeLogo}
-            width={169}
+            width={'auto'}
             height={70}
           />
         </Grid>
@@ -200,7 +200,11 @@ export default function survey() {
                 </Typography>
               </Grid>
               <Grid item xs={12}>
-                <Image src={"/survey/mic.svg"} width={50} height={50} />
+                {/* <Image src={"/survey/mic.svg"} width={50} height={50} /> */}
+                {surveyId !== '8bf17bb4272d49b9bc3d90fcfd847e99_dev' && <Image src={"/survey/mic.svg"} width={50} height={50} />}
+                {surveyId === '8bf17bb4272d49b9bc3d90fcfd847e99_dev' && <video
+                controls disablePictureInPicture controlsList="nodownload noplaybackrate"
+                src={"/survey/welcomevideo.mp4"} style={{ width: "100%", height: "300px" }} />}
               </Grid>
             </Grid>
             <WelcomeText

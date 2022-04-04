@@ -192,7 +192,8 @@ export default function Index() {
     }
   };
 
-  const handleEdit = async (survey_id, route) => {
+  const handleEdit = async (e, survey_id, route) => {
+    e.stopPropagation();
     try {
       const surveyDetails = await surveyService.get_survey_details(survey_id);
 
@@ -264,7 +265,7 @@ export default function Index() {
               <Grid key={survey.survey_id} item md={4}>
                 <SurveyCard
                   variant="outlined"
-                  onClick={() => handleEdit(survey.survey_id, "/survey/report")}
+                  onClick={(e) => handleEdit(e, survey.survey_id, "/survey/report")}
                 >
                   <CardContent>
                     <CardTitle>
@@ -286,8 +287,8 @@ export default function Index() {
                         disableRipple
                         disableElevation
                         startIcon={<EditIcon width="14" />}
-                        onClick={() =>
-                          handleEdit(survey.survey_id, "/survey/create")
+                        onClick={(e) =>
+                          handleEdit(e, survey.survey_id, "/survey/create")
                         }
                       >
                         Edit

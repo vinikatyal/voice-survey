@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+
+import { toast } from "react-toastify";
 
 import { useRouter } from "next/router";
+
+import { addDays } from 'date-fns';
+import { DateRangePicker } from "react-date-range";
 
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
@@ -17,6 +22,10 @@ import BreadCrumbHeader from "../../../components/survey/BreadCrumbHeader";
 import styled from "@emotion/styled";
 
 import { useSurvey } from "../../../context/SurveyState";
+import { surveyService } from "../../../services/survey.service";
+
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
 
 const StyledContainer = styled("div")({
   width: "100%",
@@ -100,6 +109,48 @@ export default function report() {
   const survey = useSurvey();
   const router = useRouter();
 
+  const [reportData, setReportData] = useState({});
+  const [state, setState] = useState([
+    {
+      startDate: new Date(),
+      endDate: addDays(new Date(), 7),
+      key: "selection",
+    },
+  ]);
+
+  const selectionRange = {
+    startDate: new Date(),
+    endDate: new Date(),
+    key: "selection",
+  };
+
+  useEffect(() => {
+    // redirect to home if already logged in
+    let isSubscribed = true;
+    // declare the async data fetching function
+    const fetchSurveyReportData = async () => {
+      // get the data from the api
+      const res = await surveyService.getSurveyResponseCount();
+      // convert the data to json
+      const json = await res.data;
+
+      if (isSubscribed) {
+        setReportData(json);
+      }
+    };
+
+    // call the function
+    fetchSurveyReportData()
+      // make sure to catch any error
+      .catch((error) => {
+        toast.error(error, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
+
+    return () => (isSubscribed = false);
+  }, []);
+
   return (
     <Layout>
       <SurveyHeader
@@ -121,11 +172,27 @@ export default function report() {
             <BreadCrumbs breadCrumbsList={[]} />
           </BreadCrumbHeader>
           <Grid container spacing={2}>
+            <Grid item xs={12} sm={12}>
+              <DateRangePicker
+                onChange={(item) => setState([item.selection])}
+                showSelectionPreview={true}
+                moveRangeOnFirstSelection={false}
+                months={2}
+                ranges={state}
+                direction="horizontal"
+              />
+            </Grid>
             <Grid item xs={12} sm={6}>
               <StyledContainer>
                 <Typography variant="h4">Survey Statistics</Typography>
-                <Statics value={75} staticTitle="Viewed" />
-                <Statics value={50} staticTitle="Opened" />
+                <Statics
+                  value={reportData.total_viewed_surveys}
+                  staticTitle="Viewed"
+                />
+                <Statics
+                  value={reportData.total_completed_count}
+                  staticTitle="Completed"
+                />
               </StyledContainer>
             </Grid>
             <Grid item xs={12} sm={6}>

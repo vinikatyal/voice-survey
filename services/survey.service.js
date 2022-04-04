@@ -25,6 +25,8 @@ export const surveyService = {
   generateLink,
   getAll,
   update_user_answer,
+  getSurveyResults,
+  getSurveyResponseCount,
 };
 
 async function update_user_answer(uniqueId, data) {
@@ -220,6 +222,38 @@ async function generateLink(survey_id, survey_type, url) {
         token,
       }
     )
+    .then((res) => {
+      if (get(res, "code") === 200) {
+        return res;
+      } else {
+        errorHandler({}, res);
+      }
+    });
+}
+
+// Reporting
+
+async function getSurveyResults(data) {
+  const token = await getAccessToken();
+  return await fetchWrapper
+    .get(`${baseUrl}/get_survey_results`, data, {
+      token,
+    })
+    .then((res) => {
+      if (get(res, "code") === 200) {
+        return res;
+      } else {
+        errorHandler({}, res);
+      }
+    });
+}
+
+async function getSurveyResponseCount(data) {
+  const token = await getAccessToken();
+  return await fetchWrapper
+    .post(`${baseUrl}/get_surveys_response_count`, data, {
+      token,
+    })
     .then((res) => {
       if (get(res, "code") === 200) {
         return res;
