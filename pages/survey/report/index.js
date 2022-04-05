@@ -97,10 +97,7 @@ const Statics = ({ value, progressValue, staticTitle }) => (
         columnSpacing={2}
       >
         <Grid item xs={12} sm={10}>
-          <LinearProgress variant="determinate" value={progressValue} />
-        </Grid>
-        <Grid item xs={12} sm={2}>
-          <Typography>{value}</Typography>
+          {value}
         </Grid>
       </Grid>
     </Grid>
@@ -171,8 +168,8 @@ export default function report() {
       // get the data from the api
       const id = "e79c9211fcb04285b3f1ed24600142fb_dev";
       const res = await surveyService.getSurveySentiment(id, {
-        start_date: "2022-01-01 00:00:00.566525+05:30",
-        end_date: "2022-04-01 23:59:59.566525+05:30",
+        start_date: date[0].startDate,
+        end_date: date[0].endDate,
       });
       // convert the data to json
       const json = await res.data;
@@ -255,19 +252,19 @@ export default function report() {
                 <Typography variant="h4">Survey Sentiment</Typography>
                 <StyledSentimentContainer>
                   <Sentiment
-                    value={75}
+                    value={get(sentimentData, "positive", 0)}
                     sentimentTitle="Positive"
                     sentimentEmoji="😀"
                     progressColor="success"
                   />
                   <Sentiment
-                    value={50}
+                    value={get(sentimentData, "negative", 0)}
                     sentimentTitle="Negative"
                     sentimentEmoji="🙁"
                     progressColor="error"
                   />
                   <Sentiment
-                    value={25}
+                    value={get(sentimentData, "neutral", 0)}
                     sentimentTitle="Neutral"
                     sentimentEmoji="🙄"
                     progressColor="warning"
