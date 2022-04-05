@@ -110,7 +110,7 @@ export default function report() {
 
   const [reportData, setReportData] = useState({});
   const [sentimentData, setSentimentData] = useState({});
-  const [datePickerStatus, setDatePickerStatus] = useState(true);
+  const [datePickerStatus, setDatePickerStatus] = useState(false);
   const [date, setDate] = useState({
     startDate: dayjs().subtract(7, "days").startOf("day").toDate(),
     endDate: dayjs().endOf("day").toDate(),
