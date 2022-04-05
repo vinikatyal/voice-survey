@@ -7,13 +7,12 @@ import get from "lodash.get";
 
 import { useRouter } from "next/router";
 
-import { DateRangePicker } from "react-date-range";
+import { DateRangePicker } from "materialui-daterange-picker";
 
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
-import LinearProgress from "@mui/material/LinearProgress";
 import Button from "@mui/material/Button";
 
 import Layout from "../../../components/Layout";
@@ -25,14 +24,11 @@ import styled from "@emotion/styled";
 
 import { useSurvey } from "../../../context/SurveyState";
 import { surveyService } from "../../../services/survey.service";
-
-import "react-date-range/dist/styles.css"; // main style file
-import "react-date-range/dist/theme/default.css"; // theme css file
+import { TextField } from "@mui/material";
 
 const StyledContainer = styled("div")({
   width: "100%",
   height: "238px",
-  margin: "30px 0",
   padding: "20px 20px 21px",
   objectFit: "contain",
   borderRadius: "8px",
@@ -55,6 +51,10 @@ const SingleSentiment = styled("div")({
 const Emoji = styled("div")({
   position: "absolute",
   top: "13px",
+});
+const DateWrapper = styled("div")({
+  position: "absolute",
+  top: "275px",
 });
 
 const Sentiment = ({
@@ -110,83 +110,105 @@ export default function report() {
 
   const [reportData, setReportData] = useState({});
   const [sentimentData, setSentimentData] = useState({});
-  const [date, setDate] = useState([
+  const [datePickerStatus, setDatePickerStatus] = useState(true);
+  const [date, setDate] = useState({
+    startDate: dayjs().subtract(7, "days").startOf("day").toDate(),
+    endDate: dayjs().endOf("day").toDate(),
+    key: "selection",
+  });
+
+  const dateShortcuts = [
     {
-      startDate: dayjs().subtract(7, "days").toDate(),
-      endDate: dayjs().toDate(),
-      key: "selection",
+      label: "Today",
+      startDate: dayjs().startOf("day").toDate(),
+      endDate: dayjs().endOf("day").toDate(),
     },
-  ]);
+    {
+      label: "Yesterday",
+      startDate: dayjs().subtract(1, "days").startOf("day").toDate(),
+      endDate: dayjs().subtract(1, "days").endOf("day").toDate(),
+    },
+    {
+      label: "Last 7 days",
+      startDate: dayjs().subtract(7, "days").startOf("day").toDate(),
+      endDate: dayjs().endOf("day").toDate(),
+    },
+    {
+      label: "Last 30 days",
+      startDate: dayjs().subtract(30, "days").startOf("day").toDate(),
+      endDate: dayjs().endOf("day").toDate(),
+    },
+  ];
 
-  const handleDateChange = async (item) => {
-    setDate([item.selection]);
-    const res = await surveyService.getSurveyResponseCount({
-      start_date: item.selection.startDate,
-      end_date: item.selection.endDate,
-    });
-
-    const json = await res.data;
-    setReportData(json);
+  const toggle = () => {
+    setDatePickerStatus(false);
+  };
+  const handleDateFormat = (dateRange) => {
+    return `${dayjs(dateRange.startDate).format("DD MMM YYYY")} - ${dayjs(
+      dateRange.endDate
+    ).format("DD MMM YYYY")}`;
   };
 
-  const fetchSurveyReportData = async (startDate, endDate) => {};
+  const handleDateChange = async (item) => {
+    setDatePickerStatus(false);
+    setDate(item);
+    const surveyCount = await surveyService.getSurveyResponseCount({
+      start_date: dayjs(item.startDate).startOf("day").toDate(),
+      end_date: dayjs(item.endDate).endOf("day").toDate(),
+    });
+
+    const surveyCountJson = await surveyCount.data;
+    setReportData(surveyCountJson);
+
+    const surveySentiment = await surveyService.getSurveySentiment(
+      survey.surveyEditId,
+      {
+        start_date: dayjs(item.startDate).startOf("day").toDate(),
+        end_date: dayjs(item.endDate).endOf("day").toDate(),
+      }
+    );
+    const surveySentimentJson = await surveySentiment.data;
+    setSentimentData(surveySentimentJson);
+  };
 
   useEffect(() => {
-    // redirect to home if already logged in
     let isSubscribed = true;
-    // declare the async data fetching function
+    // fetch Survey response count
     const fetchSurveyReportData = async () => {
-      // get the data from the api
       const res = await surveyService.getSurveyResponseCount({
-        start_date: date[0].startDate,
-        end_date: date[0].endDate,
+        start_date: date.startDate,
+        end_date: date.endDate,
       });
-      //   const res1 = await surveyService.getSurveySentiment(survey.surveyEditId, {
-      //     start_date: date[0].startDate,
-      //     end_date: date[0].endDate,
-      //   });
-      // convert the data to json
       const json = await res.data;
-
       if (isSubscribed) {
         setReportData(json);
       }
     };
-    // call the function
-    fetchSurveyReportData()
-      // make sure to catch any error
-      .catch((error) => {
-        toast.error(error, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-      });
 
-    // redirect to home if already logged in
+    fetchSurveyReportData().catch((error) => {
+      toast.error(error, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    });
+
     let fetchedSentiment = true;
-    // declare the async data fetching function
+    // fetch Sentiment Count
     const fetchSentimentData = async () => {
-      // get the data from the api
-      const id = "e79c9211fcb04285b3f1ed24600142fb_dev";
-      const res = await surveyService.getSurveySentiment(id, {
-        start_date: date[0].startDate,
-        end_date: date[0].endDate,
+      const res = await surveyService.getSurveySentiment(survey.surveyEditId, {
+        start_date: date.startDate,
+        end_date: date.endDate,
       });
-      // convert the data to json
       const json = await res.data;
-
       if (fetchedSentiment) {
         setSentimentData(json);
       }
     };
 
-    // call the function
-    fetchSentimentData()
-      // make sure to catch any error
-      .catch((error) => {
-        toast.error(error, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+    fetchSentimentData().catch((error) => {
+      toast.error(error, {
+        position: toast.POSITION.TOP_RIGHT,
       });
+    });
 
     return () => ((isSubscribed = false), (fetchedSentiment = false));
   }, []);
@@ -218,16 +240,26 @@ export default function report() {
             <BreadCrumbs breadCrumbsList={[]} />
           </BreadCrumbHeader>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={12}>
-              <DateRangePicker
-                onChange={handleDateChange}
-                showSelectionPreview={true}
-                moveRangeOnFirstSelection={false}
-                months={2}
-                ranges={date}
-                direction="horizontal"
-              />
+            <Grid item xs={12} sm={6}>
+              <Typography mt={3}>Choose Date Filter</Typography>
+              <TextField
+                onClick={() => setDatePickerStatus(true)}
+                disabled
+                fullWidth
+                placeholder="date"
+                value={handleDateFormat(date)}
+              ></TextField>
+              <DateWrapper>
+                <DateRangePicker
+                  open={datePickerStatus}
+                  toggle={toggle}
+                  initialDateRange={date}
+                  onChange={handleDateChange}
+                  definedRanges={dateShortcuts}
+                />
+              </DateWrapper>
             </Grid>
+            <Grid item xs={12} sm={6}></Grid>
             <Grid item xs={12} sm={6}>
               <StyledContainer>
                 <Typography variant="h4">Survey Statistics</Typography>
