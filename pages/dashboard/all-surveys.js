@@ -159,65 +159,6 @@ export default function Index() {
       });
   };
 
-  const handleEdit = async (survey_id) => {
-    try {
-      const surveyDetails = await surveyService.get_survey_details(survey_id);
-
-      dispatch({
-        type: "SET_SURVEY_SHARE_LINK",
-        value: `http://localhost:3000/survey/${survey_id}`,
-      });
-      dispatch({
-        type: "SET_TITLE",
-        value: surveyDetails.data.survey_title,
-      });
-
-      const accessMembers = Object.keys(surveyDetails.data.user_access).reduce(
-        (acc, key) => {
-          surveyDetails.data.user_access[key] === "guest" &&
-            acc.push({ value: key, label: key });
-          return acc;
-        },
-        []
-      );
-      dispatch({
-        type: "SET_MEMBERS",
-        value: accessMembers,
-      });
-      dispatch({
-        type: "SET_QUESTIONS",
-        value: surveyDetails.data.survey_questions,
-      });
-      const selectedSurveyTheme = survey.themes.find(
-        (obj) => obj.name === surveyDetails.data.survey_theme
-      );
-      dispatch({
-        type: "SET_SURVEY_EDIT_ID",
-        value: surveyDetails.data.survey_id,
-      });
-      dispatch({
-        type: "SET_THEME",
-        value: selectedSurveyTheme,
-      });
-      dispatch({
-        type: "SET_TYPE",
-        value: surveyDetails.data.survey_type,
-      });
-      dispatch({
-        type: "SET_WELCOME_TEXT",
-        value: get(surveyDetails.data, "welcome_text", ""),
-      });
-      router.push("/survey/create");
-    } catch (error) {
-      toast.error(error.message, {
-        position: toast.POSITION.TOP_RIGHT,
-      });
-    }
-  };
-
-  const deleteSurvey = () => {
-    setOpen(true);
-  };
   return (
     <>
       <DashboardH></DashboardH>

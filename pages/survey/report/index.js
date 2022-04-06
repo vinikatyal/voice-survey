@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 
+import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 
 import dayjs from "dayjs";
@@ -22,7 +23,7 @@ import BreadCrumbHeader from "../../../components/survey/BreadCrumbHeader";
 
 import styled from "@emotion/styled";
 
-import { useSurvey } from "../../../context/SurveyState";
+import { useSurvey, useDispatchSurvey } from "../../../context/SurveyState";
 import { surveyService } from "../../../services/survey.service";
 import { TextField } from "@mui/material";
 
@@ -107,7 +108,9 @@ const Statics = ({ value, progressValue, staticTitle }) => (
 export default function report() {
   const survey = useSurvey();
   const router = useRouter();
-
+  const { data: session } = useSession();
+  const dispatch = useDispatchSurvey();
+  
   const [reportData, setReportData] = useState({});
   const [sentimentData, setSentimentData] = useState({});
   const [datePickerStatus, setDatePickerStatus] = useState(false);
@@ -152,9 +155,15 @@ export default function report() {
   const handleDateChange = async (item) => {
     setDatePickerStatus(false);
     setDate(item);
+
+    const start_date = dayjs(item.startDate).startOf("day").toDate();
+    const end_date = dayjs(item.endDate).endOf("day").toDate();
+
+    dispatch({ type: "SET_START_DATE", value: start_date });
+    dispatch({ type: "SET_END_DATE", value: end_date });
     const surveyCount = await surveyService.getSurveyResponseCount({
-      start_date: dayjs(item.startDate).startOf("day").toDate(),
-      end_date: dayjs(item.endDate).endOf("day").toDate(),
+      start_date,
+      end_date,
     });
 
     const surveyCountJson = await surveyCount.data;
@@ -163,8 +172,8 @@ export default function report() {
     const surveySentiment = await surveyService.getSurveySentiment(
       survey.surveyEditId,
       {
-        start_date: dayjs(item.startDate).startOf("day").toDate(),
-        end_date: dayjs(item.endDate).endOf("day").toDate(),
+        start_date,
+        end_date,
       }
     );
     const surveySentimentJson = await surveySentiment.data;
@@ -172,6 +181,10 @@ export default function report() {
   };
 
   useEffect(() => {
+
+    if (!session) {
+      router.push("/login");
+    }
     let isSubscribed = true;
     // fetch Survey response count
     const fetchSurveyReportData = async () => {

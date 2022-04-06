@@ -1,5 +1,7 @@
 import React from "react";
 
+import get from "lodash.get";
+
 // UI
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -153,6 +155,7 @@ const SentimentDiv = ({ sentimentTitle }) => (
 );
 
 export default function UserSurveyQuesAns({ question }) {
+  console.log(question)
   return (
     <>
       <QuestionAccordion expanded={true} square>
@@ -169,11 +172,11 @@ export default function UserSurveyQuesAns({ question }) {
                 fontSize="18px"
                 fontWeight="600"
               >
-                {question.qname}
+                {question.question}
               </Typography>
             </StyledQuestionHead>
             <StyledQuestionHeadEndSlot>
-              <QuestionTypeDiv>{question.answer.type} response</QuestionTypeDiv>
+              <QuestionTypeDiv>{question.question_type} response</QuestionTypeDiv>
             </StyledQuestionHeadEndSlot>
           </QuestionAccordionSummary>
         </AccordionSummary>
@@ -189,7 +192,7 @@ export default function UserSurveyQuesAns({ question }) {
               </StyledAnswerTableHead>
               <StyledAnswerTableBody>
                 <StyledAnswerRow>
-                  {question.answer.type === "voice" && (
+                  {question.question_type === "voice" && (
                     <Answer>
                       <audio
                         src={
@@ -199,8 +202,8 @@ export default function UserSurveyQuesAns({ question }) {
                       />
                     </Answer>
                   )}
-                  {question.answer.type !== "voice" && (
-                    <Answer>{question.answer.text}</Answer>
+                  {question.question_type !== "voice" && (
+                    <Answer>{question.question_type}</Answer>
                   )}
                   <Date>26/09/2022</Date>
                   <Lead>Something</Lead>
@@ -213,7 +216,7 @@ export default function UserSurveyQuesAns({ question }) {
                     />
                   </Sentiment>
                 </StyledAnswerRow>
-                {question.answer.type && question.answer.type === "voice" && (
+                {question.question_type && question.question_type === "voice" && (
                   <StyledAnswerColumn>
                     <StyledAnswerTableHead>Transcript</StyledAnswerTableHead>
                     <StyledAnswerRowBody>

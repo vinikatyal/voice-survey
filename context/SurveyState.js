@@ -2,6 +2,8 @@ import React, { useReducer, useContext, createContext } from "react";
 
 import produce from "immer";
 
+import dayjs from "dayjs";
+
 import theme1 from "../images/themes/theme1.png";
 import theme2 from "../images/themes/theme2.png";
 import theme3 from "../images/themes/theme3.png";
@@ -66,6 +68,9 @@ const initialState = {
   previousSurveyType: null,
   surveyEditId: null,
   surveyShareLink: "",
+  startDate: dayjs().subtract(7, "days").startOf("day").toDate(),
+  endDate: dayjs().endOf("day").toDate(),
+  reportData: [],
 };
 
 const reducer = produce((draft, action) => {
@@ -107,6 +112,15 @@ const reducer = produce((draft, action) => {
     case "SET_SURVEY_USER_NAME":
       draft.surveyUserName = action.value;
       break;
+    case "SET_START_DATE":
+      draft.startDate = action.value;
+      break;
+    case "SET_END_DATE":
+      draft.endDate = action.value;
+      break;
+    case "SET_REPORT_DATA":
+      draft.reportData = action.value;
+      break;
     case "RESET_SURVEY":
       {
         draft.surveyTitle = "";
@@ -131,6 +145,9 @@ const reducer = produce((draft, action) => {
           color: "linear-gradient(to right, #1EA798, #2D4C93)!important;",
         };
         draft.previousSurveyType = null;
+        draft.startDate = dayjs().subtract(7, "days").startOf("day").toDate();
+        draft.endDate = dayjs().endOf("day").toDate();
+        draft.reportData = [];
       }
       break;
     default:

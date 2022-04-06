@@ -234,10 +234,10 @@ async function generateLink(survey_id, survey_type, url) {
 
 // Reporting
 
-async function getSurveyResults(data) {
+async function getSurveyResults(id, data) {
   const token = await getAccessToken();
   return await fetchWrapper
-    .get(`${baseUrl}/get_survey_results`, data, {
+    .post(`${baseUrl}/get_survey_results/${id}`, data, {
       token,
     })
     .then((res) => {

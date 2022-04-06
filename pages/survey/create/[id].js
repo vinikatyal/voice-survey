@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import { useSession } from "next-auth/react";
+
 // common components
 import Layout from "../../../components/Layout";
 import SurveyHeader from "../../../components/survey/SurveyHeader";
@@ -35,12 +37,16 @@ export async function getStaticProps({ params }) {
 
 export default function create({ currentTab }) {
   const [logo, setLogo] = useState("");
+  const { data: session } = useSession();
 
   const router = useRouter();
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
 
   useEffect(async () => {
+    if (!session) {
+      router.push("/login");
+    }
     if (!survey.surveyType) {
       router.push("/survey/create");
       return;

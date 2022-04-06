@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useSurvey } from "../../../../../context/SurveyState";
+import get from "lodash.get";
 
 import Container from "@mui/material/Container";
 
@@ -10,12 +10,15 @@ import UserSurveyQuesAnsSection from "../../../../../components/survey/UserSurve
 import BreadCrumbHeader from "../../../../../components/survey/BreadCrumbHeader";
 import BreadCrumbs from "../../../../../components/survey/BreadCrumbs";
 
+import { useSurvey } from "../../../../../context/SurveyState";
 import { useRouter } from "next/router";
 
 export default function answers() {
   const survey = useSurvey();
   const router = useRouter();
   const { id } = router.query;
+
+  const data = get(survey, "reportData", []).find((x) => x.unique_id === id); // No error!
   return (
     <Layout>
       <SurveyHeader
@@ -40,7 +43,7 @@ export default function answers() {
               ]}
             />
           </BreadCrumbHeader>
-          <UserSurveyQuesAnsSection />
+          <UserSurveyQuesAnsSection reportData={data} />
         </Container>
       </SurveyHeader>
     </Layout>

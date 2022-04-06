@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+
+import dayjs from "dayjs";
+import get from "lodash.get";
+import { toast } from "react-toastify";
 
 import { useRouter } from "next/router";
 
@@ -17,7 +21,9 @@ import SurveyHeader from "../../../../components/survey/SurveyHeader";
 import BreadCrumbHeader from "../../../../components/survey/BreadCrumbHeader";
 import BreadCrumbs from "../../../../components/survey/BreadCrumbs";
 
-import { useSurvey } from "../../../../context/SurveyState";
+import { surveyService } from "../../../../services/survey.service";
+
+import { useDispatchSurvey, useSurvey } from "../../../../context/SurveyState";
 
 import styled from "@emotion/styled";
 
@@ -38,6 +44,9 @@ const SentimentChip = styled(Chip)({
   color: "#fff",
 });
 
+const Unique = styled("div")({
+  color: "blue",
+});
 const Sentiment = ({ sentimentTitle }) => (
   <React.Fragment>
     <SingleSentiment>
@@ -65,6 +74,41 @@ const Sentiment = ({ sentimentTitle }) => (
 export default function index() {
   const survey = useSurvey();
   const router = useRouter();
+  const [reportData, setReportData] = useState([]);
+  const dispatch = useDispatchSurvey();
+  useEffect(() => {
+    // redirect to home if already logged in
+    let isSubscribed = true;
+    // declare the async data fetching function
+    const fetchSurveyReportData = async () => {
+      // get the data from the api
+      console.log(survey);
+      const res = await surveyService.getSurveyResults(survey.surveyEditId, {
+        start_date: survey.startDate,
+        end_date: survey.endDate,
+      });
+
+      const data = res.data;
+
+      if (isSubscribed) {
+        dispatch({ type: "SET_REPORT_DATA", value: data });
+        setReportData(data);
+      }
+    };
+
+    // call the function
+    fetchSurveyReportData()
+      // make sure to catch any error
+      .catch((error) => {
+        toast.error(error, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
+
+    return () => (isSubscribed = false);
+  }, []);
+
+  console.log(reportData);
   return (
     <Layout>
       <SurveyHeader
@@ -89,49 +133,32 @@ export default function index() {
               <TableHead>
                 <TableRow>
                   <TableCell align="left">User</TableCell>
-                  <TableCell align="left">Data Completed</TableCell>
-                  <TableCell align="left">Key Sentiment</TableCell>
+                  <TableCell align="left">Date Started</TableCell>
+                  {/* <TableCell align="left">Key Sentiment</TableCell> */}
                 </TableRow>
               </TableHead>
 
               <TableBody sx={{ backgroundColor: "#f8f9fd", cursor: "pointer" }}>
-                <TableRow
-                  onClick={() =>
-                    router.push("/survey/report/responses/answers?id=Brijesh")
-                  }
-                >
-                  <TableCell align="left">Brijesh Kumar</TableCell>
-                  <TableCell align="left">Lorem Ipsum dolor</TableCell>
-                  <TableCell align="left">
-                    <Sentiment sentimentTitle="Positive" />
-                  </TableCell>
-                </TableRow>
-                <TableRow
-                  onClick={() =>
-                    router.push(
-                      "/survey/report/responses/answers?id=Sachin Sharma"
-                    )
-                  }
-                >
-                  <TableCell align="left">Sachin Sharma</TableCell>
-                  <TableCell align="left">Lorem Ipsum dolor</TableCell>
-                  <TableCell align="left">
-                    <Sentiment sentimentTitle="Negative" />
-                  </TableCell>
-                </TableRow>
-                <TableRow
-                  onClick={() =>
-                    router.push(
-                      "/survey/report/responses/answers?id=Rohit Prasad"
-                    )
-                  }
-                >
-                  <TableCell align="left">Rohit Prasad</TableCell>
-                  <TableCell align="left">Lorem Ipsum dolor</TableCell>
-                  <TableCell align="left">
-                    <Sentiment sentimentTitle="Neutral" />
-                  </TableCell>
-                </TableRow>
+                {reportData &&
+                  reportData.length &&
+                  reportData.map((answer, index) => (
+                    <TableRow
+                      key={index}
+                      onClick={() =>
+                        router.push(
+                          "/survey/report/responses/answers?id=" +
+                            answer.unique_id
+                        )
+                      }
+                    >
+                      <TableCell align="left">
+                        <Unique>{get(answer, "unique_id", "")}</Unique>
+                      </TableCell>
+                      <TableCell align="left">
+                        {get(answer, "inserted_at", "")}
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </StyledTableContainer>

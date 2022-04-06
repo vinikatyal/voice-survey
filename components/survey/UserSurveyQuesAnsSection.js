@@ -1,5 +1,7 @@
 import React from "react";
 
+import get from "lodash.get";
+
 // UI
 import Container from "@mui/material/Container";
 // component
@@ -48,18 +50,21 @@ const questAns = [
   },
 ];
 
-export default function SurveyQuesAnsSection() {
+export default function SurveyQuesAnsSection({ reportData }) {
+  console.log(reportData)
   return (
     <>
       <Container maxWidth="lg" sx={{ marginTop: "30px" }}>
-        User 1
+        {get(reportData, "unique_id", "")}
       </Container>
 
       <Container maxWidth="lg" sx={{ marginTop: "30px" }}>
         <Label>Questions</Label>
-        {questAns.map((q, index) => (
-          <UserSurveyQuesAns key={index} question={q} />
-        ))}
+        {get(reportData, "survey_questions", []) &&
+          get(reportData, "survey_questions", []).length &&
+          get(reportData, "survey_questions", []).map((q, index) => (
+            <UserSurveyQuesAns key={index} question={q} />
+          ))}
       </Container>
     </>
   );
