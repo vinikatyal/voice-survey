@@ -67,6 +67,8 @@ export default function SurveyThemeSection({ logo }) {
     const questions = survey.questions.map((obj, index) => ({
       ...obj,
       qid: index + 1,
+      answer: "",
+      status: "",
     }));
 
     const surveyPayload = {
