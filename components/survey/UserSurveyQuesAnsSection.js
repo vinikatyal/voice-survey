@@ -15,43 +15,8 @@ const Label = styled("span")({
   fontWeight: "500",
 });
 
-const questAns = [
-  {
-    qname: "How did you like our product?",
-    answer: {
-      text: "First answer",
-      type: "voice",
-      key_parameter: "POSITIVE",
-    },
-  },
-  {
-    qname: "Tell us few words",
-    answer: {
-      text: "First answer",
-      type: "text",
-      key_parameter: "POSITIVE",
-    },
-  },
-  {
-    qname: "Write us a recommendation?",
-    answer: {
-      text: "First answer",
-      type: "description",
-      key_parameter: "POSITIVE",
-    },
-  },
-  {
-    qname: "Your phone number",
-    answer: {
-      text: "First answer",
-      type: "contact",
-      key_parameter: "POSITIVE",
-    },
-  },
-];
-
 export default function SurveyQuesAnsSection({ reportData }) {
-  console.log(reportData)
+  console.log(reportData);
   return (
     <>
       <Container maxWidth="lg" sx={{ marginTop: "30px" }}>
@@ -63,7 +28,7 @@ export default function SurveyQuesAnsSection({ reportData }) {
         {get(reportData, "survey_questions", []) &&
           get(reportData, "survey_questions", []).length &&
           get(reportData, "survey_questions", []).map((q, index) => (
-            <UserSurveyQuesAns key={index} question={q} />
+            <UserSurveyQuesAns key={index} data={reportData} question={q} />
           ))}
       </Container>
     </>

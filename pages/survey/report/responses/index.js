@@ -47,6 +47,11 @@ const SentimentChip = styled(Chip)({
 const Unique = styled("div")({
   color: "blue",
 });
+
+const NoData = styled("div")({
+  padding: "16px",
+  width: "100%",
+});
 const Sentiment = ({ sentimentTitle }) => (
   <React.Fragment>
     <SingleSentiment>
@@ -139,8 +144,13 @@ export default function index() {
               </TableHead>
 
               <TableBody sx={{ backgroundColor: "#f8f9fd", cursor: "pointer" }}>
+                {!reportData.length && (
+                  <TableRow>
+                    <NoData>No Data Available</NoData>
+                  </TableRow>
+                )}
                 {reportData &&
-                  reportData.length &&
+                  reportData.length > 0 &&
                   reportData.map((answer, index) => (
                     <TableRow
                       key={index}
@@ -155,7 +165,9 @@ export default function index() {
                         <Unique>{get(answer, "unique_id", "")}</Unique>
                       </TableCell>
                       <TableCell align="left">
-                        {get(answer, "inserted_at", "")}
+                        {dayjs(get(answer, "inserted_at", "")).format(
+                          "DD MMM YYYY"
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}

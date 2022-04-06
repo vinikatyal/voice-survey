@@ -1,5 +1,6 @@
 import React from "react";
 
+import dayjs from "dayjs";
 import get from "lodash.get";
 
 // UI
@@ -154,8 +155,8 @@ const SentimentDiv = ({ sentimentTitle }) => (
   </React.Fragment>
 );
 
-export default function UserSurveyQuesAns({ question }) {
-  console.log(question)
+export default function UserSurveyQuesAns({ data, question }) {
+  console.log(question);
   return (
     <>
       <QuestionAccordion expanded={true} square>
@@ -176,7 +177,9 @@ export default function UserSurveyQuesAns({ question }) {
               </Typography>
             </StyledQuestionHead>
             <StyledQuestionHeadEndSlot>
-              <QuestionTypeDiv>{question.question_type} response</QuestionTypeDiv>
+              <QuestionTypeDiv>
+                {question.question_type} response
+              </QuestionTypeDiv>
             </StyledQuestionHeadEndSlot>
           </QuestionAccordionSummary>
         </AccordionSummary>
@@ -205,7 +208,9 @@ export default function UserSurveyQuesAns({ question }) {
                   {question.question_type !== "voice" && (
                     <Answer>{question.question_type}</Answer>
                   )}
-                  <Date>26/09/2022</Date>
+                  <Date>
+                    {dayjs(get(data, "inserted_at", "")).format("DD MMM YYYY")}
+                  </Date>
                   <Lead>Something</Lead>
                   <Sentiment>
                     <SentimentDiv
