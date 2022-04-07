@@ -32,6 +32,8 @@ import { authService } from "../../../services/auth.service";
 
 import styled from "@emotion/styled";
 import { useDispatchSurvey, useSurvey } from "../../../context/SurveyState";
+import { useSession } from "next-auth/react";
+
 const GridContainer = styled(Grid)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
@@ -97,6 +99,7 @@ export default function Create() {
   } = useForm();
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
+  const { data: session, status } = useSession();
 
   const [selectedValue, setSelectedValue] = useState(
     survey.surveyType || "csat"
@@ -117,9 +120,14 @@ export default function Create() {
   }, [selectedValue]);
 
   useEffect(() => {
+    if (status === "loading") return;
+    else if (status === "unauthenticated") {
+      router.push("/login");
+      return;
+    }
     getTeamMembers();
     getSurveyTypes();
-  }, []);
+  }, [status]);
 
   const getSurveyTypes = () => {
     surveyService

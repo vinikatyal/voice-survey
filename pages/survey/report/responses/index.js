@@ -5,6 +5,7 @@ import get from "lodash.get";
 import { toast } from "react-toastify";
 
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 import Container from "@mui/material/Container";
 import Table from "@mui/material/Table";
@@ -79,15 +80,21 @@ const Sentiment = ({ sentimentTitle }) => (
 export default function index() {
   const survey = useSurvey();
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [reportData, setReportData] = useState([]);
   const dispatch = useDispatchSurvey();
   useEffect(() => {
+    if (!survey.surveyEditId) router.push("/dashboard");
+    if (status === "loading") return;
+    else if (status === "unauthenticated") {
+      router.push("/login");
+      return;
+    }
     // redirect to home if already logged in
     let isSubscribed = true;
     // declare the async data fetching function
     const fetchSurveyReportData = async () => {
       // get the data from the api
-      console.log(survey);
       const res = await surveyService.getSurveyResults(survey.surveyEditId, {
         start_date: survey.startDate,
         end_date: survey.endDate,
@@ -111,9 +118,8 @@ export default function index() {
       });
 
     return () => (isSubscribed = false);
-  }, []);
+  }, [status]);
 
-  console.log(reportData);
   return (
     <Layout>
       <SurveyHeader

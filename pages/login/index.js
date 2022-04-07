@@ -87,15 +87,17 @@ export default function Index({ csrfToken }) {
   const dispatch = useDispatchSurvey();
 
   useEffect(() => {
-    if (session) {
+    if (status === "loading") return;
+    else if (status === "authenticated") {
       router.push("/dashboard");
     }
+
     if (survey.userEmail) {
       setValue("email", survey.userEmail, {
         shouldDirty: true,
       });
     }
-  }, []);
+  }, [status]);
   const onSubmit = async (data) => {
     dispatch({ type: "SET_USER_EMAIL", value: data.email });
     const res = await signIn("credentials", {

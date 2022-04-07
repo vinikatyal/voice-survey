@@ -109,7 +109,7 @@ export default function Index() {
   const [surveys, setAllSurveys] = useState([]);
   const [page, setPage] = useState(1);
   const [count, setSurveyCount] = useState(0);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const dispatch = useDispatchSurvey();
   const survey = useSurvey();
@@ -124,13 +124,15 @@ export default function Index() {
   };
 
   useEffect(() => {
-    if (!session) {
+    if (status === "loading") return;
+    else if (status === "unauthenticated") {
       router.push("/login");
+      return;
     }
     dispatch({ type: "RESET_SURVEY" });
     getSurveyTypes(1);
     getSurveysCount();
-  }, []);
+  }, [status]);
 
   const getSurveyTypes = (page) => {
     surveyService

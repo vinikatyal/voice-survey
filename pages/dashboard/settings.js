@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 
 import get from "lodash.get";
 
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 import { toast } from "react-toastify";
 
@@ -111,17 +111,22 @@ export default function Index() {
   const [value, setVal] = React.useState(0);
   const [existingDetails, setExistingDetails] = useState({});
   const [logoVal, setLogo] = useState();
+  const { data: session, status } = useSession();
 
   const {
     register,
     handleSubmit,
-    setError,
     trigger,
     setValue,
     formState: { errors },
   } = useForm();
 
   useEffect(() => {
+    if (status === "loading") return;
+    else if (status === "unauthenticated") {
+      router.push("/login");
+      return;
+    }
     // redirect to home if already logged in
     let isSubscribed = true;
     // declare the async data fetching function
@@ -147,7 +152,7 @@ export default function Index() {
       });
 
     return () => (isSubscribed = false);
-  }, []);
+  }, [status]);
 
   const updateLogo = (file) => {
     setLogo(file);

@@ -91,7 +91,7 @@ const SignInText = styled(Typography)({
 
 export default function Index({ csrfToken }) {
   const [mobile, setMobile] = React.useState("");
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const {
     register,
@@ -107,15 +107,17 @@ export default function Index({ csrfToken }) {
 
   useEffect(() => {
     // redirect to home if already logged in
-    if (session) {
+    if (status === "loading") return;
+    else if (status === "authenticated") {
       router.push("/dashboard");
     }
+
     if (survey.userEmail) {
       setValue("email", survey.userEmail, {
         shouldDirty: true,
       });
     }
-  }, []);
+  }, [status]);
 
   const onSubmit = async (data) => {
     dispatch({ type: "SET_USER_EMAIL", value: data.email });
