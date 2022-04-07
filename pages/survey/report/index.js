@@ -106,42 +106,15 @@ const Statics = ({ value, progressValue, staticTitle }) => (
 );
 
 export default function report() {
-  const survey = useSurvey();
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+
+  const survey = useSurvey();
   const dispatch = useDispatchSurvey();
-  
+
   const [reportData, setReportData] = useState({});
   const [sentimentData, setSentimentData] = useState({});
   const [datePickerStatus, setDatePickerStatus] = useState(false);
-  const [date, setDate] = useState({
-    startDate: dayjs().subtract(7, "days").startOf("day").toDate(),
-    endDate: dayjs().endOf("day").toDate(),
-    key: "selection",
-  });
-
-  const dateShortcuts = [
-    {
-      label: "Today",
-      startDate: dayjs().startOf("day").toDate(),
-      endDate: dayjs().endOf("day").toDate(),
-    },
-    {
-      label: "Yesterday",
-      startDate: dayjs().subtract(1, "days").startOf("day").toDate(),
-      endDate: dayjs().subtract(1, "days").endOf("day").toDate(),
-    },
-    {
-      label: "Last 7 days",
-      startDate: dayjs().subtract(7, "days").startOf("day").toDate(),
-      endDate: dayjs().endOf("day").toDate(),
-    },
-    {
-      label: "Last 30 days",
-      startDate: dayjs().subtract(30, "days").startOf("day").toDate(),
-      endDate: dayjs().endOf("day").toDate(),
-    },
-  ];
 
   const toggle = () => {
     setDatePickerStatus(false);
@@ -154,8 +127,6 @@ export default function report() {
 
   const handleDateChange = async (item) => {
     setDatePickerStatus(false);
-    setDate(item);
-
     const start_date = dayjs(item.startDate).startOf("day").toDate();
     const end_date = dayjs(item.endDate).endOf("day").toDate();
 
@@ -181,16 +152,18 @@ export default function report() {
   };
 
   useEffect(() => {
-
-    if (!session) {
+    if (!survey.surveyEditId) router.push("/dashboard");
+    if (status === "loading") return;
+    else if (status === "unauthenticated") {
       router.push("/login");
+      return;
     }
     let isSubscribed = true;
     // fetch Survey response count
     const fetchSurveyReportData = async () => {
       const res = await surveyService.getSurveyResponseCount({
-        start_date: date.startDate,
-        end_date: date.endDate,
+        start_date: survey.startDate,
+        end_date: survey.endDate,
       });
       const json = await res.data;
       if (isSubscribed) {
@@ -208,8 +181,8 @@ export default function report() {
     // fetch Sentiment Count
     const fetchSentimentData = async () => {
       const res = await surveyService.getSurveySentiment(survey.surveyEditId, {
-        start_date: date.startDate,
-        end_date: date.endDate,
+        start_date: survey.startDate,
+        end_date: survey.endDate,
       });
       const json = await res.data;
       if (fetchedSentiment) {
@@ -224,7 +197,7 @@ export default function report() {
     });
 
     return () => ((isSubscribed = false), (fetchedSentiment = false));
-  }, []);
+  }, [status]);
 
   const handleProgress = (progressValue) => {
     if (progressValue > 100)
@@ -260,15 +233,21 @@ export default function report() {
                 disabled
                 fullWidth
                 placeholder="date"
-                value={handleDateFormat(date)}
+                value={handleDateFormat({
+                  startDate: survey.startDate,
+                  endDate: survey.endDate,
+                })}
               ></TextField>
               <DateWrapper>
                 <DateRangePicker
                   open={datePickerStatus}
                   toggle={toggle}
-                  initialDateRange={date}
+                  initialDateRange={{
+                    startDate: survey.startDate,
+                    endDate: survey.endDate,
+                  }}
                   onChange={handleDateChange}
-                  definedRanges={dateShortcuts}
+                  definedRanges={survey.dateShortcuts}
                 />
               </DateWrapper>
             </Grid>
