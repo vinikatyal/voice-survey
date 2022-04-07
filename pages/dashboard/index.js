@@ -119,7 +119,7 @@ export default function Index() {
   const [page, setPage] = useState(1);
   const [surveyId, setSurveyId] = useState("");
   const [count, setSurveyCount] = useState(0);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const router = useRouter();
 
@@ -132,8 +132,10 @@ export default function Index() {
   };
 
   useEffect(() => {
-    if (!session) {
+    if (status === "loading") return;
+    else if (status === "unauthenticated") {
       router.push("/login");
+      return;
     }
 
     if (get(session, "user.pwd_flag") === "Y") {
@@ -142,7 +144,7 @@ export default function Index() {
     dispatch({ type: "RESET_SURVEY" });
     getSurveyTypes(page);
     getSurveysCount();
-  }, []);
+  }, [status]);
 
   const handleClose = () => {
     setOpen(false);

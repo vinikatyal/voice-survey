@@ -37,15 +37,17 @@ export async function getStaticProps({ params }) {
 
 export default function create({ currentTab }) {
   const [logo, setLogo] = useState("");
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const router = useRouter();
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
 
   useEffect(async () => {
-    if (!session) {
+    if (status === "loading") return;
+    else if (status === "unauthenticated") {
       router.push("/login");
+      return;
     }
     if (!survey.surveyType) {
       router.push("/survey/create");
@@ -79,7 +81,7 @@ export default function create({ currentTab }) {
       dispatch({ type: "SET_QUESTIONS", value: modifiedArr });
       dispatch({ type: "SET_PREV_SURVEYTYPE", value: survey.surveyType });
     }
-  }, [survey.surveyType]);
+  }, [status, survey.surveyType]);
 
   const handleChangeTab = (currentTab) => {
     router.push(`/survey/create/${currentTab}`);
