@@ -30,6 +30,7 @@ import { surveyService } from "../../services/survey.service";
 import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
 
 import styled from "@emotion/styled";
+import DashboardLoader from "../../components/dashboard/DashboardLoader";
 
 const FullBackground = styled(Container)(({ theme }) => ({
   height: "100vh",
@@ -94,6 +95,7 @@ export default function Index() {
   const [page, setPage] = useState(1);
   const [count, setSurveyCount] = useState(0);
   const { data: session, status } = useSession();
+  const [loading, setLoading] = useState(true);
 
   const router = useRouter();
   const dispatch = useDispatchSurvey();
@@ -128,6 +130,7 @@ export default function Index() {
         toast.error(error.message, {
           position: toast.POSITION.TOP_RIGHT,
         });
+        setLoading(false);
       });
   };
 
@@ -137,98 +140,106 @@ export default function Index() {
       .then((res) => {
         const count = Math.ceil(res.data / 10);
         setSurveyCount(count);
+        setLoading(false);
       })
       .catch((error) => {
         toast.error(error.message, {
           position: toast.POSITION.TOP_RIGHT,
         });
+        setLoading(false);
       });
   };
   return (
     <>
-      <DashboardH></DashboardH>
-      <FullBackground maxWidth="lg">
-        <DashboardSubHeader title={"Shared Surveys"} />
-        <GridContainer container spacing={5}>
-          {surveys.length ? (
-            surveys.map((survey, index) => (
-              <Grid key={survey.survey_id} item md={4}>
-                <SurveyCard variant="outlined">
-                  <CardContent>
-                    <CardTitle>
-                      <CardHead>{survey.survey_title}</CardHead>
-                      <CardIconContainer></CardIconContainer>
-                    </CardTitle>
-                    <Response>
-                      <Left>
-                        <Logo src={person} width="14" alt="person" />
-                        <Text>{survey.responses} responses</Text>
-                      </Left>
-                    </Response>
-                  </CardContent>
-                </SurveyCard>
-              </Grid>
-            ))
-          ) : (
-            <Grid item>
-              <NoSurveyScreen />
-            </Grid>
-          )}
-        </GridContainer>
+      {loading ? (
+        <DashboardLoader></DashboardLoader>
+      ) : (
+        <div>
+          <DashboardH></DashboardH>
+          <FullBackground maxWidth="lg">
+            <DashboardSubHeader title={"Shared Surveys"} />
+            <GridContainer container spacing={5}>
+              {surveys.length ? (
+                surveys.map((survey, index) => (
+                  <Grid key={survey.survey_id} item md={4}>
+                    <SurveyCard variant="outlined">
+                      <CardContent>
+                        <CardTitle>
+                          <CardHead>{survey.survey_title}</CardHead>
+                          <CardIconContainer></CardIconContainer>
+                        </CardTitle>
+                        <Response>
+                          <Left>
+                            <Logo src={person} width="14" alt="person" />
+                            <Text>{survey.responses} responses</Text>
+                          </Left>
+                        </Response>
+                      </CardContent>
+                    </SurveyCard>
+                  </Grid>
+                ))
+              ) : (
+                <Grid item>
+                  <NoSurveyScreen />
+                </Grid>
+              )}
+            </GridContainer>
 
-        {surveys && surveys.length ? (
-          <Grid marginTop={5} display={"flex"} justifyContent={"center"}>
-            <Pagination
-              variant="outlined"
-              shape="rounded"
-              count={count}
-              page={page}
-              size="large"
-              onChange={handleChange}
-              renderItem={(item) =>
-                ["previous", "next"].includes(item.type) ? (
-                  <Button
-                    variant="outlined"
-                    onClick={item.onClick}
-                    disabled={item.disabled}
-                  >
-                    {item.type === "previous" ? "Prev" : "Next"}
-                  </Button>
-                ) : (
-                  <ButtonGroup
-                    sx={{
-                      marginLeft: `${item.page === 1 && "20px"}`,
-                      marginRight: `${item.page === count && "20px"}`,
-                    }}
-                  >
-                    {item.type === "page" ? (
+            {surveys && surveys.length ? (
+              <Grid marginTop={5} display={"flex"} justifyContent={"center"}>
+                <Pagination
+                  variant="outlined"
+                  shape="rounded"
+                  count={count}
+                  page={page}
+                  size="large"
+                  onChange={handleChange}
+                  renderItem={(item) =>
+                    ["previous", "next"].includes(item.type) ? (
                       <Button
-                        variant={item.selected ? "contained" : "text"}
-                        sx={{ backgroundColor: !item.selected && "#f4f5f8" }}
+                        variant="outlined"
                         onClick={item.onClick}
                         disabled={item.disabled}
                       >
-                        {item.page}
+                        {item.type === "previous" ? "Prev" : "Next"}
                       </Button>
                     ) : (
-                      <MoreHorizIcon />
-                    )}
-                  </ButtonGroup>
-                )
-              }
-            />
-          </Grid>
-        ) : (
-          ""
-        )}
-      </FullBackground>
-      <ConfirmationDialog
-        status={open}
-        title="Delete Survey?"
-        message="Are you sure you want to delete your survey?"
-        handleReject={handleClose}
-        handleAccept={handleClose}
-      />
+                      <ButtonGroup
+                        sx={{
+                          marginLeft: `${item.page === 1 && "20px"}`,
+                          marginRight: `${item.page === count && "20px"}`,
+                        }}
+                      >
+                        {item.type === "page" ? (
+                          <Button
+                            variant={item.selected ? "contained" : "text"}
+                            sx={{ backgroundColor: !item.selected && "#f4f5f8" }}
+                            onClick={item.onClick}
+                            disabled={item.disabled}
+                          >
+                            {item.page}
+                          </Button>
+                        ) : (
+                          <MoreHorizIcon />
+                        )}
+                      </ButtonGroup>
+                    )
+                  }
+                />
+              </Grid>
+            ) : (
+              ""
+            )}
+          </FullBackground>
+          <ConfirmationDialog
+            status={open}
+            title="Delete Survey?"
+            message="Are you sure you want to delete your survey?"
+            handleReject={handleClose}
+            handleAccept={handleClose}
+          />
+        </div>
+      )}
     </>
   );
 }
