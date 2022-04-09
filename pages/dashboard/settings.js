@@ -31,6 +31,7 @@ import StyledButton from "../../components/StyledButton";
 import styled from "@emotion/styled";
 
 import { authService } from "../../services/auth.service";
+import DashboardLoader from "../../components/loaders/DashboardLoader";
 
 const FullBackground = styled(Container)(({ theme }) => ({
   height: "100vh",
@@ -111,6 +112,7 @@ export default function Index() {
   const [value, setVal] = React.useState(0);
   const [existingDetails, setExistingDetails] = useState({});
   const [logoVal, setLogo] = useState();
+  const [loading, setLoading] = useState(true);
   const { data: session, status } = useSession();
 
   const {
@@ -139,6 +141,7 @@ export default function Index() {
       if (isSubscribed) {
         setExistingDetails(json);
         setValue("company", json.company, { shouldDirty: true });
+        setLoading(false);
       }
     };
 
@@ -149,6 +152,7 @@ export default function Index() {
         toast.error(error, {
           position: toast.POSITION.TOP_RIGHT,
         });
+        setLoading(false);
       });
 
     return () => (isSubscribed = false);
@@ -197,89 +201,102 @@ export default function Index() {
 
   return (
     <>
-      <DashboardHeader />
-      <FullBackground maxWidth="lg">
-        <GridContainer container spacing={5}>
-          <StyledTabs
-            value={value}
-            onChange={handleChange}
-            variant="scrollable"
-            scrollButtons={false}
-            aria-label="scrollable prevent tabs example"
-          >
-            <TabBasic label="Basic details" />
-            {/* <TabBasic label="Reset password" /> */}
-            <TabBasic label="Account" />
-          </StyledTabs>
-
-          <TabPanel value={value} index={0}>
-            <Box
-              component="form"
-              noValidate
-              onSubmit={(e) => e.preventDefault()}
-            >
-              <Limiter>
-                <Grid
-                  id="logoInputSection"
-                  container
-                  justifyContent="center"
-                  flexDirection="column"
-                  alignItems="center"
-                  mt={3}
-                  mb={3}
-                >
-                  <LogoHeading>Select any png.svg or jpg file</LogoHeading>
-                  <AddLogo
-                    logo={existingDetails.logo}
-                    updateLogo={updateLogo}
-                  />
-                </Grid>
-
-                <Grid id="formInputSection" container justifyContent="center">
-                  <FormControl sx={{ width: "660px" }}>
-                    <LoginFormLabel>Add Company Name</LoginFormLabel>
-                    <TextField
-                      required
-                      {...register("company", {
-                        required: true,
-                        onChange: async (e) => {
-                          await trigger("company");
-                        },
-                      })}
-                      id="company"
-                      name="company"
-                      placeholder="Your Company Name"
-                      setValue={existingDetails.company}
-                    />
-                    <InviteInput updateTeamMembers={() => {}} />
-                  </FormControl>
-                </Grid>
-
-                <NextSection>
-                  <StyledButton type="submit" onClick={handleSubmit(onSubmit)}>
-                    Save
-                  </StyledButton>
-                </NextSection>
-              </Limiter>
-            </Box>
-          </TabPanel>
-          {/* <TabPanel value={value} index={1}></TabPanel> */}
-          <TabPanel value={value} index={1}>
-            <NextSection>
-              <Logout
-                variant="contained"
-                color="secondary"
-                type="submit"
-                onClick={logoutSite}
-                disableElevation
-                disableRipple
+      {loading ? (
+        <DashboardLoader settingsLoader={true}></DashboardLoader>
+      ) : (
+        <>
+          <DashboardHeader />
+          <FullBackground maxWidth="lg">
+            <GridContainer container spacing={5}>
+              <StyledTabs
+                value={value}
+                onChange={handleChange}
+                variant="scrollable"
+                scrollButtons={false}
+                aria-label="scrollable prevent tabs example"
               >
-                Logout
-              </Logout>
-            </NextSection>
-          </TabPanel>
-        </GridContainer>
-      </FullBackground>
+                <TabBasic label="Basic details" />
+                {/* <TabBasic label="Reset password" /> */}
+                <TabBasic label="Account" />
+              </StyledTabs>
+
+              <TabPanel value={value} index={0}>
+                <Box
+                  component="form"
+                  noValidate
+                  onSubmit={(e) => e.preventDefault()}
+                >
+                  <Limiter>
+                    <Grid
+                      id="logoInputSection"
+                      container
+                      justifyContent="center"
+                      flexDirection="column"
+                      alignItems="center"
+                      mt={3}
+                      mb={3}
+                    >
+                      <LogoHeading>Select any png.svg or jpg file</LogoHeading>
+                      <AddLogo
+                        logo={existingDetails.logo}
+                        updateLogo={updateLogo}
+                      />
+                    </Grid>
+
+                    <Grid
+                      id="formInputSection"
+                      container
+                      justifyContent="center"
+                    >
+                      <FormControl sx={{ width: "660px" }}>
+                        <LoginFormLabel>Add Company Name</LoginFormLabel>
+                        <TextField
+                          required
+                          {...register("company", {
+                            required: true,
+                            onChange: async (e) => {
+                              await trigger("company");
+                            },
+                          })}
+                          id="company"
+                          name="company"
+                          placeholder="Your Company Name"
+                          setValue={existingDetails.company}
+                        />
+                        <InviteInput updateTeamMembers={() => {}} />
+                      </FormControl>
+                    </Grid>
+
+                    <NextSection>
+                      <StyledButton
+                        type="submit"
+                        onClick={handleSubmit(onSubmit)}
+                      >
+                        Save
+                      </StyledButton>
+                    </NextSection>
+                  </Limiter>
+                </Box>
+              </TabPanel>
+              {/* <TabPanel value={value} index={1}></TabPanel> */}
+              <TabPanel value={value} index={1}>
+                <NextSection>
+                  <Logout
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    onClick={logoutSite}
+                    disableElevation
+                    disableRipple
+                  >
+                    Logout
+                  </Logout>
+                </NextSection>
+              </TabPanel>
+            </GridContainer>
+          </FullBackground>
+        </>
+      )}
     </>
   );
 }

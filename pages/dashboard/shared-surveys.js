@@ -22,6 +22,7 @@ import DashboardH from "../../components/dashboard/DashboardHeader";
 import NoSurveyScreen from "../../components/survey/NoSurveyScreen";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 import DashboardSubHeader from "../../components/dashboard/DashboardSubHeader";
+import DashboardLoader from "../../components/loaders/DashboardLoader";
 
 import person from "../../images/svg/person.svg";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -30,7 +31,6 @@ import { surveyService } from "../../services/survey.service";
 import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
 
 import styled from "@emotion/styled";
-import DashboardLoader from "../../components/dashboard/DashboardLoader";
 
 const FullBackground = styled(Container)(({ theme }) => ({
   height: "100vh",
@@ -213,7 +213,9 @@ export default function Index() {
                         {item.type === "page" ? (
                           <Button
                             variant={item.selected ? "contained" : "text"}
-                            sx={{ backgroundColor: !item.selected && "#f4f5f8" }}
+                            sx={{
+                              backgroundColor: !item.selected && "#f4f5f8",
+                            }}
                             onClick={item.onClick}
                             disabled={item.disabled}
                           >

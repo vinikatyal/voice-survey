@@ -28,7 +28,7 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import DashboardSubHeader from "../../components/dashboard/DashboardSubHeader";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
-import DashboardLoader from "../../components/dashboard/DashboardLoader";
+import DashboardLoader from "../../components/loaders/DashboardLoader";
 
 import { surveyService } from "../../services/survey.service";
 import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
@@ -346,7 +346,9 @@ export default function Index() {
                         {item.type === "page" ? (
                           <Button
                             variant={item.selected ? "contained" : "text"}
-                            sx={{ backgroundColor: !item.selected && "#f4f5f8" }}
+                            sx={{
+                              backgroundColor: !item.selected && "#f4f5f8",
+                            }}
                             onClick={item.onClick}
                             disabled={item.disabled}
                           >
