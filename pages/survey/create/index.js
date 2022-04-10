@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 
-import get from "lodash.get";
-
 import { useRouter } from "next/router";
 import Image from "next/image";
+
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 import isEmpty from "lodash.isempty";
 import { useForm } from "react-hook-form";
@@ -106,6 +107,7 @@ export default function Create() {
   );
   const [accessEmails, setAccessEmails] = useState([]);
   const [questionTypes, setQuestionTypes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const router = useRouter();
 
@@ -146,11 +148,13 @@ export default function Create() {
           noOfQuestions: 1,
         });
         setQuestionTypes(surveyTypes);
+        setLoading(false);
       })
       .catch((error) => {
         toast.error(error.message, {
           position: toast.POSITION.TOP_RIGHT,
         });
+        setLoading(false);
       });
   };
 
@@ -165,6 +169,7 @@ export default function Create() {
         toast.error(error.message, {
           position: toast.POSITION.TOP_RIGHT,
         });
+        setLoading(false);
       });
   };
 
@@ -235,46 +240,57 @@ export default function Create() {
               {questionTypes &&
                 questionTypes.map((survey, index) => (
                   <Grid key={index} item md={4}>
-                    <Card variant="outlined">
-                      <CardMedia>
-                        <div
-                          style={{
-                            position: "relative",
-                            width: "100%",
-                            height: "90px",
-                          }}
-                        >
-                          <Image
-                            src={"/survey/" + survey.name + ".png"}
-                            layout="fill"
-                            objectFit="cover"
-                          />
-                        </div>
-                      </CardMedia>
-                      <CardContent>
-                        <CardTitle>
-                          <CardHead>
-                            <Title>{survey.title}</Title>
-                            <RadioButtonSection>
-                              <Radio
-                                name="survey_type"
-                                onChange={handleChange}
-                                value={survey.name}
-                                checked={selectedValue === survey.name}
-                              />
-                            </RadioButtonSection>
-                          </CardHead>
-                        </CardTitle>
-                        <Typography variant="body2">
-                          {survey.description}
-                        </Typography>
-                        {survey.noOfQuestions && (
-                          <QuestionNumber>
-                            {survey.noOfQuestions} questions
-                          </QuestionNumber>
-                        )}
-                      </CardContent>
-                    </Card>
+                    {loading ? (
+                      <SkeletonTheme
+                        baseColor="#e6e8ed"
+                        highlightColor="#f7f7f7"
+                        width="355px"
+                        height="200px"
+                      >
+                        <Skeleton count={1} />
+                      </SkeletonTheme>
+                    ) : (
+                      <Card variant="outlined">
+                        <CardMedia>
+                          <div
+                            style={{
+                              position: "relative",
+                              width: "100%",
+                              height: "90px",
+                            }}
+                          >
+                            <Image
+                              src={"/survey/" + survey.name + ".png"}
+                              layout="fill"
+                              objectFit="cover"
+                            />
+                          </div>
+                        </CardMedia>
+                        <CardContent>
+                          <CardTitle>
+                            <CardHead>
+                              <Title>{survey.title}</Title>
+                              <RadioButtonSection>
+                                <Radio
+                                  name="survey_type"
+                                  onChange={handleChange}
+                                  value={survey.name}
+                                  checked={selectedValue === survey.name}
+                                />
+                              </RadioButtonSection>
+                            </CardHead>
+                          </CardTitle>
+                          <Typography variant="body2">
+                            {survey.description}
+                          </Typography>
+                          {survey.noOfQuestions && (
+                            <QuestionNumber>
+                              {survey.noOfQuestions} questions
+                            </QuestionNumber>
+                          )}
+                        </CardContent>
+                      </Card>
+                    )}
                   </Grid>
                 ))}
             </GridContainer>
