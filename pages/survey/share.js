@@ -76,6 +76,26 @@ export default function Share() {
       });
     }
   };
+
+  const shareLinkedin = async () => {
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite?url=${survey.surveyShareLink}`,
+      "_blank"
+    );
+  };
+  const shareTwitter = async () => {
+    window.open(
+      `https://twitter.com/intent/tweet?url=${survey.surveyShareLink}`,
+      "_blank"
+    );
+  };
+  const shareFb = async () => {
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${survey.surveyShareLink}`,
+      "_blank"
+    );
+  };
+
   return (
     <Layout>
       <SurveyHeader
@@ -103,13 +123,13 @@ export default function Share() {
             />
           </FormSection>
           <IconSection>
-            <IconButton>
+            <IconButton onClick={shareTwitter}>
               <Image src={twitter} alt="twitter" />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={shareFb}>
               <Image src={facebook} alt="facebook" />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={shareLinkedin}>
               <Image src={linkedin} alt="linkedin" />
             </IconButton>
           </IconSection>
