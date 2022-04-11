@@ -27,7 +27,9 @@ export default function BreadCrumbs({ breadCrumbsList }) {
   const survey = useSurvey();
   return (
     <Nav>
-      <NavItem active={false}>Home</NavItem>
+      <Link href="/dashboard">
+        <NavItem active={false}>Home</NavItem>
+      </Link>
       <KeyboardDoubleArrowRightIcon sx={{ margin: "0 5px" }} />
       <Link href="/survey/report" passHref>
         <NavItem active={breadCrumbsList.length === 0}>
