@@ -6,6 +6,9 @@ import { toast } from "react-toastify";
 import dayjs from "dayjs";
 import get from "lodash.get";
 
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 import { useRouter } from "next/router";
 
 import { DateRangePicker } from "materialui-daterange-picker";
@@ -115,6 +118,30 @@ export default function report() {
   const [reportData, setReportData] = useState({});
   const [sentimentData, setSentimentData] = useState({});
   const [datePickerStatus, setDatePickerStatus] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const dateShortcuts = [
+    {
+      label: "Today",
+      startDate: dayjs().startOf("day").toDate(),
+      endDate: dayjs().endOf("day").toDate(),
+    },
+    {
+      label: "Yesterday",
+      startDate: dayjs().subtract(1, "days").startOf("day").toDate(),
+      endDate: dayjs().subtract(1, "days").endOf("day").toDate(),
+    },
+    {
+      label: "Last 7 days",
+      startDate: dayjs().subtract(7, "days").startOf("day").toDate(),
+      endDate: dayjs().endOf("day").toDate(),
+    },
+    {
+      label: "Last 30 days",
+      startDate: dayjs().subtract(30, "days").startOf("day").toDate(),
+      endDate: dayjs().endOf("day").toDate(),
+    },
+  ];
 
   const toggle = () => {
     setDatePickerStatus(false);
@@ -126,6 +153,7 @@ export default function report() {
   };
 
   const handleDateChange = async (item) => {
+    setLoading(true);
     setDatePickerStatus(false);
     const start_date = dayjs(item.startDate).startOf("day").toDate();
     const end_date = dayjs(item.endDate).endOf("day").toDate();
@@ -149,6 +177,7 @@ export default function report() {
     );
     const surveySentimentJson = await surveySentiment.data;
     setSentimentData(surveySentimentJson);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -175,6 +204,7 @@ export default function report() {
       toast.error(error, {
         position: toast.POSITION.TOP_RIGHT,
       });
+      setLoading(false);
     });
 
     let fetchedSentiment = true;
@@ -188,12 +218,14 @@ export default function report() {
       if (fetchedSentiment) {
         setSentimentData(json);
       }
+      setLoading(false);
     };
 
     fetchSentimentData().catch((error) => {
       toast.error(error, {
         position: toast.POSITION.TOP_RIGHT,
       });
+      setLoading(false);
     });
 
     return () => ((isSubscribed = false), (fetchedSentiment = false));
@@ -247,54 +279,74 @@ export default function report() {
                     endDate: survey.endDate,
                   }}
                   onChange={handleDateChange}
-                  definedRanges={survey.dateShortcuts}
+                  definedRanges={dateShortcuts}
                 />
               </DateWrapper>
             </Grid>
             <Grid item xs={12} sm={6}></Grid>
             <Grid item xs={12} sm={6}>
-              <StyledContainer>
-                <Typography variant="h4">Survey Statistics</Typography>
-                <Statics
-                  progressValue={handleProgress(
-                    get(reportData, "total_viewed_surveys", 0)
-                  )}
-                  value={get(reportData, "total_viewed_surveys", 0)}
-                  staticTitle="Viewed"
-                />
-                <Statics
-                  progressValue={handleProgress(
-                    get(reportData, "total_completed_count", 0)
-                  )}
-                  value={get(reportData, "total_completed_count", 0)}
-                  staticTitle="Completed"
-                />
-              </StyledContainer>
+              {loading ? (
+                <SkeletonTheme
+                  baseColor="#e6e8ed"
+                  highlightColor="#f7f7f7"
+                  height="240px"
+                >
+                  <Skeleton count={1} />
+                </SkeletonTheme>
+              ) : (
+                <StyledContainer>
+                  <Typography variant="h4">Survey Statistics</Typography>
+                  <Statics
+                    progressValue={handleProgress(
+                      get(reportData, "total_viewed_surveys", 0)
+                    )}
+                    value={get(reportData, "total_viewed_surveys", 0)}
+                    staticTitle="Viewed"
+                  />
+                  <Statics
+                    progressValue={handleProgress(
+                      get(reportData, "total_completed_count", 0)
+                    )}
+                    value={get(reportData, "total_completed_count", 0)}
+                    staticTitle="Completed"
+                  />
+                </StyledContainer>
+              )}
             </Grid>
             <Grid item xs={12} sm={6}>
-              <StyledContainer>
-                <Typography variant="h4">Survey Sentiment</Typography>
-                <StyledSentimentContainer>
-                  <Sentiment
-                    value={get(sentimentData, "positive", 0)}
-                    sentimentTitle="Positive"
-                    sentimentEmoji="😀"
-                    progressColor="success"
-                  />
-                  <Sentiment
-                    value={get(sentimentData, "negative", 0)}
-                    sentimentTitle="Negative"
-                    sentimentEmoji="🙁"
-                    progressColor="error"
-                  />
-                  <Sentiment
-                    value={get(sentimentData, "neutral", 0)}
-                    sentimentTitle="Neutral"
-                    sentimentEmoji="🙄"
-                    progressColor="warning"
-                  />
-                </StyledSentimentContainer>
-              </StyledContainer>
+              {loading ? (
+                <SkeletonTheme
+                  baseColor="#e6e8ed"
+                  highlightColor="#f7f7f7"
+                  height="240px"
+                >
+                  <Skeleton count={1} />
+                </SkeletonTheme>
+              ) : (
+                <StyledContainer>
+                  <Typography variant="h4">Survey Sentiment</Typography>
+                  <StyledSentimentContainer>
+                    <Sentiment
+                      value={get(sentimentData, "positive", 0)}
+                      sentimentTitle="Positive"
+                      sentimentEmoji="😀"
+                      progressColor="success"
+                    />
+                    <Sentiment
+                      value={get(sentimentData, "negative", 0)}
+                      sentimentTitle="Negative"
+                      sentimentEmoji="🙁"
+                      progressColor="error"
+                    />
+                    <Sentiment
+                      value={get(sentimentData, "neutral", 0)}
+                      sentimentTitle="Neutral"
+                      sentimentEmoji="🙄"
+                      progressColor="warning"
+                    />
+                  </StyledSentimentContainer>
+                </StyledContainer>
+              )}
             </Grid>
           </Grid>
         </Container>
