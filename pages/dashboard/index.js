@@ -28,6 +28,7 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import DashboardSubHeader from "../../components/dashboard/DashboardSubHeader";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
+import DashboardLoader from "../../components/loaders/DashboardLoader";
 
 import { surveyService } from "../../services/survey.service";
 import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
@@ -120,6 +121,7 @@ export default function Index() {
   const [surveyId, setSurveyId] = useState("");
   const [count, setSurveyCount] = useState(0);
   const { data: session, status } = useSession();
+  const [loading, setLoading] = useState(true);
 
   const router = useRouter();
 
@@ -160,6 +162,7 @@ export default function Index() {
         toast.error(error.message, {
           position: toast.POSITION.TOP_RIGHT,
         });
+        setLoading(false);
       });
   };
 
@@ -169,11 +172,13 @@ export default function Index() {
       .then((res) => {
         const count = Math.ceil(res.data / 10);
         setSurveyCount(count);
+        setLoading(false);
       })
       .catch((error) => {
         toast.error(error.message, {
           position: toast.POSITION.TOP_RIGHT,
         });
+        setLoading(false);
       });
   };
 
@@ -258,110 +263,118 @@ export default function Index() {
   };
   return (
     <>
-      <DashboardH></DashboardH>
-      <FullBackground maxWidth="lg">
-        <DashboardSubHeader title={"My Surveys"} />
-        <GridContainer container spacing={5}>
-          {surveys.length ? (
-            surveys.map((survey, index) => (
-              <Grid key={survey.survey_id} item md={4}>
-                <SurveyCard
-                  variant="outlined"
-                  onClick={(e) =>
-                    handleEdit(e, survey.survey_id, "/survey/report")
-                  }
-                >
-                  <CardContent>
-                    <CardTitle>
-                      <CardHead>{survey.survey_title}</CardHead>
-                      <CardIconContainer>
-                        <CardIcon
-                          onClick={() => deleteSurvey(survey.survey_id)}
-                        >
-                          <Delete />
-                        </CardIcon>
-                      </CardIconContainer>
-                    </CardTitle>
-                    <Response>
-                      <Left>
-                        <Logo src={person} width="14" alt="person" />
-                        <Text>{survey.responses} responses</Text>
-                      </Left>
-                      <Edit
-                        disableRipple
-                        disableElevation
-                        startIcon={<EditIcon width="14" />}
-                        onClick={(e) =>
-                          handleEdit(e, survey.survey_id, "/survey/create")
-                        }
-                      >
-                        Edit
-                      </Edit>
-                    </Response>
-                  </CardContent>
-                </SurveyCard>
-              </Grid>
-            ))
-          ) : (
-            <Grid item>
-              <NoSurveyScreen />
-            </Grid>
-          )}
-        </GridContainer>
+      {loading ? (
+        <DashboardLoader></DashboardLoader>
+      ) : (
+        <div>
+          <DashboardH></DashboardH>
+          <FullBackground maxWidth="lg">
+            <DashboardSubHeader title={"My Surveys"} />
+            <GridContainer container spacing={5}>
+              {surveys.length ? (
+                surveys.map((survey, index) => (
+                  <Grid key={survey.survey_id} item md={4}>
+                    <SurveyCard
+                      variant="outlined"
+                      onClick={(e) =>
+                        handleEdit(e, survey.survey_id, "/survey/report")
+                      }
+                    >
+                      <CardContent>
+                        <CardTitle>
+                          <CardHead>{survey.survey_title}</CardHead>
+                          <CardIconContainer>
+                            <CardIcon
+                              onClick={() => deleteSurvey(survey.survey_id)}
+                            >
+                              <Delete />
+                            </CardIcon>
+                          </CardIconContainer>
+                        </CardTitle>
+                        <Response>
+                          <Left>
+                            <Logo src={person} width="14" alt="person" />
+                            <Text>{survey.responses} responses</Text>
+                          </Left>
+                          <Edit
+                            disableRipple
+                            disableElevation
+                            startIcon={<EditIcon width="14" />}
+                            onClick={(e) =>
+                              handleEdit(e, survey.survey_id, "/survey/create")
+                            }
+                          >
+                            Edit
+                          </Edit>
+                        </Response>
+                      </CardContent>
+                    </SurveyCard>
+                  </Grid>
+                ))
+              ) : (
+                <Grid item>
+                  <NoSurveyScreen />
+                </Grid>
+              )}
+            </GridContainer>
 
-        {surveys && surveys.length ? (
-          <Grid marginTop={5} display={"flex"} justifyContent={"center"}>
-            <Pagination
-              variant="outlined"
-              shape="rounded"
-              count={count}
-              page={page}
-              size="large"
-              onChange={handleChange}
-              renderItem={(item) =>
-                ["previous", "next"].includes(item.type) ? (
-                  <Button
-                    variant="outlined"
-                    onClick={item.onClick}
-                    disabled={item.disabled}
-                  >
-                    {item.type === "previous" ? "Prev" : "Next"}
-                  </Button>
-                ) : (
-                  <ButtonGroup
-                    sx={{
-                      marginLeft: `${item.page === 1 && "20px"}`,
-                      marginRight: `${item.page === count && "20px"}`,
-                    }}
-                  >
-                    {item.type === "page" ? (
+            {surveys && surveys.length ? (
+              <Grid marginTop={5} display={"flex"} justifyContent={"center"}>
+                <Pagination
+                  variant="outlined"
+                  shape="rounded"
+                  count={count}
+                  page={page}
+                  size="large"
+                  onChange={handleChange}
+                  renderItem={(item) =>
+                    ["previous", "next"].includes(item.type) ? (
                       <Button
-                        variant={item.selected ? "contained" : "text"}
-                        sx={{ backgroundColor: !item.selected && "#f4f5f8" }}
+                        variant="outlined"
                         onClick={item.onClick}
                         disabled={item.disabled}
                       >
-                        {item.page}
+                        {item.type === "previous" ? "Prev" : "Next"}
                       </Button>
                     ) : (
-                      <MoreHorizIcon />
-                    )}
-                  </ButtonGroup>
-                )
-              }
-            />
-          </Grid>
-        ) : (
-          ""
-        )}
-      </FullBackground>
-      <ConfirmationDialog
-        status={open}
-        title="Delete Survey?"
-        message="Are you sure you want to delete your survey?"
-        handleReject={handleClose}
-        handleAccept={deleteSurveyAccept}
-      />
+                      <ButtonGroup
+                        sx={{
+                          marginLeft: `${item.page === 1 && "20px"}`,
+                          marginRight: `${item.page === count && "20px"}`,
+                        }}
+                      >
+                        {item.type === "page" ? (
+                          <Button
+                            variant={item.selected ? "contained" : "text"}
+                            sx={{
+                              backgroundColor: !item.selected && "#f4f5f8",
+                            }}
+                            onClick={item.onClick}
+                            disabled={item.disabled}
+                          >
+                            {item.page}
+                          </Button>
+                        ) : (
+                          <MoreHorizIcon />
+                        )}
+                      </ButtonGroup>
+                    )
+                  }
+                />
+              </Grid>
+            ) : (
+              ""
+            )}
+          </FullBackground>
+          <ConfirmationDialog
+            status={open}
+            title="Delete Survey?"
+            message="Are you sure you want to delete your survey?"
+            handleReject={handleClose}
+            handleAccept={deleteSurveyAccept}
+          />
+        </div>
+      )}
     </>
   );
 }

@@ -18,30 +18,15 @@ import { surveyService } from "../../../services/survey.service";
 import { useDispatchSurvey, useSurvey } from "../../../context/SurveyState";
 import { authService } from "../../../services/auth.service";
 
-export async function getStaticPaths() {
-  const paths = [{ params: { id: "questions" } }, { params: { id: "themes" } }];
-  return {
-    paths,
-    fallback: false,
-  };
-}
-
-export async function getStaticProps({ params }) {
-  const props = {};
-  params.id === "questions" && (props["currentTab"] = "questions");
-  params.id === "themes" && (props["currentTab"] = "themes");
-  return {
-    props,
-  };
-}
-
-export default function create({ currentTab }) {
+export default function create() {
   const [logo, setLogo] = useState("");
   const { data: session, status } = useSession();
 
   const router = useRouter();
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
+
+  const { id } = router.query;
 
   useEffect(async () => {
     if (status === "loading") return;
@@ -94,10 +79,10 @@ export default function create({ currentTab }) {
         currentTab="CREATE"
       >
         <SurveyCreateTabSection
-          currentTab={currentTab}
+          currentTab={id}
           handleChangeTab={handleChangeTab}
         >
-          {currentTab === "questions" ? (
+          {id === "questions" ? (
             <SurveyQuestionSection questions={survey.questions} />
           ) : (
             <SurveyThemeSection logo={logo} />

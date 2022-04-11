@@ -70,28 +70,6 @@ const initialState = {
   surveyShareLink: "",
   startDate: dayjs().subtract(7, "days").startOf("day").toDate(),
   endDate: dayjs().endOf("day").toDate(),
-  dateShortcuts: [
-    {
-      label: "Today",
-      startDate: dayjs().startOf("day").toDate(),
-      endDate: dayjs().endOf("day").toDate(),
-    },
-    {
-      label: "Yesterday",
-      startDate: dayjs().subtract(1, "days").startOf("day").toDate(),
-      endDate: dayjs().subtract(1, "days").endOf("day").toDate(),
-    },
-    {
-      label: "Last 7 days",
-      startDate: dayjs().subtract(7, "days").startOf("day").toDate(),
-      endDate: dayjs().endOf("day").toDate(),
-    },
-    {
-      label: "Last 30 days",
-      startDate: dayjs().subtract(30, "days").startOf("day").toDate(),
-      endDate: dayjs().endOf("day").toDate(),
-    },
-  ],
   reportData: [],
 };
 
