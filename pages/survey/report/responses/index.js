@@ -14,17 +14,15 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Chip from "@mui/material/Chip";
-import Typography from "@mui/material/Typography";
 
-import Layout from "../../../../components/Layout";
-import SurveyHeader from "../../../../components/survey/SurveyHeader";
-import BreadCrumbHeader from "../../../../components/survey/BreadCrumbHeader";
-import BreadCrumbs from "../../../../components/survey/BreadCrumbs";
+import Layout from "@/components/Layout";
+import SurveyHeader from "@/components/survey/SurveyHeader";
+import BreadCrumbHeader from "@/components/survey/BreadCrumbHeader";
+import BreadCrumbs from "@/components/survey/BreadCrumbs";
 
-import { surveyService } from "../../../../services/survey.service";
+import { surveyService } from "@/services/survey.service";
 
-import { useDispatchSurvey, useSurvey } from "../../../../context/SurveyState";
+import { useDispatchSurvey, useSurvey } from "@/context/SurveyState";
 
 import styled from "@emotion/styled";
 
@@ -35,47 +33,14 @@ const StyledTableContainer = styled(TableContainer)({
   marginTop: "40px",
 });
 
-const SingleSentiment = styled("div")({
-  position: "relative",
-  display: "flex",
-  alignItems: "center",
-});
-
-const SentimentChip = styled(Chip)({
-  color: "#fff",
-});
-
 const Unique = styled("div")({
   color: "blue",
 });
 
-const NoData = styled("div")({
+const NoData = styled("span")({
   padding: "16px",
   width: "100%",
 });
-const Sentiment = ({ sentimentTitle }) => (
-  <React.Fragment>
-    <SingleSentiment>
-      <Typography fontSize={30} mr={1}>
-        {sentimentTitle === "Positive"
-          ? "😀"
-          : sentimentTitle === "Negative"
-          ? "🙁"
-          : "🙄"}
-      </Typography>
-      <SentimentChip
-        label={sentimentTitle}
-        color={
-          sentimentTitle === "Positive"
-            ? "success"
-            : sentimentTitle === "Negative"
-            ? "error"
-            : "warning"
-        }
-      />
-    </SingleSentiment>
-  </React.Fragment>
-);
 
 export default function index() {
   const survey = useSurvey();
@@ -152,7 +117,7 @@ export default function index() {
               <TableBody sx={{ backgroundColor: "#f8f9fd", cursor: "pointer" }}>
                 {!reportData.length && (
                   <TableRow>
-                    <NoData>No Data Available</NoData>
+                    <NoData>We are preparing your results please wait!</NoData>
                   </TableRow>
                 )}
                 {reportData &&
@@ -172,7 +137,7 @@ export default function index() {
                       </TableCell>
                       <TableCell align="left">
                         {dayjs(get(answer, "inserted_at", "")).format(
-                          "DD MMM YYYY"
+                          "MMM D, YYYY h:mm A"
                         )}
                       </TableCell>
                     </TableRow>

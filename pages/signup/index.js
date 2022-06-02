@@ -26,9 +26,6 @@ import Layout from "../../components/Layout";
 import Limiter from "../../components/Limiter";
 import StyledButton from "../../components/StyledButton";
 
-// images
-import google from "../../images/svg/google.svg";
-
 import styled from "@emotion/styled";
 import "react-phone-input-2/lib/material.css";
 
@@ -99,7 +96,7 @@ export default function Index({ csrfToken }) {
     watch,
     trigger,
     setValue,
-    formState: { errors },
+    formState: { errors, isDirty, isValid },
   } = useForm();
 
   const survey = useSurvey();
@@ -154,7 +151,7 @@ export default function Index({ csrfToken }) {
           <BannerSection item lg={6} md={6}>
             <Image
               src={"/images/logo.png"}
-              width={142}
+              width={150}
               height={61}
               alt="background"
             />
@@ -273,6 +270,7 @@ export default function Index({ csrfToken }) {
                   type="submit"
                   fullWidth
                   variant="contained"
+                  disabled={!isDirty || !isValid}
                   onClick={handleSubmit(onSubmit)}
                   sx={{ mt: 3, mb: 2 }}
                 >

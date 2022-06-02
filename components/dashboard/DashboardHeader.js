@@ -75,8 +75,8 @@ export default function DashboardHeader() {
       <BoxCustom maxWidth="lg">
         <Logo
           onClick={() => openLink("/dashboard")}
-          width={135}
-          height={58}
+          width={120}
+          height={50}
           src={"/images/logo.png"}
           alt="background"
         />

@@ -10,8 +10,14 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 
-import { SentimentCh } from "../../pages/survey/report";
+import { objectify, convertToSentenceTable } from "@/helpers/constants";
 
 import styled from "@emotion/styled";
 
@@ -91,34 +97,33 @@ const Date = styled("div")({
   width: "20%",
 });
 
-const Lead = styled("div")({
-  width: "20%",
+const SpanTitle = styled("span")({
+  fontSize: "14px",
 });
 
 const Sentiment = styled("div")({
   width: "20%",
 });
 
-const SingleSentiment = styled("div")({
-  position: "relative",
-  display: "flex",
-  alignItems: "center",
-});
-
-const SentimentChip = styled(Chip)({
+const Phrase = styled(Chip)({
+  backgroundColor: "#2A7EFF",
   color: "#fff",
+  marginRight: "2px",
+  fontSize: "10px",
 });
 
 const StyledAnswerRow = styled("div")({
   display: "flex",
   width: "100%",
   flexDirection: "row",
+  alignItems: "center",
 });
 
 const StyledAnswerColumn = styled("div")({
   display: "flex",
   width: "100%",
   flexDirection: "column",
+  marginBottom: "10px",
 });
 
 const StyledAnswerRowBody = styled("div")({
@@ -131,35 +136,21 @@ const StyledAnswerRowBody = styled("div")({
   color: "#707070",
 });
 
-const SentimentDiv = ({ sentimentTitle }) => (
-  <React.Fragment>
-    <SingleSentiment>
-      <Typography fontSize={30} mr={1}>
-        {sentimentTitle === "Positive"
-          ? "😀"
-          : sentimentTitle === "Negative"
-          ? "🙁"
-          : "🙄"}
-      </Typography>
-      <SentimentChip
-        label={sentimentTitle}
-        color={
-          sentimentTitle === "Positive"
-            ? "success"
-            : sentimentTitle === "Negative"
-            ? "error"
-            : "warning"
-        }
-      />
-    </SingleSentiment>
-  </React.Fragment>
-);
+const AddMargin = styled("div")({
+  display: "flex",
+  width: "100%",
+  marginBottom: "8px",
+});
+
+const NoData = styled("div")({
+  padding: "16px",
+  width: "100%",
+});
 
 export default function UserSurveyQuesAns({ data, question }) {
-  console.log(question);
   return (
     <>
-      <QuestionAccordion expanded={true} square>
+      <QuestionAccordion expanded={true} square key={question.qid}>
         <AccordionSummary
           sx={{ borderBottom: "solid 1px #dcdcdc" }}
           aria-controls="panel1a-content"
@@ -173,7 +164,7 @@ export default function UserSurveyQuesAns({ data, question }) {
                 fontSize="18px"
                 fontWeight="600"
               >
-                {question.question}
+                Question {question.qid}: {question.question}
               </Typography>
             </StyledQuestionHead>
             <StyledQuestionHeadEndSlot>
@@ -190,45 +181,87 @@ export default function UserSurveyQuesAns({ data, question }) {
               <StyledAnswerTableHead>
                 <Answer>Response</Answer>
                 <Date>Created</Date>
-                <Lead>Lead</Lead>
-                <Sentiment>Sentiment</Sentiment>
+                <Sentiment>Key Phrases</Sentiment>
               </StyledAnswerTableHead>
               <StyledAnswerTableBody>
                 <StyledAnswerRow>
-                  {question.question_type === "voice" && (
-                    <Answer>
-                      <audio
-                        src={
-                          "https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3"
-                        }
-                        controls
-                      />
-                    </Answer>
-                  )}
-                  {question.question_type !== "voice" && (
-                    <Answer>{question.question_type}</Answer>
+                  {get(question, "question_type", "") === "audio" &&
+                    get(question, "audio_url") && (
+                      <Answer>
+                        <audio src={question.audio_url} controls />
+                      </Answer>
+                    )}
+                  {get(question, "question_type") !== "audio" && (
+                    <Answer>{question.answer}</Answer>
                   )}
                   <Date>
-                    {dayjs(get(data, "inserted_at", "")).format("DD MMM YYYY")}
+                    {get(data, "inserted_at") &&
+                      dayjs(get(data, "inserted_at", "")).format("DD MMM YYYY")}
                   </Date>
-                  <Lead>Something</Lead>
                   <Sentiment>
-                    <SentimentDiv
-                      value={75}
-                      sentimentTitle="Positive"
-                      sentimentEmoji="😀"
-                      progressColor="success"
-                    />
+                    {!get(question, "key_phrases", []).length && (
+                      <NoData>No Results</NoData>
+                    )}
+                    {get(question, "key_phrases", []).length > 0 &&
+                      objectify(get(question, "key_phrases", [])).map(
+                        (phrase, index) => (
+                          <Phrase key={index} label={phrase.text} />
+                        )
+                      )}
                   </Sentiment>
                 </StyledAnswerRow>
-                {question.question_type && question.question_type === "voice" && (
+                {get(question, "question_type", "") === "audio" && (
                   <StyledAnswerColumn>
                     <StyledAnswerTableHead>Transcript</StyledAnswerTableHead>
                     <StyledAnswerRowBody>
-                      some dbvdbvs nsdbsvdb sbvdbsdv
+                      {question.transcription}
                     </StyledAnswerRowBody>
                   </StyledAnswerColumn>
                 )}
+                <StyledAnswerRow>
+                  <TableContainer sx={{ maxHeight: 300, width: "100%" }}>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell align="left">Sentence</TableCell>
+                          <TableCell align="left">Emotion</TableCell>
+                          <TableCell align="left">Sentiment</TableCell>
+                        </TableRow>
+                      </TableHead>
+
+                      <TableBody
+                        sx={{
+                          backgroundColor: "#f8f9fd",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {!get(question, "emotion.sentences", []).length && (
+                          <TableRow>
+                            <NoData>No Results</NoData>
+                          </TableRow>
+                        )}
+                        {get(question, "emotion.sentences", []).length > 0 &&
+                          convertToSentenceTable(
+                            get(question, "emotion.sentences", [])
+                          ).map((phrase, index) => (
+                            <TableRow key={index}>
+                              <TableCell align="left">
+                                {phrase.sentence}
+                              </TableCell>
+                              <TableCell align="left">
+                                {phrase.emotion}
+                              </TableCell>
+                              <TableCell align="left">
+                                {phrase.sentiment}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </StyledAnswerRow>
+                <AddMargin />
+                <StyledAnswerRow></StyledAnswerRow>
               </StyledAnswerTableBody>
             </StyledAnswerBody>
           </QuestionAccordionBody>

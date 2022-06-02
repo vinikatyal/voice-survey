@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 
 import get from "lodash.get";
-
+import dayjs from "dayjs";
 import Image from "next/image";
 
 import Container from "@mui/material/Container";
@@ -182,7 +182,8 @@ export default function Index() {
       });
   };
 
-  const deleteSurvey = (survey_id) => {
+  const deleteSurvey = (e, survey_id) => {
+    e.stopPropagation();
     setSurveyId(survey_id);
     setOpen(true);
   };
@@ -218,6 +219,14 @@ export default function Index() {
         type: "SET_TITLE",
         value: surveyDetails.data.survey_title,
       });
+
+
+      console.log(dayjs(surveyDetails.data.created_date).toDate())
+
+      dispatch({
+        type: "SET_CREATE_DATE",
+        value: dayjs(surveyDetails.data.created_date).toDate()
+      })
 
       const accessMembers = Object.keys(surveyDetails.data.user_access).reduce(
         (acc, key) => {
@@ -285,7 +294,7 @@ export default function Index() {
                           <CardHead>{survey.survey_title}</CardHead>
                           <CardIconContainer>
                             <CardIcon
-                              onClick={() => deleteSurvey(survey.survey_id)}
+                              onClick={(e) => deleteSurvey(e, survey.survey_id)}
                             >
                               <Delete />
                             </CardIcon>

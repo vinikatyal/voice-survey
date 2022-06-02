@@ -27,7 +27,8 @@ export const surveyService = {
   update_user_answer,
   getSurveyResults,
   getSurveyResponseCount,
-  getSurveySentiment,
+  getQuestionLevelAnalytics,
+  getSurveyLevelAnalytics,
 };
 
 async function update_user_answer(uniqueId, data) {
@@ -234,6 +235,37 @@ async function generateLink(survey_id, survey_type, url) {
 
 // Reporting
 
+
+async function getSurveyLevelAnalytics(id, data) {
+  const token = await getAccessToken();
+  return await fetchWrapper
+    .post(`${baseUrl}/get_survey_level_analytics/${id}`, data, {
+      token,
+    })
+    .then((res) => {
+      if (get(res, "code") === 200) {
+        return res;
+      } else {
+        errorHandler({}, res);
+      }
+    });
+}
+
+async function getQuestionLevelAnalytics(id, data) {
+  const token = await getAccessToken();
+  return await fetchWrapper
+    .post(`${baseUrl}/get_ques_level_analytics/${id}`, data, {
+      token,
+    })
+    .then((res) => {
+      if (get(res, "code") === 200) {
+        return res;
+      } else {
+        errorHandler({}, res);
+      }
+    });
+}
+
 async function getSurveyResults(id, data) {
   const token = await getAccessToken();
   return await fetchWrapper
@@ -249,25 +281,10 @@ async function getSurveyResults(id, data) {
     });
 }
 
-async function getSurveyResponseCount(data) {
+async function getSurveyResponseCount(id, data) {
   const token = await getAccessToken();
   return await fetchWrapper
-    .post(`${baseUrl}/get_surveys_response_count`, data, {
-      token,
-    })
-    .then((res) => {
-      if (get(res, "code") === 200) {
-        return res;
-      } else {
-        errorHandler({}, res);
-      }
-    });
-}
-
-async function getSurveySentiment(id, data) {
-  const token = await getAccessToken();
-  return await fetchWrapper
-    .post(`${baseUrl}/get_survey_sentiment_result/${id}`, data, {
+    .post(`${baseUrl}/get_surveys_response_count/${id}`, data, {
       token,
     })
     .then((res) => {

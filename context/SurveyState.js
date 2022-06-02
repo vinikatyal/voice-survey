@@ -68,9 +68,12 @@ const initialState = {
   previousSurveyType: null,
   surveyEditId: null,
   surveyShareLink: "",
-  startDate: dayjs().subtract(7, "days").startOf("day").toDate(),
+  surveyCreatedDate: dayjs().subtract(30, "days").startOf("day").toDate(),
+  startDate: dayjs().subtract(30, "days").startOf("day").toDate(),
   endDate: dayjs().endOf("day").toDate(),
+  reportStats: {},
   reportData: [],
+  quesReportData: [],
 };
 
 const reducer = produce((draft, action) => {
@@ -88,6 +91,9 @@ const reducer = produce((draft, action) => {
 
     case "SET_TYPE":
       draft.surveyType = action.value;
+      break;
+    case "SET_CREATE_DATE":
+      draft.surveyCreatedDate = action.value;
       break;
     case "SET_WELCOME_TEXT":
       draft.surveyWelcomeText = action.value;
@@ -118,8 +124,15 @@ const reducer = produce((draft, action) => {
     case "SET_END_DATE":
       draft.endDate = action.value;
       break;
+    case "SET_REPORT_STATS":
+      draft.reportStats = action.value;
+      break;
     case "SET_REPORT_DATA":
       draft.reportData = action.value;
+      break;
+
+    case "SET_QUESTION_REPORT_DATA":
+      draft.quesReportData = action.value;
       break;
     case "RESET_SURVEY":
       {
@@ -145,9 +158,14 @@ const reducer = produce((draft, action) => {
           color: "linear-gradient(to right, #1EA798, #2D4C93)!important;",
         };
         draft.previousSurveyType = null;
-        draft.startDate = dayjs().subtract(7, "days").startOf("day").toDate();
+        draft.surveyCreatedDate = dayjs()
+          .subtract(30, "days")
+          .startOf("day")
+          .toDate();
+        draft.startDate = dayjs().subtract(30, "days").startOf("day").toDate();
         draft.endDate = dayjs().endOf("day").toDate();
         draft.reportData = [];
+        draft.reportStats = {};
       }
       break;
     default:

@@ -6,6 +6,7 @@ const FullBackground = styled("div")(({ bgColor }) => ({
   overflow: "auto",
   height: "auto",
   backgroundColor: bgColor,
+  marginBottom: "20px"
 }));
 
 export default function Layout(props) {

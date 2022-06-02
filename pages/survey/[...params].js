@@ -31,7 +31,6 @@ import EmailTextField from "../../components/questions/EmailTextField";
 import DateField from "../../components/questions/DateField";
 import WelcomeText from "../../components/questions/WelcomeText";
 import PhoneTextField from "../../components/questions/PhoneTextField";
-// import VoiceInput from "../../components/questions/VoiceInput";
 
 import Image from "next/image";
 
@@ -136,7 +135,7 @@ export default function survey() {
     }
   };
 
-  const handleResponse = async (response) => {
+  const handleResponse = async (response, is_last_ans) => {
     try {
       let form = new FormData();
       form.append("qid", question.qid);
@@ -146,6 +145,12 @@ export default function survey() {
         form.append("user_answer", response);
       }
       form.append("qtype", question.question_type);
+
+      if (is_last_ans) {
+        const min = 0;
+        form.append("is_last_ans", "yes");
+        form.append("time_taken", min);
+      }
 
       const res = await surveyService.update_user_answer(uniqueId, form);
     } catch (error) {

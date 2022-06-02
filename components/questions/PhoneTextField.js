@@ -49,9 +49,10 @@ function PhoneTextField({
       setError("Please enter required field");
       return;
     }
-    const res = await handleResponse(mobile);
+    const isLastAnswer = +id === totalQuestions ? true : false;
+    const res = await handleResponse(mobile, isLastAnswer);
     setError("");
-    if (+id === totalQuestions) {
+    if (isLastAnswer) {
       res && handleEndSurvey();
     } else {
       res && router.push(nextRoute);
@@ -82,7 +83,7 @@ function PhoneTextField({
             value={mobile}
             onChange={setMobile}
           ></PhoneInput>
-           {error && <Typography color="red">{error}</Typography>}
+          {error && <Typography color="red">{error}</Typography>}
         </PhoneFormControl>
       </Grid>
       <Grid item md={2} xs={0}></Grid>

@@ -6,7 +6,6 @@ import Link from "next/link";
 import Image from "next/image";
 import router from "next/router";
 
-import get from "lodash.get";
 import isEmpty from "lodash.isempty";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
@@ -19,9 +18,6 @@ import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-
-// image
-import google from "../../images/svg/google.svg";
 
 // internal components
 import Layout from "../../components/Layout";
@@ -80,7 +76,7 @@ export default function Index({ csrfToken }) {
     handleSubmit,
     trigger,
     setValue,
-    formState: { errors },
+    formState: { errors, isDirty, isValid },
   } = useForm();
 
   const survey = useSurvey();
@@ -130,7 +126,7 @@ export default function Index({ csrfToken }) {
           <BannerSection item lg={6} md={6}>
             <Image
               src={"/images/logo.png"}
-              width={142}
+              width={150}
               height={61}
               alt="background"
             />
@@ -220,6 +216,7 @@ export default function Index({ csrfToken }) {
                   )}
                 </FormControl>
                 <StyledButton
+                  disabled={!isDirty || !isValid} // here
                   onClick={handleSubmit(onSubmit)}
                   fullWidth
                   sx={{ mt: 3, mb: 2 }}

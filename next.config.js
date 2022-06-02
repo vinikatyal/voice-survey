@@ -16,6 +16,7 @@ module.exports = {
 
     server: {
       DEV_URL: "https://surveyv2.gnani.site",
+      SHARE_URL: "https://app.getvoiceit.com"
     },
   },
   reactStrictMode: true,

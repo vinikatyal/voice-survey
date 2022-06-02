@@ -43,8 +43,9 @@ function EmailTextField({
   }, []);
 
   const handleNext = async () => {
-    const res = await handleResponse(watchInput);
-    if (+id === totalQuestions) {
+    const isLastAnswer = +id === totalQuestions ? true : false;
+    const res = await handleResponse(watchInput, isLastAnswer);
+    if (isLastAnswer) {
       res && handleEndSurvey();
     } else {
       res && router.push(nextRoute);

@@ -32,6 +32,10 @@ const FabAudio = styled(Fab)`
   }
 `;
 
+const Small = styled("div")`
+  font-size: 10px;
+`;
+
 function VoiceInput({
   title,
   required,
@@ -123,8 +127,9 @@ function VoiceInput({
       const audiofile = new File([blob], `${uniqueId}.webm`, {
         type: "audio/webm",
       });
-      const res = await handleResponse(audiofile);
-      if (+id === totalQuestions) {
+      const isLastAnswer = +id === totalQuestions ? true : false;
+      const res = await handleResponse(audiofile, isLastAnswer);
+      if (isLastAnswer) {
         res && handleEndSurvey();
       } else {
         res && router.push(nextRoute);
@@ -189,6 +194,9 @@ function VoiceInput({
               <MicIcon />
             </FabAudio>
             <Typography mt={2}>Hit Record to Start</Typography>
+            <Small>
+               Speak close to the microphone for better response.
+            </Small>
           </>
         )}
         {["recording", "paused"].includes(status) && (

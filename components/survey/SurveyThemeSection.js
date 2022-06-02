@@ -46,7 +46,7 @@ const LogoContainer = styled(Box)({
 
 const { publicRuntimeConfig } = getConfig();
 
-const DEV_URL = publicRuntimeConfig.server.DEV_URL;
+const SHARE_URL = publicRuntimeConfig.server.SHARE_URL;
 
 export default function SurveyThemeSection({ logo }) {
   const router = useRouter();
@@ -87,13 +87,13 @@ export default function SurveyThemeSection({ logo }) {
       const link = await surveyService.generateLink(
         surveyId,
         survey.surveyType,
-        `${DEV_URL}/survey/${surveyId}`
+        `${SHARE_URL}/survey/${surveyId}`
       );
 
       const bitlyLink = get(
         link,
         "data.survey_share_link",
-        `${DEV_URL}/survey/${surveyId}`
+        `${SHARE_URL}/survey/${surveyId}`
       );
 
       if (bitlyLink) {

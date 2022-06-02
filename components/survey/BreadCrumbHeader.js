@@ -14,13 +14,13 @@ const HeaderContainer = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-start",
-  width: "70%",
+  width: "65%",
 }));
 
 const RightContainer = styled("div")(({ theme }) => ({
   display: "flex",
   justifyContent: "flex-end",
-  width: "30%",
+  width: "35%",
 }));
 
 export default function BreadCrumbHeader({ children, component }) {

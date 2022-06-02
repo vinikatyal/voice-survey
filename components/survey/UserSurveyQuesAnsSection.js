@@ -5,7 +5,7 @@ import get from "lodash.get";
 // UI
 import Container from "@mui/material/Container";
 // component
-import UserSurveyQuesAns from "./UserSurveyQuesAns";
+import UserSurveyQuesAns from "@/components/survey/UserSurveyQuesAns";
 
 import styled from "@emotion/styled";
 
@@ -15,8 +15,7 @@ const Label = styled("span")({
   fontWeight: "500",
 });
 
-export default function SurveyQuesAnsSection({ reportData }) {
-  console.log(reportData);
+export default function UserSurveyQuesAnsSection({ reportData }) {
   return (
     <>
       <Container maxWidth="lg" sx={{ marginTop: "30px" }}>

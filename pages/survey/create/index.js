@@ -112,9 +112,14 @@ export default function Create() {
   const router = useRouter();
 
   useEffect(() => {
+    const abortController = new AbortController();
     setValue("survey_title", survey.surveyTitle, {
       shouldDirty: true,
     });
+
+    return () => {
+      abortController.abort();
+    };
   }, [survey.surveyTitle]);
 
   useEffect(() => {

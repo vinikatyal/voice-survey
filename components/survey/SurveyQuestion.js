@@ -227,7 +227,7 @@ export default function SurveyQuestion({
               )}
             </QuestionSection>
             <AnswerSection>
-              <Label>Short Answer</Label>
+              <Label>Type</Label>
               <Autocomplete
                 disablePortal
                 disableClearable
