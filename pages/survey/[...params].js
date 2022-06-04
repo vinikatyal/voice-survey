@@ -70,8 +70,8 @@ export default function survey() {
   const [questionId, setQuestionId] = useState("");
   const [open, setOpen] = useState(false);
 
-  const VoiceInput = dynamic(
-    () => import("../../components/questions/VoiceInput"),
+  const VoiceInputNew = dynamic(
+    () => import("../../components/questions/VoiceInputNew"),
     { ssr: false }
   );
 
@@ -116,7 +116,6 @@ export default function survey() {
           value: get(surveyDetails.data, "welcome_text", ""),
         });
 
-
         if (get(surveyDetails, "logo_link")) {
           const image = get(surveyDetails, "logo_link");
           SetWelcomeLogo(image);
@@ -140,6 +139,7 @@ export default function survey() {
       let form = new FormData();
       form.append("qid", question.qid);
       if (question.question_type === "audio") {
+        console.log(response);
         form.append("answer_audio_file", response);
       } else {
         form.append("user_answer", response);
@@ -185,11 +185,7 @@ export default function survey() {
     >
       <Grid container>
         <Grid item xs={12} mb={3}>
-          <img
-            src={welcomeLogo}
-            width={'auto'}
-            height={70}
-          />
+          <img src={welcomeLogo} width={"auto"} height={70} />
         </Grid>
       </Grid>
       {surveyId && !questionId && (
@@ -206,10 +202,18 @@ export default function survey() {
               </Grid>
               <Grid item xs={12}>
                 {/* <Image src={"/survey/mic.svg"} width={50} height={50} /> */}
-                {surveyId !== '8bf17bb4272d49b9bc3d90fcfd847e99_dev' && <Image src={"/survey/mic.svg"} width={50} height={50} />}
-                {surveyId === '8bf17bb4272d49b9bc3d90fcfd847e99_dev' && <video
-                controls disablePictureInPicture controlsList="nodownload noplaybackrate"
-                src={"/survey/welcomevideo.mp4"} style={{ width: "100%", height: "300px" }} />}
+                {surveyId !== "8bf17bb4272d49b9bc3d90fcfd847e99_dev" && (
+                  <Image src={"/survey/mic.svg"} width={50} height={50} />
+                )}
+                {surveyId === "8bf17bb4272d49b9bc3d90fcfd847e99_dev" && (
+                  <video
+                    controls
+                    disablePictureInPicture
+                    controlsList="nodownload noplaybackrate"
+                    src={"/survey/welcomevideo.mp4"}
+                    style={{ width: "100%", height: "300px" }}
+                  />
+                )}
               </Grid>
             </Grid>
             <WelcomeText
@@ -301,7 +305,7 @@ export default function survey() {
               />
             )}
             {get(question, "question_type", "") === "audio" && (
-              <VoiceInput
+              <VoiceInputNew
                 title={get(question, "question", "")}
                 value={get(question, "answer", "")}
                 required={get(question, "required", false)}

@@ -38,7 +38,7 @@ import styled from "@emotion/styled";
 import { useSurvey, useDispatchSurvey } from "@/context/SurveyState";
 import { surveyService } from "@/services/survey.service";
 
-import { objectify } from "@/helpers/constants";
+import { objectifyAndSlice, objectify } from "@/helpers/constants";
 
 const StyledContainer = styled("div")({
   minHeight: "240px",
@@ -564,9 +564,9 @@ export default function report() {
                         transitionDuration: 1000,
                         fontFamily:
                           '"Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
-                        fontSizes: [16, 20],
+                        fontSizes: [16, 30],
                       }}
-                      words={objectify(
+                      words={objectifyAndSlice(
                         get(surveyData, "survey_responses[0].key_phrases", [])
                       )}
                     />

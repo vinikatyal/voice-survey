@@ -21,6 +21,7 @@
     "lodash.get": "^4.4.2",
     "lodash.isempty": "^4.4.0",
     "materialui-daterange-picker": "^1.1.92",
+    "mic-recorder-to-mp3": "^2.2.2",
     "next": "12.0.8",
     "next-auth": "^4.2.1",
     "prop-types": "^15.8.1",
