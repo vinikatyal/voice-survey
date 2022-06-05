@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
 import get from "lodash.get";
 import { useRouter } from "next/router";
@@ -16,10 +16,9 @@ import Fab from "@mui/material/Fab";
 // Icons
 import MicIcon from "@mui/icons-material/Mic";
 import PlayArrow from "@mui/icons-material/PlayArrow";
+import Pause from "@mui/icons-material/Pause";
 import StopIcon from "@mui/icons-material/Stop";
 import DeleteIcon from "@mui/icons-material/Delete";
-
-import Waveform from "./Waveform";
 
 import styled from "@emotion/styled";
 
@@ -51,6 +50,7 @@ function VoiceInput({
   const [errorMessage, setErrorMessage] = useState("");
   const [blob, setBlob] = useState(null);
   const [status, setStatus] = useState("idle");
+  const [playPause, setPlayPause] = useState(false);
 
   const router = useRouter();
 
@@ -63,42 +63,36 @@ function VoiceInput({
   let timeout;
 
   const handleNext = async () => {
-    console.log(blob);
-    // if (required && !mediaBlobUrl) {
-    //   setError(true);
-    //   setErrorMessage("Please record the message");
-    //   return;
-    // }
-    // if (get(blob, "size") === 0) {
-    //   setError(true);
-    //   setErrorMessage("Please record the message");
-    //   return;
-    // }
-    // if (["recording", "paused"].includes(status)) {
-    //   setError(true);
-    //   setErrorMessage("Please stop the recording");
-    //   return;
-    // }
-    // if (mediaBlobUrl) {
-    //   const uniqueId =
-    //     Date.now().toString(36) + Math.random().toString(36).substring(2);
-    //   const audiofile = new File([blob], `${uniqueId}.webm`, {
-    //     type: "audio/webm",
-    //   });
-    //   const isLastAnswer = +id === totalQuestions ? true : false;
-    //   const res = await handleResponse(audiofile, isLastAnswer);
-    //   if (isLastAnswer) {
-    //     res && handleEndSurvey();
-    //   } else {
-    //     res && router.push(nextRoute);
-    //   }
-    // } else {
-    //   if (+id === totalQuestions) {
-    //     handleEndSurvey();
-    //   } else {
-    //     router.push(nextRoute);
-    //   }
-    // }
+    if (required && get(blob, "size") === 0) {
+      setError(true);
+      setErrorMessage("Please record the message");
+      return;
+    }
+    if (["recording", "paused"].includes(status)) {
+      setError(true);
+      setErrorMessage("Please stop the recording");
+      return;
+    }
+    if (get(blob, "size")) {
+      const uniqueId =
+        Date.now().toString(36) + Math.random().toString(36).substring(2);
+      const audiofile = new File([blob], `${uniqueId}.webm`, {
+        type: "audio/webm",
+      });
+      const isLastAnswer = +id === totalQuestions ? true : false;
+      const res = await handleResponse(audiofile, isLastAnswer);
+      if (isLastAnswer) {
+        res && handleEndSurvey();
+      } else {
+        res && router.push(nextRoute);
+      }
+    } else {
+      if (+id === totalQuestions) {
+        handleEndSurvey();
+      } else {
+        router.push(nextRoute);
+      }
+    }
   };
 
   const loadWs = () => {
@@ -106,7 +100,7 @@ function VoiceInput({
       container: containerRef.current,
       responsive: 1000,
       barWidth: 3,
-      height: 130,
+      height: 100,
       barGap: 2,
       cursorWidth: 1,
       cursorColor: "white",
@@ -116,30 +110,21 @@ function VoiceInput({
     });
     waveSurferRef.current.microphone.on("deviceReady", function (stream) {
       console.log("Device ready!", stream);
-
       mediaRecorder = new MediaRecorder(stream);
-
       mediaRecorder.ondataavailable = function (e) {
         audioChunks.push(e.data);
         waveSurferRef.current.loadBlob(new Blob(audioChunks));
       };
-
       mediaRecorder.onstop = () => {
         waveSurferRef.current.loadBlob(new Blob(audioChunks));
         setBlob(new Blob(audioChunks));
       };
 
       mediaRecorder.start(250);
-      //waveSurferRef.current.load(URL.createObjectURL(stream));
     });
 
     waveSurferRef.current.microphone.on("deviceError", function (code) {
       console.warn("Device error: " + code);
-    });
-
-    // Attach on ready listener to WaveSurfer
-    waveSurferRef.current.on("ready", function () {
-      //console.log("ready !!");
     });
   };
 
@@ -150,6 +135,9 @@ function VoiceInput({
     loadWs();
     waveSurferRef.current.microphone.start();
     waveSurferRef.current.microphone.play();
+    setTimeout(() => {
+      stopRecording();
+    }, 60000);
   };
 
   const stopRecording = () => {
@@ -165,7 +153,8 @@ function VoiceInput({
     if (!waveSurferRef.current) {
       return;
     }
-    waveSurferRef.current.play();
+    setPlayPause(!waveSurferRef.current.isPlaying());
+    waveSurferRef.current.playPause();
     waveSurferRef.current.setVolume(1);
   };
 
@@ -174,6 +163,8 @@ function VoiceInput({
   };
 
   const removeAudio = () => {
+    setStatus("idle");
+    waveSurferRef.current.destroy();
     waveSurferRef.current = null;
   };
 
@@ -189,7 +180,6 @@ function VoiceInput({
       {/*Input Section  */}
       <Grid item md={2} xs={0}></Grid>
       <Grid item md={8} xs={12}>
-        {/* {<Waveform audio={""} />} */}
         {
           <Grid container>
             <Grid item xs={12} ref={containerRef}></Grid>
@@ -206,7 +196,7 @@ function VoiceInput({
                 playRecording();
               }}
             >
-              <PlayArrow />
+              {playPause ? <Pause /> : <PlayArrow />}
             </FabAudio>
             <FabAudio
               aria-label="add"
