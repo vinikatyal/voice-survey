@@ -70,8 +70,8 @@ export default function survey() {
   const [questionId, setQuestionId] = useState("");
   const [open, setOpen] = useState(false);
 
-  const VoiceInputNew = dynamic(
-    () => import("../../components/questions/VoiceInputNew"),
+  const VoiceInput = dynamic(
+    () => import("../../components/questions/VoiceInput"),
     { ssr: false }
   );
 
@@ -305,7 +305,7 @@ export default function survey() {
               />
             )}
             {get(question, "question_type", "") === "audio" && (
-              <VoiceInputNew
+              <VoiceInput
                 title={get(question, "question", "")}
                 value={get(question, "answer", "")}
                 required={get(question, "required", false)}

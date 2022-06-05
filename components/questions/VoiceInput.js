@@ -4,7 +4,6 @@ import get from "lodash.get";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
 
-import { useReactMediaRecorder } from "react-media-recorder";
 import WaveSurfer from "wavesurfer.js";
 import MicrophonePlugin from "wavesurfer.js/dist/plugin/wavesurfer.microphone";
 
@@ -16,6 +15,7 @@ import Fab from "@mui/material/Fab";
 
 // Icons
 import MicIcon from "@mui/icons-material/Mic";
+import PlayArrow from "@mui/icons-material/PlayArrow";
 import StopIcon from "@mui/icons-material/Stop";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -50,103 +50,123 @@ function VoiceInput({
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [blob, setBlob] = useState(null);
+  const [status, setStatus] = useState("idle");
 
   const router = useRouter();
 
   const waveSurferRef = useRef();
   const containerRef = useRef();
 
+  let mediaRecorder;
+  let audioChunks = [];
+
   let timeout;
 
-  const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
-    useReactMediaRecorder({
-      audio: true,
-      onStop: (blobUrl, blob) => {
-        setBlob(blob);
-      },
+  const handleNext = async () => {
+    console.log(blob);
+    // if (required && !mediaBlobUrl) {
+    //   setError(true);
+    //   setErrorMessage("Please record the message");
+    //   return;
+    // }
+    // if (get(blob, "size") === 0) {
+    //   setError(true);
+    //   setErrorMessage("Please record the message");
+    //   return;
+    // }
+    // if (["recording", "paused"].includes(status)) {
+    //   setError(true);
+    //   setErrorMessage("Please stop the recording");
+    //   return;
+    // }
+    // if (mediaBlobUrl) {
+    //   const uniqueId =
+    //     Date.now().toString(36) + Math.random().toString(36).substring(2);
+    //   const audiofile = new File([blob], `${uniqueId}.webm`, {
+    //     type: "audio/webm",
+    //   });
+    //   const isLastAnswer = +id === totalQuestions ? true : false;
+    //   const res = await handleResponse(audiofile, isLastAnswer);
+    //   if (isLastAnswer) {
+    //     res && handleEndSurvey();
+    //   } else {
+    //     res && router.push(nextRoute);
+    //   }
+    // } else {
+    //   if (+id === totalQuestions) {
+    //     handleEndSurvey();
+    //   } else {
+    //     router.push(nextRoute);
+    //   }
+    // }
+  };
+
+  const loadWs = () => {
+    waveSurferRef.current = new WaveSurfer.create({
+      container: containerRef.current,
+      responsive: 1000,
+      barWidth: 3,
+      height: 130,
+      barGap: 2,
+      cursorWidth: 1,
+      cursorColor: "white",
+      waveColor: "red",
+      normalize: true,
+      plugins: [MicrophonePlugin.create()],
+    });
+    waveSurferRef.current.microphone.on("deviceReady", function (stream) {
+      console.log("Device ready!", stream);
+
+      mediaRecorder = new MediaRecorder(stream);
+
+      mediaRecorder.ondataavailable = function (e) {
+        audioChunks.push(e.data);
+        waveSurferRef.current.loadBlob(new Blob(audioChunks));
+      };
+
+      mediaRecorder.onstop = () => {
+        waveSurferRef.current.loadBlob(new Blob(audioChunks));
+        setBlob(new Blob(audioChunks));
+      };
+
+      mediaRecorder.start(250);
+      //waveSurferRef.current.load(URL.createObjectURL(stream));
     });
 
-  useEffect(() => {
-    if (status === "recording") {
-      waveSurferRef.current = WaveSurfer.create({
-        container: containerRef.current,
-        responsive: true,
-        barWidth: 2,
-        height: 80,
-        barHeight: 3,
-        barMinHeight: 1,
-        barRadius: 3,
-        barWidth: 3,
-        barGap: 5,
-        cursorWidth: 0,
-        waveColor: "red",
-        plugins: [MicrophonePlugin.create()],
-      });
+    waveSurferRef.current.microphone.on("deviceError", function (code) {
+      console.warn("Device error: " + code);
+    });
 
-      const microphone = waveSurferRef.current.microphone;
-      timeout = setTimeout(() => {
-        microphone.stop();
-        stopRecording();
-        waveSurferRef.current.destroy();
-      }, 60000);
-      microphone.start();
-    }
-    if (status === "stopped") {
-      const microphone = waveSurferRef.current.microphone;
-      microphone.stop();
-      waveSurferRef.current.destroy();
-      clearTimeout(timeout);
-    }
+    // Attach on ready listener to WaveSurfer
+    waveSurferRef.current.on("ready", function () {
+      //console.log("ready !!");
+    });
+  };
 
-    return () => {
-      if (status === "recording") {
-        const microphone = waveSurferRef.current.microphone;
-        microphone.stop();
-        waveSurferRef.current.destroy();
-        clearTimeout(timeout);
-      }
-    };
-  }, [status]);
+  const startRecording = () => {
+    setStatus("recording");
+    audioChunks = [];
+    waveSurferRef.current && waveSurferRef.current.destroy();
+    loadWs();
+    waveSurferRef.current.microphone.start();
+    waveSurferRef.current.microphone.play();
+  };
 
-  const handleNext = async () => {
-    if (required && !mediaBlobUrl) {
-      setError(true);
-      setErrorMessage("Please record the message");
+  const stopRecording = () => {
+    setStatus("stopped");
+    if (!waveSurferRef.current) {
       return;
     }
+    waveSurferRef.current.microphone.stop();
+    mediaRecorder && mediaRecorder.state !== "inactive" && mediaRecorder.stop();
+  };
 
-    if (get(blob, "size") === 0) {
-      setError(true);
-      setErrorMessage("Please record the message");
+  const playRecording = () => {
+    if (!waveSurferRef.current) {
       return;
     }
-
-    if (["recording", "paused"].includes(status)) {
-      setError(true);
-      setErrorMessage("Please stop the recording");
-      return;
-    }
-
-    if (mediaBlobUrl) {
-      const uniqueId =
-        Date.now().toString(36) + Math.random().toString(36).substring(2);
-      const audiofile = new File([blob], `${uniqueId}.webm`, {
-        type: "audio/webm",
-      });
-      const isLastAnswer = +id === totalQuestions ? true : false;
-      const res = await handleResponse(audiofile, isLastAnswer);
-      if (isLastAnswer) {
-        res && handleEndSurvey();
-      } else {
-        res && router.push(nextRoute);
-      }
-    } else {
-      if (+id === totalQuestions) {
-        handleEndSurvey();
-      } else {
-        router.push(nextRoute);
-      }
-    }
+    waveSurferRef.current.play();
+    waveSurferRef.current.setVolume(1);
   };
 
   const handlePrev = () => {
@@ -154,9 +174,7 @@ function VoiceInput({
   };
 
   const removeAudio = () => {
-    setError(false);
-    clearBlobUrl();
-    setBlob(null);
+    waveSurferRef.current = null;
   };
 
   return (
@@ -171,22 +189,36 @@ function VoiceInput({
       {/*Input Section  */}
       <Grid item md={2} xs={0}></Grid>
       <Grid item md={8} xs={12}>
-        {mediaBlobUrl && <Waveform audio={mediaBlobUrl} />}
-        {["recording", "paused"].includes(status) && (
+        {/* {<Waveform audio={""} />} */}
+        {
           <Grid container>
             <Grid item xs={12} ref={containerRef}></Grid>
           </Grid>
-        )}
+        }
 
-        {mediaBlobUrl && (
+        {status === "stopped" && (
           <div>
-            <FabAudio aria-label="add" sx={{ mt: 2 }} onClick={removeAudio}>
+            <FabAudio
+              color="secondary"
+              aria-label="add"
+              sx={{ mt: 2 }}
+              onClick={() => {
+                playRecording();
+              }}
+            >
+              <PlayArrow />
+            </FabAudio>
+            <FabAudio
+              aria-label="add"
+              sx={{ mt: 2, ml: 1 }}
+              onClick={removeAudio}
+            >
               <DeleteIcon />
             </FabAudio>
           </div>
         )}
 
-        {["idle", "stopped"].includes(status) && !mediaBlobUrl && (
+        {["idle", "stopped"].includes(status) && !waveSurferRef.current && (
           <>
             <FabAudio
               color="secondary"
@@ -203,7 +235,7 @@ function VoiceInput({
             <Small>Speak close to the microphone for better response.</Small>
           </>
         )}
-        {["recording", "paused"].includes(status) && (
+        {status === "recording" && (
           <>
             <FabAudio aria-label="add" onClick={stopRecording}>
               <StopIcon />
