@@ -8,9 +8,10 @@ import Image from "next/image";
 
 import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
+import Tooltip from "@mui/material/Tooltip";
 
-import StyledButton from "../../components/StyledButton";
-import Header from "../../components/Header";
+import StyledButton from "@/components/StyledButton";
+import Header from "@/components/Header";
 
 //icons
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -109,7 +110,9 @@ export default function DashboardHeader() {
           <StyledButton onClick={handleClickOpen}>New Survey</StyledButton>
         </Nav>
       </BoxCustom>
-      <LogOff onClick={logoutSite} />
+      <Tooltip title="Logout" arrow>
+        <LogOff onClick={logoutSite} />
+      </Tooltip>
     </Header>
   );
 }

@@ -25,12 +25,13 @@ import Slide from "@mui/material/Slide";
 
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
-import SingleLineTextField from "../../components/questions/SingleLineTextField";
-import MultiLineTextField from "../../components/questions/MultiLineTextField";
-import EmailTextField from "../../components/questions/EmailTextField";
-import DateField from "../../components/questions/DateField";
-import WelcomeText from "../../components/questions/WelcomeText";
-import PhoneTextField from "../../components/questions/PhoneTextField";
+import SingleLineTextField from "@/components/questions/SingleLineTextField";
+import MultiLineTextField from "@/components/questions/MultiLineTextField";
+import EmailTextField from "@/components/questions/EmailTextField";
+import DateField from "@/components/questions/DateField";
+import WelcomeText from "@/components/questions/WelcomeText";
+import PhoneTextField from "@/components/questions/PhoneTextField";
+import LinearScale from "@/components/questions/LinearScale";
 
 import Image from "next/image";
 
@@ -70,8 +71,8 @@ export default function survey() {
   const [questionId, setQuestionId] = useState("");
   const [open, setOpen] = useState(false);
 
-  const VoiceInputNew = dynamic(
-    () => import("../../components/questions/VoiceInputNew"),
+  const VoiceInp = dynamic(
+    () => import("../../components/questions/VoiceInp"),
     { ssr: false }
   );
 
@@ -305,9 +306,24 @@ export default function survey() {
               />
             )}
             {get(question, "question_type", "") === "audio" && (
-              <VoiceInputNew
+              <VoiceInp
                 title={get(question, "question", "")}
                 value={get(question, "answer", "")}
+                required={get(question, "required", false)}
+                totalQuestions={survey.questions.length}
+                id={questionId}
+                secondaryButtonTitle={"Back"}
+                primaryButtonTitle="Next"
+                nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
+                handleEndSurvey={handleEndSurvey}
+                handleResponse={handleResponse}
+              />
+            )}
+            {get(question, "question_type", "") === "nps" && (
+              <LinearScale
+                title={get(question, "question", "")}
+                value={get(question, "answer", "")}
+                question={question}
                 required={get(question, "required", false)}
                 totalQuestions={survey.questions.length}
                 id={questionId}

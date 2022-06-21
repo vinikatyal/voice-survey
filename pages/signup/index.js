@@ -20,16 +20,19 @@ import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import PhoneInput from "react-phone-input-2";
+import Select from "react-select";
 
 // custom components
-import Layout from "../../components/Layout";
-import Limiter from "../../components/Limiter";
-import StyledButton from "../../components/StyledButton";
+import Layout from "@/components/Layout";
+import Limiter from "@/components/Limiter";
+import StyledButton from "@/components/StyledButton";
 
 import styled from "@emotion/styled";
 import "react-phone-input-2/lib/material.css";
 
-import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
+import { useDispatchSurvey, useSurvey } from "@/context/SurveyState";
+
+import { countryList } from "@/helpers/countryList";
 
 const Item = styled(Paper)(({ theme }) => ({
   padding: "30px",
@@ -88,6 +91,7 @@ const SignInText = styled(Typography)({
 
 export default function Index({ csrfToken }) {
   const [mobile, setMobile] = React.useState("");
+  const [country, setCountry] = React.useState("India");
   const { data: session, status } = useSession();
 
   const {
@@ -116,12 +120,17 @@ export default function Index({ csrfToken }) {
     }
   }, [status]);
 
+  const handleCountryInput = (e) => {
+    setCountry(e.label);
+  };
+
   const onSubmit = async (data) => {
     dispatch({ type: "SET_USER_EMAIL", value: data.email });
     const res = await signIn("credentials", {
       redirect: false,
       email: data.email,
       password: data.password,
+      country: country,
       mobile,
       isNew: true,
     });
@@ -255,6 +264,21 @@ export default function Index({ csrfToken }) {
                   {errors.confirmpassword && (
                     <ErrorLabel>{errors.confirmpassword.message}</ErrorLabel>
                   )}
+                </FormControl>
+                <FormControl fullWidth>
+                  <LoginFormLabel>Choose Country</LoginFormLabel>
+                  <Select
+                    id="country"
+                    name="country"
+                    styles={{
+                      control: (base) => ({
+                        ...base,
+                        height: "56px",
+                      }),
+                    }}
+                    options={countryList}
+                    onChange={handleCountryInput}
+                  />
                 </FormControl>
                 <PhoneFormControl fullWidth>
                   <LoginFormLabel>Phone Number</LoginFormLabel>

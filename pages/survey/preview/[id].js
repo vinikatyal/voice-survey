@@ -16,13 +16,14 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 
-import MultiLineTextField from "../../../components/questions/MultiLineTextField";
-import SingleLineTextField from "../../../components/questions/SingleLineTextField";
-import EmailTextField from "../../../components/questions/EmailTextField";
-import DateField from "../../../components/questions/DateField";
-import WelcomeText from "../../../components/questions/WelcomeText";
+import MultiLineTextField from "@/components/questions/MultiLineTextField";
+import SingleLineTextField from "@/components/questions/SingleLineTextField";
+import EmailTextField from "@/components/questions/EmailTextField";
+import DateField from "@/components/questions/DateField";
+import WelcomeText from "@/components/questions/WelcomeText";
+import LinearScale from "@/components/questions/LinearScale";
 
-import { useSurvey } from "../../../context/SurveyState";
+import { useSurvey } from "@/context/SurveyState";
 
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -64,7 +65,7 @@ export default function questions() {
   const [open, setOpen] = useState(false);
 
   const VoiceInput = dynamic(
-    () => import("../../../components/questions/VoiceInput"),
+    () => import("../../../components/questions/VoiceInputNew"),
     { ssr: false }
   );
 
@@ -202,6 +203,20 @@ export default function questions() {
             {get(question, "question_type", "") === "audio" && (
               <VoiceInput
                 title={get(question, "question", "")}
+                required={get(question, "required", false)}
+                totalQuestions={survey.questions.length}
+                id={id}
+                secondaryButtonTitle={+id !== 1 && "Back"}
+                primaryButtonTitle="Next"
+                nextRoute={`/survey/preview/${+id + 1}`}
+                handleResponse={handleResponse}
+                handleEndSurvey={handleEndSurvey}
+              />
+            )}
+             {get(question, "question_type", "") === "nps" && (
+              <LinearScale
+                title={get(question, "question", "")}
+                question={question}
                 required={get(question, "required", false)}
                 totalQuestions={survey.questions.length}
                 id={id}

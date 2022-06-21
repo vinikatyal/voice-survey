@@ -4,7 +4,6 @@ import get from "lodash.get";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
 
-import { useReactMediaRecorder } from "react-media-recorder";
 import WaveSurfer from "wavesurfer.js";
 import MicrophonePlugin from "wavesurfer.js/dist/plugin/wavesurfer.microphone";
 
@@ -21,6 +20,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 import Waveform from "./Waveform";
 
+import vmsg from "vmsg";
+
 import styled from "@emotion/styled";
 
 const FabAudio = styled(Fab)`
@@ -36,7 +37,11 @@ const Small = styled("div")`
   font-size: 10px;
 `;
 
-function VoiceInput({
+const recorder = new vmsg.Recorder({
+  wasmURL: "https://unpkg.com/vmsg@0.3.0/vmsg.wasm",
+});
+
+function VoiceInp({
   title,
   required,
   id,
@@ -47,9 +52,14 @@ function VoiceInput({
   handleEndSurvey,
   handleResponse,
 }) {
+  const [isBlocked, setIsBlocked] = useState(false);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [blob, setBlob] = useState(null);
+  const [file, setFile] = useState(null);
+  const [mediaFile, setMediaFile] = useState("");
+
+  const [status, setRecordStatus] = useState("idle");
 
   const router = useRouter();
 
@@ -58,58 +68,94 @@ function VoiceInput({
 
   let timeout;
 
-  const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
-    useReactMediaRecorder({
-      audio: true,
-      onStop: (blobUrl, blob) => {
-        setBlob(blob);
-      },
-    });
+  const startRecord = async () => {
+    try {
+      await recorder.initAudio();
+      await recorder.initWorker();
+      recorder.startRecording();
+      setRecordStatus("recording");
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const stopRecording = async () => {
+    try {
+      const blob = await recorder.stopRecording();
+      console.log(blob);
+
+      setBlob(blob);
+
+      setRecordStatus("stopped");
+
+      const blobURL = URL.createObjectURL(blob);
+      setMediaFile(blobURL);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  function iOS() {
+    return (
+      [
+        "iPad Simulator",
+        "iPhone Simulator",
+        "iPod Simulator",
+        "iPad",
+        "iPhone",
+        "iPod",
+      ].includes(navigator.platform) ||
+      // iPad on iOS 13 detection
+      (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+    );
+  }
 
   useEffect(() => {
-    if (status === "recording") {
-      waveSurferRef.current = WaveSurfer.create({
-        container: containerRef.current,
-        responsive: true,
-        barWidth: 2,
-        height: 80,
-        barHeight: 3,
-        barMinHeight: 1,
-        barRadius: 3,
-        barWidth: 3,
-        barGap: 5,
-        cursorWidth: 0,
-        waveColor: "red",
-        plugins: [MicrophonePlugin.create()],
-      });
-
-      const microphone = waveSurferRef.current.microphone;
-      timeout = setTimeout(() => {
-        microphone.stop();
-        stopRecording();
-        waveSurferRef.current.destroy();
-      }, 60000);
-      microphone.start();
-    }
-    if (status === "stopped") {
-      const microphone = waveSurferRef.current.microphone;
-      microphone.stop();
-      waveSurferRef.current.destroy();
-      clearTimeout(timeout);
-    }
-
-    return () => {
+    if (!iOS()) {
       if (status === "recording") {
+        waveSurferRef.current = WaveSurfer.create({
+          container: containerRef.current,
+          responsive: true,
+          barWidth: 2,
+          height: 80,
+          barHeight: 3,
+          barMinHeight: 1,
+          barRadius: 3,
+          barWidth: 3,
+          barGap: 5,
+          cursorWidth: 0,
+          waveColor: "red",
+          plugins: [MicrophonePlugin.create()],
+        });
+
+        const microphone = waveSurferRef.current.microphone;
+        timeout = setTimeout(() => {
+          microphone.stop();
+          stopRecording();
+          waveSurferRef.current.destroy();
+        }, 60000);
+        microphone.start();
+      }
+      if (status === "stopped") {
         const microphone = waveSurferRef.current.microphone;
         microphone.stop();
         waveSurferRef.current.destroy();
         clearTimeout(timeout);
       }
-    };
+
+      return () => {
+        if (status === "recording") {
+          const microphone = waveSurferRef.current.microphone;
+          microphone.stop();
+          waveSurferRef.current.destroy();
+          clearTimeout(timeout);
+        }
+      };
+    }
   }, [status]);
 
   const handleNext = async () => {
-    if (required && !mediaBlobUrl) {
+    if (required && !mediaFile) {
       setError(true);
       setErrorMessage("Please record the message");
       return;
@@ -127,12 +173,19 @@ function VoiceInput({
       return;
     }
 
-    if (mediaBlobUrl) {
+    if (mediaFile) {
+      console.log(mediaFile);
+      console.log(blob);
+
       const uniqueId =
         Date.now().toString(36) + Math.random().toString(36).substring(2);
-      const audiofile = new File([blob], `${uniqueId}.webm`, {
-        type: "audio/webm",
+
+      const file = new File([blob], `${uniqueId}.mp3`, {
+        type: blob.type,
+        lastModified: Date.now(),
       });
+
+      const audiofile = file;
       const isLastAnswer = +id === totalQuestions ? true : false;
       const res = await handleResponse(audiofile, isLastAnswer);
       if (isLastAnswer) {
@@ -155,7 +208,9 @@ function VoiceInput({
 
   const removeAudio = () => {
     setError(false);
-    clearBlobUrl();
+    setRecordStatus("idle");
+    setMediaFile("");
+    setFile(null);
     setBlob(null);
   };
 
@@ -171,14 +226,19 @@ function VoiceInput({
       {/*Input Section  */}
       <Grid item md={2} xs={0}></Grid>
       <Grid item md={8} xs={12}>
-        {mediaBlobUrl && <Waveform audio={mediaBlobUrl} />}
+        {/* {mediaFile && (
+          <audio id="audio-element" src={mediaFile} type="audio/mp3" controls />
+        )} */}
+        {mediaFile && <Waveform audio={mediaFile} />}
         {["recording", "paused"].includes(status) && (
           <Grid container>
-            <Grid item xs={12} ref={containerRef}></Grid>
+            <Grid item xs={12} ref={containerRef}>
+              Recording
+            </Grid>
           </Grid>
         )}
 
-        {mediaBlobUrl && (
+        {mediaFile && (
           <div>
             <FabAudio aria-label="add" sx={{ mt: 2 }} onClick={removeAudio}>
               <DeleteIcon />
@@ -186,14 +246,14 @@ function VoiceInput({
           </div>
         )}
 
-        {["idle", "stopped"].includes(status) && !mediaBlobUrl && (
+        {["idle", "stopped"].includes(status) && !mediaFile && (
           <>
             <FabAudio
               color="secondary"
               aria-label="add"
               sx={{ mt: 2 }}
               onClick={() => {
-                startRecording();
+                startRecord();
                 setError(false);
               }}
             >
@@ -242,7 +302,7 @@ function VoiceInput({
   );
 }
 
-VoiceInput.propTypes = {
+VoiceInp.propTypes = {
   title: PropTypes.string,
   required: PropTypes.bool,
   id: PropTypes.string,
@@ -252,4 +312,4 @@ VoiceInput.propTypes = {
   nextRoute: PropTypes.string,
 };
 
-export default VoiceInput;
+export default VoiceInp;

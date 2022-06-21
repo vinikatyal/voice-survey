@@ -8,7 +8,6 @@ import { signOut, useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 
 import router from "next/router";
-import getConfig from "next/config";
 
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
@@ -21,17 +20,17 @@ import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
-import DashboardHeader from "../../components/dashboard/DashboardHeader";
-import Limiter from "../../components/Limiter";
-import AddLogo from "../../components/AddLogo";
-import InviteInput from "../../components/InviteInput";
-import StyledButton from "../../components/StyledButton";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import Limiter from "@/components/Limiter";
+import AddLogo from "@/components/AddLogo";
+import InviteInput from "@/components/InviteInput";
+import StyledButton from "@/components/StyledButton";
 
 // styles
 import styled from "@emotion/styled";
 
-import { authService } from "../../services/auth.service";
-import DashboardLoader from "../../components/loaders/DashboardLoader";
+import { authService } from "@/services/auth.service";
+import DashboardLoader from "@/components/loaders/DashboardLoader";
 
 const FullBackground = styled(Container)(({ theme }) => ({
   height: "100vh",
@@ -217,7 +216,7 @@ export default function Index() {
               >
                 <TabBasic label="Basic details" />
                 {/* <TabBasic label="Reset password" /> */}
-                <TabBasic label="Account" />
+                {/* <TabBasic label="Account" /> */}
               </StyledTabs>
 
               <TabPanel value={value} index={0}>
@@ -279,7 +278,7 @@ export default function Index() {
                 </Box>
               </TabPanel>
               {/* <TabPanel value={value} index={1}></TabPanel> */}
-              <TabPanel value={value} index={1}>
+              {/* <TabPanel value={value} index={1}>
                 <NextSection>
                   <Logout
                     variant="contained"
@@ -292,7 +291,7 @@ export default function Index() {
                     Logout
                   </Logout>
                 </NextSection>
-              </TabPanel>
+              </TabPanel> */}
             </GridContainer>
           </FullBackground>
         </>

@@ -2,7 +2,6 @@ export const objectify = (array) => {
   return array.map(([text, value]) => ({ text, value }));
 };
 
-
 export const objectifyAndSlice = (array) => {
   if (array.length) {
     array = array.slice(0, 20);
@@ -10,11 +9,15 @@ export const objectifyAndSlice = (array) => {
   return array.map(([text, value]) => ({ text, value }));
 };
 
-
 export const convertToSentenceTable = (array) => {
   return array.map(([sentence, emotion, sentiment]) => ({
     sentence,
     emotion,
     sentiment,
   }));
+};
+
+export const surveyTypes = {
+  MULTIPLE_CHOICE: "multiple_choice",
+  NPS: "nps",
 };
