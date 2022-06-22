@@ -131,8 +131,8 @@ export default function SurveyQuestionSection({ questions }) {
               questionType={question.question_type}
               startLabel={get(question, "start_label")}
               endLabel={get(question, "end_label")}
-              startCount={get(question, "start_count")}
-              endCount={get(question, "end_count")}
+              startCount={get(question, "start_count", 1)}
+              endCount={get(question, "end_count", 5)}
               multiChoiceOptions={get(question, "multiChoiceOptions", [])}
               expandStatus={question.expandStatus}
               required={question.required}

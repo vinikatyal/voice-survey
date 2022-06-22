@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import produce from "immer";
 import isEmpty from "lodash.isempty";
 import debounce from "lodash.debounce";
+import dayjs from "dayjs";
 
 // UI
 import Accordion from "@mui/material/Accordion";
@@ -23,7 +24,10 @@ import Radio from "@mui/material/Radio";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 
 // icons
+import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
+import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 
 // constants
 import { surveyTypes } from "@/helpers/constants";
@@ -98,7 +102,6 @@ const NPSDiv = styled("div")(() => ({
 
 const CustomSelect = styled(Select)(() => ({
   width: "10%",
-  marginLeft: "5px",
   marginRight: "5px",
 }));
 
@@ -108,34 +111,57 @@ const NPSLabelDiv = styled("div")(() => ({
   marginTop: "10px",
 }));
 
-const Multi = styled("div")(() => ({
+const OptionContainer = styled("div")(() => ({
   width: "100%",
-  display: "block",
-  marginTop: "10px",
+  display: "flex",
+  alignItems: "center",
 }));
 
 const MultiChoiceRadio = ({
-  deleteMultiChoice,
-  addMultiChoice,
+  addOption,
+  deleteOption,
   id,
   index,
-  name,
-  label,
   questionId,
   isLast,
+  option,
   handleChange,
+  optionsLength,
 }) => (
-  <Multi>
-    <Radio checked={false} id={id} />
-    <TextField
-      id={id}
-      variant="standard"
-      placeholder={label}
-      onChange={(e) => handleChange(e, id, index, questionId)}
-    ></TextField>
-    {isLast && <Button onClick={addMultiChoice}>Add</Button>}
-    {!!index && <Button onClick={deleteMultiChoice}>Remove</Button>}
-  </Multi>
+  <>
+    <OptionContainer>
+      <Radio checked={false} id={id} />
+      <TextField
+        id={id}
+        variant="standard"
+        sx={{ minWidth: "450px" }}
+        defaultValue={option}
+        placeholder="Enter option title"
+        onChange={(e) => handleChange(e, id, index, questionId)}
+      ></TextField>
+      {optionsLength > 1 && (
+        <IconButton
+          onClick={deleteOption}
+          aria-label="delete"
+          sx={{ margin: "15px 0 0 15px" }}
+          size="small"
+        >
+          <ClearOutlinedIcon />
+        </IconButton>
+      )}
+    </OptionContainer>
+    <div>
+      {isLast && (
+        <Button
+          onClick={addOption}
+          variant="contained"
+          sx={{ marginLeft: "10px" }}
+        >
+          <AddCircleOutlinedIcon sx={{ mr: 1 }} /> Add Option
+        </Button>
+      )}
+    </div>
+  </>
 );
 
 const fromMenuItems = [
@@ -218,18 +244,8 @@ export default function SurveyQuestion({
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
   const [open, setOpen] = useState(false);
-  const [multiOptions, setMultiOptions] = useState(multiChoiceOptions);
 
   useEffect(() => {
-    if (id && multiOptions.length == 0) {
-      setMultiOptions([
-        {
-          id: id + "question" + 0,
-          name: "Option" + id + "question" + 0,
-          label: "Option Label vbdvdbdvb",
-        },
-      ]);
-    }
     setValue("question", question, {
       shouldDirty: true,
     });
@@ -298,6 +314,22 @@ export default function SurveyQuestion({
     const next = produce(survey.questions, (draft) => {
       const question = draft.find((question) => question.qid === id);
       question.question_type = value.value;
+      if (value.value === surveyTypes.NPS) {
+        question.start_count = 1;
+        question.end_count = 5;
+        question.start_label = "";
+        question.end_label = "";
+      } else {
+        delete question.start_count;
+        delete question.end_count;
+        delete question.start_label;
+        delete question.end_label;
+      }
+      if (value.value === surveyTypes.MULTIPLE_CHOICE)
+        question.multiChoiceOptions = [
+          { id: `question_${dayjs().valueOf()}`, option: "Option 1" },
+        ];
+      else delete question.multiChoiceOptions;
     });
     dispatch({ type: "SET_QUESTIONS", value: next });
   };
@@ -315,40 +347,37 @@ export default function SurveyQuestion({
     deleteQuestion(id);
   };
 
-  const deleteMultiChoice = (id) => {
-    let newFormValues = [...multiOptions];
-
-    newFormValues = newFormValues.filter(function (item) {
-      return item.id != id;
-    });
-    setMultiOptions(newFormValues);
-  };
-
-  const addMultiChoice = (id, index, questionId) => {
-    setMultiOptions([
-      ...multiOptions,
-      {
-        id: id,
-        name: "Option" + id,
-        label: "Option Label",
-      },
-    ]);
-
+  const handleDeleteOption = (optionId) => {
     const next = produce(survey.questions, (draft) => {
-      const question = draft.find((question) => question.qid === questionId);
-      question.multiChoiceOptions = multiOptions;
+      const question = draft.find((question) => question.qid === id);
+      question.multiChoiceOptions = question.multiChoiceOptions.filter(
+        (option) => option.id !== optionId
+      );
+    });
+    dispatch({ type: "SET_QUESTIONS", value: next });
+  };
+  const handleAddOption = (optionId, option) => {
+    const next = produce(survey.questions, (draft) => {
+      const question = draft.find((question) => question.qid === id);
+      console.log(question);
+      question.multiChoiceOptions.push({
+        id: optionId,
+        option,
+      });
     });
     dispatch({ type: "SET_QUESTIONS", value: next });
   };
 
-  const handleMultiChange = (event, id, index) => {
-    const target = event.target;
-    let newFormValues = [...multiOptions];
-    const data = newFormValues.find((x) => x.id === id);
-    data.label = target.value;
-    newFormValues[index][id] = data;
-    console.log(newFormValues);
-    setMultiOptions(newFormValues);
+  const handleMultiChange = (event, optionId) => {
+    const value = event.target.value;
+    const next = produce(survey.questions, (draft) => {
+      const question = draft.find((question) => question.qid === id);
+      const index = question.multiChoiceOptions.findIndex(
+        (option) => option.id === optionId
+      );
+      question.multiChoiceOptions[index].option = value;
+    });
+    dispatch({ type: "SET_QUESTIONS", value: next });
   };
 
   return (
@@ -446,14 +475,18 @@ export default function SurveyQuestion({
                         },
                       })}
                       value={startCount}
+                      size="small"
                       onChange={handleFromChange}
                     >
                       {fromMenuItems.map((item, index) => (
-                        <MenuItem value={item.value}>{item.name}</MenuItem>
+                        <MenuItem key={index} value={item.value}>
+                          {item.name}
+                        </MenuItem>
                       ))}
                     </CustomSelect>
                     <spaceDiv>to</spaceDiv>
                     <CustomSelect
+                      sx={{ ml: 1 }}
                       name="endCount"
                       {...register("endCount", {
                         required: "You need a to count",
@@ -462,17 +495,20 @@ export default function SurveyQuestion({
                         },
                       })}
                       value={endCount}
+                      size="small"
                       onChange={handleToChange}
                     >
                       {toMenuItems.map((item, index) => (
-                        <MenuItem value={item.value}>{item.name}</MenuItem>
+                        <MenuItem key={index} value={item.value}>
+                          {item.name}
+                        </MenuItem>
                       ))}
                     </CustomSelect>
-                    <div>Defaults to 1 to 5 if not selected</div>
                   </NPSDiv>
                   <NPSLabelDiv>
                     <NPSDiv>
                       <TextField
+                        size="small"
                         {...register("startLabel", {
                           required: "You need a from label",
                           onChange: async () => {
@@ -487,6 +523,7 @@ export default function SurveyQuestion({
                     </NPSDiv>
                     <NPSDiv>
                       <TextField
+                        size="small"
                         name="end_label"
                         placeholder="End Label"
                         variant="outlined"
@@ -502,28 +539,25 @@ export default function SurveyQuestion({
                   </NPSLabelDiv>
                 </>
               )}
-
               {questionType && questionType === surveyTypes.MULTIPLE_CHOICE && (
                 <RadioGroup>
-                  {multiOptions &&
-                    multiOptions.map((option, index) => (
+                  {multiChoiceOptions &&
+                    multiChoiceOptions.map((option, index) => (
                       <MultiChoiceRadio
-                        deleteMultiChoice={() =>
-                          deleteMultiChoice(id + "question" + index)
-                        }
-                        addMultiChoice={() =>
-                          addMultiChoice(
-                            id + "question" + (index + 1),
-                            index,
-                            option.id
+                        key={index}
+                        addOption={() =>
+                          handleAddOption(
+                            `question_${dayjs().valueOf()}`,
+                            `Option ${index + 2}`
                           )
                         }
+                        deleteOption={() => handleDeleteOption(option.id)}
                         id={option.id}
                         index={index}
-                        label={option.label}
-                        name={option.name}
                         questionId={id}
-                        isLast={multiOptions.length === index + 1}
+                        option={option.option}
+                        optionsLength={multiChoiceOptions.length}
+                        isLast={multiChoiceOptions.length === index + 1}
                         handleChange={handleMultiChange}
                       />
                     ))}
