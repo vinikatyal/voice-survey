@@ -47,6 +47,8 @@ const initialState = {
     { id: 4, label: "Phone number", value: "contact" },
     { id: 5, label: "Date picker", value: "date_picker" },
     { id: 6, label: "Voice", value: "audio" },
+    { id: 7, label: "Linear Scale/NPS", value: "nps" },
+    { id: 8, label: "Multiple Choice", value: "multiple_choice" },
   ],
   questions: [
     {

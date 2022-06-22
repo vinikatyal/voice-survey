@@ -24,14 +24,14 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 // Components
-import Layout from "../../components/Layout";
-import Limiter from "../../components/Limiter";
-import StyledButton from "../../components/StyledButton";
-import AddLogo from "../../components/AddLogo";
+import Layout from "@/components/Layout";
+import Limiter from "@/components/Limiter";
+import StyledButton from "@/components/StyledButton";
+import AddLogo from "@/components/AddLogo";
 
-import InviteInput from "../../components/InviteInput";
+import InviteInput from "@/components/InviteInput";
 
-import { authService } from "../../services/auth.service";
+import { authService } from "@/services/auth.service";
 
 const ImageContainer = styled(Box)({
   paddingTop: "30px",
@@ -88,8 +88,7 @@ const MemberDetails = ({ img, email }) => (
         display="flex"
         alignItems="center"
         justifyContent="flex-end"
-      >
-      </Grid>
+      ></Grid>
     </Grid>
   </React.Fragment>
 );

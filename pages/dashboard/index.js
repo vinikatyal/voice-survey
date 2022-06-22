@@ -17,21 +17,22 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Pagination from "@mui/material/Pagination";
 import ButtonGroup from "@mui/material/ButtonGroup";
+import Tooltip from "@mui/material/Tooltip";
 
-import DashboardH from "../../components/dashboard/DashboardHeader";
-import NoSurveyScreen from "../../components/survey/NoSurveyScreen";
+import DashboardH from "@/components/dashboard/DashboardHeader";
+import NoSurveyScreen from "@/components/survey/NoSurveyScreen";
 
-import person from "../../images/svg/person.svg";
+import person from "@/images/svg/person.svg";
 import Delete from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import EditIcon from "@mui/icons-material/Edit";
 
-import DashboardSubHeader from "../../components/dashboard/DashboardSubHeader";
-import ConfirmationDialog from "../../components/ConfirmationDialog";
-import DashboardLoader from "../../components/loaders/DashboardLoader";
+import DashboardSubHeader from "@/components/dashboard/DashboardSubHeader";
+import ConfirmationDialog from "@/components/ConfirmationDialog";
+import DashboardLoader from "@/components/loaders/DashboardLoader";
 
-import { surveyService } from "../../services/survey.service";
-import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
+import { surveyService } from "@/services/survey.service";
+import { useDispatchSurvey, useSurvey } from "@/context/SurveyState";
 
 import styled from "@emotion/styled";
 
@@ -220,13 +221,12 @@ export default function Index() {
         value: surveyDetails.data.survey_title,
       });
 
-
-      console.log(dayjs(surveyDetails.data.created_date).toDate())
+      console.log(dayjs(surveyDetails.data.created_date).toDate());
 
       dispatch({
         type: "SET_CREATE_DATE",
-        value: dayjs(surveyDetails.data.created_date).toDate()
-      })
+        value: dayjs(surveyDetails.data.created_date).toDate(),
+      });
 
       const accessMembers = Object.keys(surveyDetails.data.user_access).reduce(
         (acc, key) => {
@@ -296,7 +296,9 @@ export default function Index() {
                             <CardIcon
                               onClick={(e) => deleteSurvey(e, survey.survey_id)}
                             >
-                              <Delete />
+                              <Tooltip title="Delete Survey" arrow>
+                                <Delete />
+                              </Tooltip>
                             </CardIcon>
                           </CardIconContainer>
                         </CardTitle>

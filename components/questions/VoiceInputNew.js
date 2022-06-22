@@ -261,10 +261,7 @@ function VoiceInputNew({
       {/*Input Section  */}
       <Grid item md={2} xs={0}></Grid>
       <Grid item md={8} xs={12}>
-        {mediaFile && (
-          <audio id="audio-element" src={mediaFile} type="audio/mp3" controls />
-        )}
-        {/* {mediaFile && <Waveform audio={mediaFile} />} */}
+        {mediaFile && <Waveform audio={mediaFile} />}
         {["recording", "paused"].includes(status) && (
           <Grid container>
             <Grid item xs={12} ref={containerRef}></Grid>

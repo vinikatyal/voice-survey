@@ -7,7 +7,9 @@ const PrimaryButton = styled(Button)(
     width: fullWidth ? "" : width ? width + "px" : "160px",
     height: "40px",
     borderRadius: borderRadius ? borderRadius : "4px",
-    background: disabled ? "rgba(255, 255, 255, 0.12)" : bgColor
+    background: disabled
+      ? "rgba(255, 255, 255, 0.12)"
+      : bgColor
       ? bgColor
       : "linear-gradient(to left, #556df2, #3932be)",
     "&:hover": {
@@ -20,7 +22,12 @@ const PrimaryButton = styled(Button)(
 
 export default function StyledButton(props) {
   return (
-    <PrimaryButton variant="contained" disabled={props.disabled} disableElevation {...props}>
+    <PrimaryButton
+      variant="contained"
+      disabled={props.disabled}
+      disableElevation
+      {...props}
+    >
       {props.children}
     </PrimaryButton>
   );

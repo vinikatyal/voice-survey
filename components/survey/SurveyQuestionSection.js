@@ -3,7 +3,7 @@ import React from "react";
 import produce from "immer";
 import isEmpty from "lodash.isempty";
 import debounce from "lodash.debounce";
-
+import get from "lodash.get";
 import { useRouter } from "next/router";
 
 // UI
@@ -38,16 +38,15 @@ const AddQuestionSection = styled(Container)({
   marginTop: "30px",
 });
 
-
 export default function SurveyQuestionSection({ questions }) {
   const {
     register,
     trigger,
     setValue,
-    formState: { errors },
+    handleSubmit,
+    formState: { errors, isDirty, isValid },
   } = useForm();
   const router = useRouter();
-
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
 
@@ -98,7 +97,7 @@ export default function SurveyQuestionSection({ questions }) {
     router.push(`/survey/create/themes`);
   };
   return (
-    <>
+    <form noValidate onSubmit={(e) => e.preventDefault()}>
       <Container maxWidth="lg" sx={{ marginTop: "30px" }}>
         <Label>Welcome Text</Label>
         <TextField
@@ -130,6 +129,11 @@ export default function SurveyQuestionSection({ questions }) {
               questionNumber={index + 1}
               question={question.question}
               questionType={question.question_type}
+              startLabel={get(question, "start_label")}
+              endLabel={get(question, "end_label")}
+              startCount={get(question, "start_count", 1)}
+              endCount={get(question, "end_count", 5)}
+              multiChoiceOptions={get(question, "multiChoiceOptions", [])}
               expandStatus={question.expandStatus}
               required={question.required}
               handleExpanded={handleExpanded}
@@ -142,12 +146,13 @@ export default function SurveyQuestionSection({ questions }) {
         <StyledButton
           type="submit"
           variant="contained"
-          onClick={goToThemeScreen}
+          disabled={!isDirty || !isValid}
+          onClick={handleSubmit(goToThemeScreen)}
           sx={{ ml: 3 }}
         >
           Next
         </StyledButton>
       </AddQuestionSection>
-    </>
+    </form>
   );
 }
