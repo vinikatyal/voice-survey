@@ -35,8 +35,6 @@ const providers = [
         });
       }
 
-      console.log(res)
-
       const user = await res.json();
 
       // If no error and we have user data, return it
@@ -82,7 +80,7 @@ const options = {
   secret: "1210e525b4fb4de680a47df25da940bd",
   session: {
     strategy: "jwt",
-    maxAge: 30 * 100, // 10mins
+    maxAge: 30 * 30, // 10mins
   },
 };
 

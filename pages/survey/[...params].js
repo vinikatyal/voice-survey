@@ -9,8 +9,8 @@ import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import produce from "immer";
 
-import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
-import { surveyService } from "../../services/survey.service";
+import { useDispatchSurvey, useSurvey } from "@/context/SurveyState";
+import { surveyService } from "@/services/survey.service";
 import styled from "@emotion/styled";
 
 import Container from "@mui/material/Container";
@@ -32,6 +32,7 @@ import DateField from "@/components/questions/DateField";
 import WelcomeText from "@/components/questions/WelcomeText";
 import PhoneTextField from "@/components/questions/PhoneTextField";
 import LinearScale from "@/components/questions/LinearScale";
+import MultiChoice from "@/components/questions/MultiChoice";
 
 import Image from "next/image";
 
@@ -321,6 +322,21 @@ export default function survey() {
             )}
             {get(question, "question_type", "") === "nps" && (
               <LinearScale
+                title={get(question, "question", "")}
+                value={get(question, "answer", "")}
+                question={question}
+                required={get(question, "required", false)}
+                totalQuestions={survey.questions.length}
+                id={questionId}
+                secondaryButtonTitle={"Back"}
+                primaryButtonTitle="Next"
+                nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
+                handleEndSurvey={handleEndSurvey}
+                handleResponse={handleResponse}
+              />
+            )}
+            {get(question, "question_type", "") === "multiple_choice" && (
+              <MultiChoice
                 title={get(question, "question", "")}
                 value={get(question, "answer", "")}
                 question={question}

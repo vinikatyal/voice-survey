@@ -22,6 +22,7 @@ import EmailTextField from "@/components/questions/EmailTextField";
 import DateField from "@/components/questions/DateField";
 import WelcomeText from "@/components/questions/WelcomeText";
 import LinearScale from "@/components/questions/LinearScale";
+import MultiChoice from "@/components/questions/MultiChoice";
 
 import { useSurvey } from "@/context/SurveyState";
 
@@ -213,8 +214,23 @@ export default function questions() {
                 handleEndSurvey={handleEndSurvey}
               />
             )}
-             {get(question, "question_type", "") === "nps" && (
+            {get(question, "question_type", "") === "nps" && (
               <LinearScale
+                title={get(question, "question", "")}
+                question={question}
+                required={get(question, "required", false)}
+                totalQuestions={survey.questions.length}
+                id={id}
+                secondaryButtonTitle={+id !== 1 && "Back"}
+                primaryButtonTitle="Next"
+                nextRoute={`/survey/preview/${+id + 1}`}
+                handleResponse={handleResponse}
+                handleEndSurvey={handleEndSurvey}
+              />
+            )}
+
+            {get(question, "question_type", "") === "multiple_choice" && (
+              <MultiChoice
                 title={get(question, "question", "")}
                 question={question}
                 required={get(question, "required", false)}
