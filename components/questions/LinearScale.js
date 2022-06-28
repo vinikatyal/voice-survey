@@ -21,6 +21,45 @@ const RadioGroupCustom = styled(RadioGroup)`
   align-items: center;
   flex-direction: row;
   justify-content: center;
+  width: 100%;
+`;
+
+const FormLabel = styled(FormControlLabel)`
+  margin-left: 0px;
+  margin-right: 0px;
+  @media only screen and (max-width: 768px) {
+    .MuiFormControlLabel-label {
+      font-size: 12px;
+    }
+  }
+`;
+
+const RadioRoot = styled(Radio)`
+  @media only screen and (max-width: 768px) {
+    padding: 0px;
+  }
+`;
+
+const StartLabel = styled("div")`
+  @media only screen and (max-width: 768px) {
+    width: 11%;
+    word-wrap: break-word;
+    font-size: 12px;
+  }
+`;
+
+const EndLabel = styled("div")`
+  @media only screen and (max-width: 768px) {
+    width: 11%;
+    word-wrap: break-word;
+    font-size: 12px;
+  }
+`;
+
+const GridCustom = styled(Grid)`
+  @media only screen and (max-width: 768px) {
+    padding-left: 10px !important;
+  }
 `;
 
 function LinearScale({
@@ -82,28 +121,28 @@ function LinearScale({
         </Typography>
       </Grid>
       {/*Input Section  */}
-      <Grid item md={12} xs={12}>
+      <GridCustom item md={12} xs={12}>
         <RadioGroupCustom
           row
           alignItems="center"
           justifyContent="center"
           onChange={handleRadioChange}
         >
-          {get(question, "start_label", "")}
+          <StartLabel>{get(question, "start_label", "")}</StartLabel>
           {range(
             get(question, "start_count", 1),
             get(question, "end_count", 5)
           ).map((index) => (
-            <FormControlLabel
+            <FormLabel
               value={index}
-              control={<Radio />}
+              control={<RadioRoot />}
               label={index}
               labelPlacement="bottom"
             />
           ))}
-          {get(question, "end_label", "")}
+          <EndLabel> {get(question, "end_label", "")}</EndLabel>
         </RadioGroupCustom>
-      </Grid>
+      </GridCustom>
 
       <Grid container justifyContent="center">
         {error && <Typography color="red">{error}</Typography>}

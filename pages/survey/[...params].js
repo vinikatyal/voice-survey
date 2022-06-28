@@ -36,7 +36,7 @@ import MultiChoice from "@/components/questions/MultiChoice";
 
 import Image from "next/image";
 
-const FullBackgroundSurvey = styled("div")(({ bgColor }) => ({
+const FullBackgroundSurvey = styled("div")(({ bgColor, theme }) => ({
   overflow: "auto",
   minHeight: "100vh",
   background: bgColor,
@@ -44,17 +44,22 @@ const FullBackgroundSurvey = styled("div")(({ bgColor }) => ({
   flexDirection: "column",
   alignItems: "center",
   textAlign: "center",
-  padding: "50px",
+  padding: "30px",
+  [theme.breakpoints.down("sm")]: {
+    padding: "5px",
+  },
 }));
 
-const StyledDiv = styled("div")({
+const StyledDiv = styled("div")(({ theme }) => ({
   width: "100%",
   minHeight: "519px",
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
-  padding: "20px 10px",
-});
+  padding: "20px 10px"
+}));
+
+const ContainerQuestion = styled(Container)({});
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -231,7 +236,7 @@ export default function survey() {
       )}
 
       {questionId && (
-        <Container
+        <ContainerQuestion
           maxWidth="lg"
           sx={{ backgroundColor: "white", borderRadius: "8px" }}
         >
@@ -351,7 +356,7 @@ export default function survey() {
               />
             )}
           </StyledDiv>
-        </Container>
+        </ContainerQuestion>
       )}
       <Dialog
         open={open}

@@ -71,7 +71,7 @@ const initialState = {
   surveyEditId: null,
   surveyShareLink: "",
   surveyCreatedDate: dayjs().subtract(30, "days").startOf("day").toDate(),
-  startDate: dayjs().subtract(30, "days").startOf("day").toDate(),
+  startDate: dayjs().subtract(7, "days").startOf("day").toDate(),
   endDate: dayjs().endOf("day").toDate(),
   reportStats: {},
   reportData: [],
@@ -100,7 +100,6 @@ const reducer = produce((draft, action) => {
     case "SET_WELCOME_TEXT":
       draft.surveyWelcomeText = action.value;
       break;
-
     case "SET_QUESTIONS":
       draft.questions = action.value;
       break;
@@ -164,7 +163,7 @@ const reducer = produce((draft, action) => {
           .subtract(30, "days")
           .startOf("day")
           .toDate();
-        draft.startDate = dayjs().subtract(30, "days").startOf("day").toDate();
+        draft.startDate = dayjs().subtract(7, "days").startOf("day").toDate();
         draft.endDate = dayjs().endOf("day").toDate();
         draft.reportData = [];
         draft.reportStats = {};

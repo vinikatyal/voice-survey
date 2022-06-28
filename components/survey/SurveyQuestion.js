@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import produce from "immer";
 import isEmpty from "lodash.isempty";
 import debounce from "lodash.debounce";
 import dayjs from "dayjs";
+
+import Image from "next/image";
 
 // UI
 import Accordion from "@mui/material/Accordion";
@@ -20,14 +22,16 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
+import IconButton from "@mui/material/IconButton";
 
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 
 // icons
-import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
+import ImageIcon from "@mui/icons-material/Image";
+import VideocamIcon from "@mui/icons-material/Videocam";
 
 // constants
 import { surveyTypes } from "@/helpers/constants";
@@ -115,6 +119,20 @@ const OptionContainer = styled("div")(() => ({
   width: "100%",
   display: "flex",
   alignItems: "center",
+}));
+
+const Input = styled("input")({
+  display: "none",
+});
+
+const ImageDiv = styled("div")(() => ({
+  position: "relative",
+  width: "100%",
+}));
+
+const ImageText = styled("div")(() => ({
+  color: "#707070",
+  fontSize: "1em",
 }));
 
 const MultiChoiceRadio = ({
@@ -240,6 +258,8 @@ export default function SurveyQuestion({
     setValue,
     formState: { errors },
   } = useForm();
+
+  const [imageSrc, setImageSrc] = React.useState("");
 
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
@@ -380,6 +400,22 @@ export default function SurveyQuestion({
     dispatch({ type: "SET_QUESTIONS", value: next });
   };
 
+  const updateImageOrVideo = (event) => {
+    const reader = new FileReader();
+    reader.onload = async () => {
+      setImageSrc(reader.result);
+    };
+    reader.readAsDataURL(event.target.files[0]);
+
+    const next = produce(survey.questions, (draft) => {
+      const question = draft.find((question) => question.qid === id);
+      question.image = event.target.files[0];
+    });
+    dispatch({ type: "SET_QUESTIONS", value: next });
+  };
+
+  const enableVideo = () => {};
+
   return (
     <>
       <QuestionAccordion expanded={expandStatus} square>
@@ -407,6 +443,25 @@ export default function SurveyQuestion({
               </Typography>
             </StyledQuestionHead>
             <StyledQuestionHeadEndSlot>
+              <label htmlFor="icon-button-file">
+                <Input
+                  accept="image/*"
+                  id="icon-button-file"
+                  type="file"
+                  onChange={updateImageOrVideo}
+                />
+                <IconButton aria-label="upload picture" component="span">
+                  <ImageIcon />
+                </IconButton>
+              </label>
+
+              <IconButton
+                aria-label="video link"
+                component="span"
+                onClick={enableVideo}
+              >
+                <VideocamIcon />
+              </IconButton>
               <FormControlLabel
                 control={
                   <RequiredCheckbox
@@ -585,6 +640,21 @@ export default function SurveyQuestion({
                   <TextField {...params} placeholder="Select one" />
                 )}
               />
+              {imageSrc && (
+                <Grid fullWidth>
+                  <ImageText>Image Preview</ImageText>
+                  <ImageDiv>
+                    <Image
+                      width="100%"
+                      height="100%"
+                      layout="responsive"
+                      objectFit="contain"
+                      src={imageSrc}
+                      unoptimized={false}
+                    />
+                  </ImageDiv>
+                </Grid>
+              )}
             </AnswerSection>
           </QuestionAccordionBody>
         </AccordionDetails>

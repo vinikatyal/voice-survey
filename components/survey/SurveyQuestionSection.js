@@ -146,7 +146,6 @@ export default function SurveyQuestionSection({ questions }) {
         <StyledButton
           type="submit"
           variant="contained"
-          disabled={!isDirty || !isValid}
           onClick={handleSubmit(goToThemeScreen)}
           sx={{ ml: 3 }}
         >

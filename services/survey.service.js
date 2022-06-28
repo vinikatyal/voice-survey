@@ -29,6 +29,7 @@ export const surveyService = {
   getSurveyResponseCount,
   getQuestionLevelAnalytics,
   getSurveyLevelAnalytics,
+  update_survey_media,
 };
 
 async function update_user_answer(uniqueId, data) {
@@ -48,6 +49,26 @@ async function update_user_answer(uniqueId, data) {
       return error;
     });
 }
+
+
+async function update_survey_media(uniqueId, data) {
+  return await fetchWrapper
+    .postFormDataWithoutHeader(
+      `${baseUrl}/update_survey_media/${uniqueId}`,
+      data
+    )
+    .then((res) => {
+      if (get(res, "code") === 200) {
+        return res;
+      } else {
+        errorHandler({}, res);
+      }
+    })
+    .catch((error) => {
+      return error;
+    });
+}
+
 
 // for external link
 async function get_survey_details_link(id) {
