@@ -75,7 +75,7 @@ const StyledQuestionHead = styled("div")({
   display: "flex",
   justifyContent: "flex-start",
   alignItems: "center",
-  width: "70%",
+  width: "60%",
 });
 const StyledQuestionHeadEndSlot = styled(Grid)({
   display: "flex",
@@ -128,11 +128,30 @@ const Input = styled("input")({
 const ImageDiv = styled("div")(() => ({
   position: "relative",
   width: "100%",
+  border: "2px dashed gray",
+  borderRadius: "5px",
+}));
+const VideoDiv = styled("div")(() => ({
+  position: "relative",
+  width: "100%",
+  borderRadius: "5px",
+}));
+const ImageDivCancelButton = styled(IconButton)(() => ({
+  backgroundColor: "#0A23FB",
+  color: "white",
+  position: "absolute",
+  top: "-10px",
+  right: "-10px",
+  "&:hover": {
+    backgroundColor: "#0A23FB",
+    color: "white",
+  },
 }));
 
 const ImageText = styled("div")(() => ({
   color: "#707070",
   fontSize: "1em",
+  marginTop: "10px",
 }));
 
 const MultiChoiceRadio = ({
@@ -251,6 +270,8 @@ export default function SurveyQuestion({
   handleExpanded,
   deleteQuestion,
   handleAddQuestion,
+  video,
+  image,
 }) {
   const {
     register,
@@ -260,7 +281,9 @@ export default function SurveyQuestion({
   } = useForm();
 
   const [imageSrc, setImageSrc] = React.useState("");
-
+  const imageRef = React.useRef();
+  const [videoSrc, setVideoSrc] = React.useState("");
+  const videoRef = React.useRef();
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
   const [open, setOpen] = useState(false);
@@ -379,7 +402,6 @@ export default function SurveyQuestion({
   const handleAddOption = (optionId, option) => {
     const next = produce(survey.questions, (draft) => {
       const question = draft.find((question) => question.qid === id);
-      console.log(question);
       question.multiChoiceOptions.push({
         id: optionId,
         option,
@@ -400,7 +422,7 @@ export default function SurveyQuestion({
     dispatch({ type: "SET_QUESTIONS", value: next });
   };
 
-  const updateImageOrVideo = (event) => {
+  const addImagePreview = (event) => {
     const reader = new FileReader();
     reader.onload = async () => {
       setImageSrc(reader.result);
@@ -414,7 +436,38 @@ export default function SurveyQuestion({
     dispatch({ type: "SET_QUESTIONS", value: next });
   };
 
-  const enableVideo = () => {};
+  const removeImagePreview = () => {
+    imageRef.current.value = "";
+    const next = produce(survey.questions, (draft) => {
+      const question = draft.find((question) => question.qid === id);
+      delete question.image;
+    });
+    dispatch({ type: "SET_QUESTIONS", value: next });
+    setImageSrc("");
+  };
+
+  const addVideoPreview = (event) => {
+    const reader = new FileReader();
+    reader.onload = async () => {
+      setVideoSrc(reader.result);
+    };
+    reader.readAsDataURL(event.target.files[0]);
+    const next = produce(survey.questions, (draft) => {
+      const question = draft.find((question) => question.qid === id);
+      question.video = event.target.files[0];
+    });
+    dispatch({ type: "SET_QUESTIONS", value: next });
+  };
+
+  const removeVideoPreview = () => {
+    videoRef.current.value = "";
+    const next = produce(survey.questions, (draft) => {
+      const question = draft.find((question) => question.qid === id);
+      delete question.video;
+    });
+    dispatch({ type: "SET_QUESTIONS", value: next });
+    setVideoSrc("");
+  };
 
   return (
     <>
@@ -445,23 +498,29 @@ export default function SurveyQuestion({
             <StyledQuestionHeadEndSlot>
               <label htmlFor="icon-button-file">
                 <Input
+                  ref={imageRef}
                   accept="image/*"
                   id="icon-button-file"
                   type="file"
-                  onChange={updateImageOrVideo}
+                  onChange={addImagePreview}
                 />
                 <IconButton aria-label="upload picture" component="span">
                   <ImageIcon />
                 </IconButton>
               </label>
 
-              <IconButton
-                aria-label="video link"
-                component="span"
-                onClick={enableVideo}
-              >
-                <VideocamIcon />
-              </IconButton>
+              <label htmlFor="icon-video-file">
+                <Input
+                  ref={videoRef}
+                  accept="video/*"
+                  id="icon-video-file"
+                  type="file"
+                  onChange={addVideoPreview}
+                />
+                <IconButton aria-label="video link" component="span">
+                  <VideocamIcon />
+                </IconButton>
+              </label>
               <FormControlLabel
                 control={
                   <RequiredCheckbox
@@ -652,7 +711,32 @@ export default function SurveyQuestion({
                       src={imageSrc}
                       unoptimized={false}
                     />
+                    <ImageDivCancelButton
+                      size="small"
+                      onClick={removeImagePreview}
+                    >
+                      <ClearOutlinedIcon fontSize="10" />
+                    </ImageDivCancelButton>
                   </ImageDiv>
+                </Grid>
+              )}
+              {videoSrc && (
+                <Grid fullWidth>
+                  <ImageText>Video Preview</ImageText>
+                  <VideoDiv>
+                    <video
+                      style={{ width: "100%", maxHeight: "320px" }}
+                      controls
+                    >
+                      <source src={videoSrc} type="video/mp4" />
+                    </video>
+                    <ImageDivCancelButton
+                      size="small"
+                      onClick={removeVideoPreview}
+                    >
+                      <ClearOutlinedIcon fontSize="10" />
+                    </ImageDivCancelButton>
+                  </VideoDiv>
                 </Grid>
               )}
             </AnswerSection>
