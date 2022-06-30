@@ -57,6 +57,36 @@ export default function SurveyThemeSection({ logo }) {
     dispatch({ type: "SET_THEME", value: themeName });
   };
 
+  const renameFile = (file, id) => {
+    return new File([file], `question_img_${id}.${file.type.split("/")[1]}`, {
+      type: file.type,
+      lastModified: file.lastModified,
+    });
+  };
+
+  const uploadImagesFiles = async (imageFileArr, surveyId) => {
+    const formData = new FormData();
+    let count = 0;
+    imageFileArr.map(async (file, index) => {
+      if (count < 4 && index !== imageFileArr.length - 1) {
+        count++;
+        formData.append("file", file);
+      } else {
+        count = 0;
+        console.log(formData.getAll("file"));
+        await surveyService.update_survey_media(surveyId, formData);
+        clearFormData();
+      }
+    });
+    const clearFormData = () => {
+      const entries = formData.entries();
+      for (var pair of entries) {
+        formData.delete(pair[0]);
+      }
+    };
+    clearFormData();
+  };
+
   const createSurvey = async () => {
     const members = survey.accessMembers
       .map((item) => {
@@ -64,12 +94,18 @@ export default function SurveyThemeSection({ logo }) {
       })
       .join(",");
 
-    const questions = survey.questions.map((obj, index) => ({
-      ...obj,
-      qid: index + 1,
-      answer: "",
-      status: "",
-    }));
+    const imageArray = [];
+    const questions = survey.questions.map((obj, index) => {
+      obj.image && imageArray.push(renameFile(obj.image, index + 1));
+      const question = {
+        ...obj,
+        qid: index + 1,
+        answer: "",
+        status: "",
+      };
+      question.image && delete question.image;
+      return question;
+    });
 
     const surveyPayload = {
       survey_title: survey.surveyTitle,
@@ -84,6 +120,7 @@ export default function SurveyThemeSection({ logo }) {
       const surveyData = await surveyService.create_survey(surveyPayload);
 
       const surveyId = surveyData.code.survey_id;
+      await uploadImagesFiles(imageArray, surveyId);
       const link = await surveyService.generateLink(
         surveyId,
         survey.surveyType,
