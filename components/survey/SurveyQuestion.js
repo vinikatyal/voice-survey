@@ -154,6 +154,11 @@ const ImageText = styled("div")(() => ({
   marginTop: "10px",
 }));
 
+const IconButtonIm = styled(IconButton)(() => ({
+  backgroundColor: "#E3E6FF",
+  marginRight: "10px",
+}));
+
 const MultiChoiceRadio = ({
   addOption,
   deleteOption,
@@ -504,9 +509,9 @@ export default function SurveyQuestion({
                   type="file"
                   onChange={addImagePreview}
                 />
-                <IconButton aria-label="upload picture" component="span">
+                <IconButtonIm aria-label="upload picture" component="span">
                   <ImageIcon />
-                </IconButton>
+                </IconButtonIm>
               </label>
 
               <label htmlFor="icon-video-file">
@@ -517,9 +522,9 @@ export default function SurveyQuestion({
                   type="file"
                   onChange={addVideoPreview}
                 />
-                <IconButton aria-label="video link" component="span">
+                <IconButtonIm aria-label="video link" component="span">
                   <VideocamIcon />
-                </IconButton>
+                </IconButtonIm>
               </label>
               <FormControlLabel
                 control={
