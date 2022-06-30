@@ -501,11 +501,11 @@ export default function SurveyQuestion({
               </Typography>
             </StyledQuestionHead>
             <StyledQuestionHeadEndSlot>
-              <label htmlFor="icon-button-file">
+              <label htmlFor={`${id}_image_file`}>
                 <Input
                   ref={imageRef}
                   accept="image/*"
-                  id="icon-button-file"
+                  id={`${id}_image_file`}
                   type="file"
                   onChange={addImagePreview}
                 />
@@ -514,11 +514,11 @@ export default function SurveyQuestion({
                 </IconButtonIm>
               </label>
 
-              <label htmlFor="icon-video-file">
+              <label htmlFor={`${id}_video_file`}>
                 <Input
                   ref={videoRef}
                   accept="video/*"
-                  id="icon-video-file"
+                  id={`${id}_video_file`}
                   type="file"
                   onChange={addVideoPreview}
                 />
