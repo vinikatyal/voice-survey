@@ -133,8 +133,8 @@ export default function SurveyQuestionSection({ questions }) {
               endLabel={get(question, "end_label")}
               startCount={get(question, "start_count", 1)}
               endCount={get(question, "end_count", 5)}
-              video={get(question, "image", "")}
-              image={get(question, "video", "")}
+              image={get(question, "image", "")}
+              video={get(question, "video", "")}
               multiChoiceOptions={get(question, "multiChoiceOptions", [])}
               expandStatus={question.expandStatus}
               required={question.required}

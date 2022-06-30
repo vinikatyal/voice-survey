@@ -285,10 +285,9 @@ export default function SurveyQuestion({
     formState: { errors },
   } = useForm();
 
-  const [imageSrc, setImageSrc] = React.useState("");
-  const imageRef = React.useRef();
-  const [videoSrc, setVideoSrc] = React.useState("");
-  const videoRef = React.useRef();
+  const [imageSrc, setImageSrc] = useState("");
+  const imageRef = useRef();
+  const [videoLinkStatus, setVideoLinkStatus] = useState(false);
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
   const [open, setOpen] = useState(false);
@@ -304,7 +303,17 @@ export default function SurveyQuestion({
     setValue("endLabel", endLabel, {
       shouldDirty: true,
     });
-  }, [question, startLabel, endLabel, id]);
+    setValue("videoLink", video, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+    video && setVideoLinkStatus(true);
+  }, [question, startLabel, endLabel, id, video, videoLinkStatus]);
+
+  useEffect(() => {
+    image && addImagePreview({ target: { files: [image] } });
+  });
 
   const handleInputChange = (e) => {
     const next = produce(survey.questions, (draft) => {
@@ -356,6 +365,10 @@ export default function SurveyQuestion({
 
   const debounceEndLabel = debounce((e) => {
     handleEndLabel(e);
+  }, 600);
+
+  const videoLinkDebounced = debounce((e) => {
+    onVideoLink(e);
   }, 600);
 
   const handleAnswerTypeChange = (_, value) => {
@@ -437,8 +450,10 @@ export default function SurveyQuestion({
     const next = produce(survey.questions, (draft) => {
       const question = draft.find((question) => question.qid === id);
       question.image = event.target.files[0];
+      delete question.video;
     });
     dispatch({ type: "SET_QUESTIONS", value: next });
+    setVideoLinkStatus(false);
   };
 
   const removeImagePreview = () => {
@@ -451,27 +466,25 @@ export default function SurveyQuestion({
     setImageSrc("");
   };
 
-  const addVideoPreview = (event) => {
-    const reader = new FileReader();
-    reader.onload = async () => {
-      setVideoSrc(reader.result);
-    };
-    reader.readAsDataURL(event.target.files[0]);
+  const addVideoLink = () => {
+    removeImagePreview();
+    setVideoLinkStatus(true);
+  };
+  const onVideoLink = (event) => {
     const next = produce(survey.questions, (draft) => {
       const question = draft.find((question) => question.qid === id);
-      question.video = event.target.files[0];
+      question.video = event.target.value;
     });
     dispatch({ type: "SET_QUESTIONS", value: next });
   };
 
-  const removeVideoPreview = () => {
-    videoRef.current.value = "";
+  const removeVideoLink = () => {
     const next = produce(survey.questions, (draft) => {
       const question = draft.find((question) => question.qid === id);
       delete question.video;
     });
     dispatch({ type: "SET_QUESTIONS", value: next });
-    setVideoSrc("");
+    setVideoLinkStatus(false);
   };
 
   return (
@@ -514,18 +527,14 @@ export default function SurveyQuestion({
                 </IconButtonIm>
               </label>
 
-              <label htmlFor={`${id}_video_file`}>
-                <Input
-                  ref={videoRef}
-                  accept="video/*"
-                  id={`${id}_video_file`}
-                  type="file"
-                  onChange={addVideoPreview}
-                />
-                <IconButtonIm aria-label="video link" component="span">
-                  <VideocamIcon />
-                </IconButtonIm>
-              </label>
+              <IconButtonIm
+                onClick={addVideoLink}
+                aria-label="video link"
+                component="span"
+              >
+                <VideocamIcon />
+              </IconButtonIm>
+
               <FormControlLabel
                 control={
                   <RequiredCheckbox
@@ -725,19 +734,34 @@ export default function SurveyQuestion({
                   </ImageDiv>
                 </Grid>
               )}
-              {videoSrc && (
+              {videoLinkStatus && (
                 <Grid fullWidth>
-                  <ImageText>Video Preview</ImageText>
+                  <ImageText>Video link</ImageText>
                   <VideoDiv>
-                    <video
-                      style={{ width: "100%", maxHeight: "320px" }}
-                      controls
-                    >
-                      <source src={videoSrc} type="video/mp4" />
-                    </video>
+                    <TextField
+                      name="videoLink"
+                      id="outlined-basic"
+                      placeholder="Enter video link here"
+                      fullWidth
+                      error={!isEmpty(errors.videoLink)}
+                      {...register("videoLink", {
+                        required: "You need to add link",
+                        onChange: async () => {
+                          await trigger("videoLink");
+                        },
+                      })}
+                      onInput={videoLinkDebounced}
+                      variant="outlined"
+                      sx={{ backgroundColor: "#f7f7f7" }}
+                    />
+                    {errors.videoLink && (
+                      <Typography color="red">
+                        {errors.videoLink.message}
+                      </Typography>
+                    )}
                     <ImageDivCancelButton
                       size="small"
-                      onClick={removeVideoPreview}
+                      onClick={removeVideoLink}
                     >
                       <ClearOutlinedIcon fontSize="10" />
                     </ImageDivCancelButton>
