@@ -17,7 +17,7 @@ import { useForm } from "react-hook-form";
 import styled from "@emotion/styled";
 
 const ImageLayout = styled("div")`
-  width: 400px;
+  width: 100%;
   height: 300px;
   position: relative;
   display: flex;

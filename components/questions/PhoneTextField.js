@@ -26,7 +26,7 @@ const PhoneFormControl = styled(FormControl)`
 `;
 
 const ImageLayout = styled("div")`
-  width: 400px;
+  width: 100%;
   height: 300px;
   position: relative;
   display: flex;
