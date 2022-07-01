@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+import Image from "next/image";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
 import get from "lodash.get";
@@ -62,6 +63,27 @@ const GridCustom = styled(Grid)`
   }
 `;
 
+const ImageLayout = styled("div")`
+  width: 400px;
+  height: 300px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    height: 200px;
+  }
+`;
+
+const Video = styled("video")`
+  width: 400px;
+  height: 300px;
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    height: 200px;
+  }
+`;
+
 function LinearScale({
   title,
   question,
@@ -75,6 +97,8 @@ function LinearScale({
   nextRoute,
   handleResponse,
   handleEndSurvey,
+  image,
+  video,
 }) {
   const {
     register,
@@ -120,6 +144,27 @@ function LinearScale({
           {title}
         </Typography>
       </Grid>
+      <Grid
+        item
+        xs={12}
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+      >
+        {image && (
+          <ImageLayout>
+            <Image src={image} layout="fill" objectFit="contain" />
+          </ImageLayout>
+        )}
+        {video && (
+          <Video
+            controls
+            disablePictureInPicture
+            controlsList="nodownload noplaybackrate"
+            src={video}
+          />
+        )}
+      </Grid>
       {/*Input Section  */}
       <GridCustom item md={12} xs={12}>
         <RadioGroupCustom
@@ -135,6 +180,7 @@ function LinearScale({
           ).map((index) => (
             <FormLabel
               value={index}
+              key={index}
               control={<RadioRoot />}
               label={index}
               labelPlacement="bottom"

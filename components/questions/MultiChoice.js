@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+import Image from "next/image";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
 import get from "lodash.get";
@@ -17,7 +18,27 @@ import { useForm } from "react-hook-form";
 
 import styled from "@emotion/styled";
 
-const RadioGroupCustom = styled(RadioGroup)`
+const RadioGroupCustom = styled(RadioGroup)``;
+
+const ImageLayout = styled("div")`
+  width: 400px;
+  height: 300px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    height: 200px;
+  }
+`;
+
+const Video = styled("video")`
+  width: 400px;
+  height: 300px;
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    height: 200px;
+  }
 `;
 
 function MultiChoice({
@@ -33,6 +54,8 @@ function MultiChoice({
   nextRoute,
   handleResponse,
   handleEndSurvey,
+  image,
+  video,
 }) {
   const {
     register,
@@ -72,6 +95,28 @@ function MultiChoice({
           {title}
         </Typography>
       </Grid>
+      <Grid
+        item
+        xs={12}
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+      >
+        {image && (
+          <ImageLayout>
+            <Image src={image} layout="fill" objectFit="contain" />
+          </ImageLayout>
+        )}
+        {video && (
+          <Video
+            controls
+            disablePictureInPicture
+            controlsList="nodownload noplaybackrate"
+            src={video}
+          />
+        )}
+      </Grid>
+
       {/*Input Section  */}
       <Grid item md={12} xs={12}>
         <FormControl>
@@ -79,6 +124,7 @@ function MultiChoice({
             {get(question, "multiChoiceOptions", []).map((option, index) => (
               <FormControlLabel
                 value={option.option}
+                key={index}
                 control={<Radio />}
                 label={option.option}
               />

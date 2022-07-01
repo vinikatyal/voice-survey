@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 
+import Image from "next/image";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
-import isEmpty from "lodash.isempty";
 
-import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
@@ -26,6 +25,27 @@ const PhoneFormControl = styled(FormControl)`
   }
 `;
 
+const ImageLayout = styled("div")`
+  width: 400px;
+  height: 300px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    height: 200px;
+  }
+`;
+
+const Video = styled("video")`
+  width: 400px;
+  height: 300px;
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    height: 200px;
+  }
+`;
+
 function PhoneTextField({
   title,
   value,
@@ -38,6 +58,8 @@ function PhoneTextField({
   nextRoute,
   handleEndSurvey,
   handleResponse,
+  image,
+  video,
 }) {
   const { handleSubmit } = useForm();
   const router = useRouter();
@@ -70,6 +92,28 @@ function PhoneTextField({
         <Typography variant="h2" fontWeight={550}>
           {title}
         </Typography>
+      </Grid>
+
+      <Grid
+        item
+        xs={12}
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+      >
+        {image && (
+          <ImageLayout>
+            <Image src={image} layout="fill" objectFit="contain" />
+          </ImageLayout>
+        )}
+        {video && (
+          <Video
+            controls
+            disablePictureInPicture
+            controlsList="nodownload noplaybackrate"
+            src={video}
+          />
+        )}
       </Grid>
 
       {/*Input Section  */}
