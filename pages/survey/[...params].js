@@ -253,6 +253,8 @@ export default function survey() {
                 nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
                 handleEndSurvey={handleEndSurvey}
                 handleResponse={handleResponse}
+                image={get(question, "image", "")}
+                video={get(question, "video_url", "")}
               />
             )}
             {get(question, "question_type", "") === "description" && (
@@ -267,6 +269,8 @@ export default function survey() {
                 nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
                 handleEndSurvey={handleEndSurvey}
                 handleResponse={handleResponse}
+                image={get(question, "image", "")}
+                video={get(question, "video_url", "")}
               />
             )}
             {get(question, "question_type", "") === "email" && (
@@ -281,6 +285,8 @@ export default function survey() {
                 nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
                 handleEndSurvey={handleEndSurvey}
                 handleResponse={handleResponse}
+                image={get(question, "image", "")}
+                video={get(question, "video_url", "")}
               />
             )}
             {get(question, "question_type", "") === "date_picker" && (
@@ -295,6 +301,8 @@ export default function survey() {
                 nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
                 handleEndSurvey={handleEndSurvey}
                 handleResponse={handleResponse}
+                image={get(question, "image", "")}
+                video={get(question, "video_url", "")}
               />
             )}
             {get(question, "question_type", "") === "contact" && (
@@ -309,6 +317,8 @@ export default function survey() {
                 nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
                 handleEndSurvey={handleEndSurvey}
                 handleResponse={handleResponse}
+                image={get(question, "image", "")}
+                video={get(question, "video_url", "")}
               />
             )}
             {get(question, "question_type", "") === "audio" && (
@@ -323,6 +333,8 @@ export default function survey() {
                 nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
                 handleEndSurvey={handleEndSurvey}
                 handleResponse={handleResponse}
+                image={get(question, "image", "")}
+                video={get(question, "video_url", "")}
               />
             )}
             {get(question, "question_type", "") === "nps" && (
@@ -338,6 +350,8 @@ export default function survey() {
                 nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
                 handleEndSurvey={handleEndSurvey}
                 handleResponse={handleResponse}
+                image={get(question, "image", "")}
+                video={get(question, "video_url", "")}
               />
             )}
             {get(question, "question_type", "") === "multiple_choice" && (
@@ -353,6 +367,8 @@ export default function survey() {
                 nextRoute={`/survey/${surveyId}/${+questionId + 1}`}
                 handleEndSurvey={handleEndSurvey}
                 handleResponse={handleResponse}
+                image={get(question, "image", "")}
+                video={get(question, "video_url", "")}
               />
             )}
           </StyledDiv>

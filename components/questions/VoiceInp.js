@@ -4,6 +4,8 @@ import get from "lodash.get";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
 
+import Image from "next/image";
+
 import WaveSurfer from "wavesurfer.js";
 import MicrophonePlugin from "wavesurfer.js/dist/plugin/wavesurfer.microphone";
 
@@ -51,6 +53,8 @@ function VoiceInp({
   nextRoute,
   handleEndSurvey,
   handleResponse,
+  image,
+  video,
 }) {
   const [isBlocked, setIsBlocked] = useState(false);
   const [error, setError] = useState(false);
@@ -82,8 +86,6 @@ function VoiceInp({
   const stopRecording = async () => {
     try {
       const blob = await recorder.stopRecording();
-      console.log(blob);
-
       setBlob(blob);
 
       setRecordStatus("stopped");
@@ -174,9 +176,6 @@ function VoiceInp({
     }
 
     if (mediaFile) {
-      console.log(mediaFile);
-      console.log(blob);
-
       const uniqueId =
         Date.now().toString(36) + Math.random().toString(36).substring(2);
 
@@ -221,6 +220,19 @@ function VoiceInp({
         <Typography variant="h2" fontWeight={550}>
           {title}
         </Typography>
+      </Grid>
+
+      <Grid item xs={12}>
+        {image && <Image src={image} width={"100%"} height={200} />}
+        {video && (
+          <video
+            controls
+            disablePictureInPicture
+            controlsList="nodownload noplaybackrate"
+            src={video}
+            style={{ width: "100%", height: "300px" }}
+          />
+        )}
       </Grid>
 
       {/*Input Section  */}

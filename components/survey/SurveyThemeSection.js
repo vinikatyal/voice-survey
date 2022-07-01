@@ -58,7 +58,7 @@ export default function SurveyThemeSection({ logo }) {
   };
 
   const renameFile = (file, id) => {
-    return new File([file], `question_img_${id}.${file.type.split("/")[1]}`, {
+    return new File([file], `survey_logo_${id}.${file.type.split("/")[1]}`, {
       type: file.type,
       lastModified: file.lastModified,
     });
@@ -126,6 +126,7 @@ export default function SurveyThemeSection({ logo }) {
       const surveyData = await surveyService.create_survey(surveyPayload);
 
       const surveyId = surveyData.code.survey_id;
+      console.log(imageArray)
       await uploadImagesFiles(imageArray, surveyId);
       const link = await surveyService.generateLink(
         surveyId,
