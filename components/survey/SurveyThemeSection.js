@@ -74,7 +74,12 @@ export default function SurveyThemeSection({ logo }) {
       } else {
         count = 0;
         console.log(formData.getAll("file"));
-        await surveyService.update_survey_media(surveyId, formData);
+        const mediaType = "image"
+        await surveyService.update_survey_media(
+          surveyId,
+          formData,
+          (mediaType = "image")
+        );
         clearFormData();
       }
     });

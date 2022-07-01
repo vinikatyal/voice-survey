@@ -50,11 +50,10 @@ async function update_user_answer(uniqueId, data) {
     });
 }
 
-
-async function update_survey_media(uniqueId, data) {
+async function update_survey_media(uniqueId, data, mediaType) {
   return await fetchWrapper
     .postFormDataWithoutHeader(
-      `${baseUrl}/update_survey_media/${uniqueId}`,
+      `${baseUrl}/update_survey_media/${uniqueId}?media_type=` + mediaType,
       data
     )
     .then((res) => {
@@ -68,7 +67,6 @@ async function update_survey_media(uniqueId, data) {
       return error;
     });
 }
-
 
 // for external link
 async function get_survey_details_link(id) {
@@ -255,7 +253,6 @@ async function generateLink(survey_id, survey_type, url) {
 }
 
 // Reporting
-
 
 async function getSurveyLevelAnalytics(id, data) {
   const token = await getAccessToken();

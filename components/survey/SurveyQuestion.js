@@ -473,7 +473,7 @@ export default function SurveyQuestion({
   const onVideoLink = (event) => {
     const next = produce(survey.questions, (draft) => {
       const question = draft.find((question) => question.qid === id);
-      question.video = event.target.value;
+      question.video_url = event.target.value;
     });
     dispatch({ type: "SET_QUESTIONS", value: next });
   };
