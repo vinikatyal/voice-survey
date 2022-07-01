@@ -275,7 +275,7 @@ export default function SurveyQuestion({
   handleExpanded,
   deleteQuestion,
   handleAddQuestion,
-  video,
+  video_url,
   image,
 }) {
   const {
@@ -303,13 +303,13 @@ export default function SurveyQuestion({
     setValue("endLabel", endLabel, {
       shouldDirty: true,
     });
-    setValue("videoLink", video, {
+    setValue("videoLink", video_url, {
       shouldDirty: true,
       shouldTouch: true,
       shouldValidate: true,
     });
-    video && setVideoLinkStatus(true);
-  }, [question, startLabel, endLabel, id, video, videoLinkStatus]);
+    video_url && setVideoLinkStatus(true);
+  }, [question, startLabel, endLabel, id, video_url, videoLinkStatus]);
 
   useEffect(() => {
     image && addImagePreview({ target: { files: [image] } });
