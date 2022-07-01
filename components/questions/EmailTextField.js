@@ -49,6 +49,8 @@ function EmailTextField({
   nextRoute,
   handleEndSurvey,
   handleResponse,
+  image,
+  video
 }) {
   const {
     register,
