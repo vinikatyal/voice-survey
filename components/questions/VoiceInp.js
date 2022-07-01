@@ -39,6 +39,27 @@ const Small = styled("div")`
   font-size: 10px;
 `;
 
+const ImageLayout = styled("div")`
+  width: 400px;
+  height: 300px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    height: 200px;
+  }
+`;
+
+const Video = styled("video")`
+  width: 400px;
+  height: 300px;
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    height: 200px;
+  }
+`;
+
 const recorder = new vmsg.Recorder({
   wasmURL: "https://unpkg.com/vmsg@0.3.0/vmsg.wasm",
 });
@@ -222,15 +243,24 @@ function VoiceInp({
         </Typography>
       </Grid>
 
-      <Grid item xs={12}>
-        {image && <Image src={image} width={"100%"} height={200} />}
+      <Grid
+        item
+        xs={12}
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+      >
+        {image && (
+          <ImageLayout>
+            <Image src={image} layout="fill" objectFit="contain" />
+          </ImageLayout>
+        )}
         {video && (
-          <video
+          <Video
             controls
             disablePictureInPicture
             controlsList="nodownload noplaybackrate"
             src={video}
-            style={{ width: "100%", height: "300px" }}
           />
         )}
       </Grid>
