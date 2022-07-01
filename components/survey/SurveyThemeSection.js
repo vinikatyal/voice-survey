@@ -109,7 +109,7 @@ export default function SurveyThemeSection({ logo }) {
         status: "",
       };
       question.image && delete question.image;
-      !question.video && delete question.video;
+      !question.video_url && delete question.video_url;
       return question;
     });
 

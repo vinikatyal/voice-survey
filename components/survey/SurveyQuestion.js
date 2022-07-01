@@ -450,7 +450,7 @@ export default function SurveyQuestion({
     const next = produce(survey.questions, (draft) => {
       const question = draft.find((question) => question.qid === id);
       question.image = event.target.files[0];
-      delete question.video;
+      delete question.video_url;
     });
     dispatch({ type: "SET_QUESTIONS", value: next });
     setVideoLinkStatus(false);
@@ -481,7 +481,7 @@ export default function SurveyQuestion({
   const removeVideoLink = () => {
     const next = produce(survey.questions, (draft) => {
       const question = draft.find((question) => question.qid === id);
-      delete question.video;
+      delete question.video_url;
     });
     dispatch({ type: "SET_QUESTIONS", value: next });
     setVideoLinkStatus(false);
