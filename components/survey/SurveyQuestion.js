@@ -312,7 +312,11 @@ export default function SurveyQuestion({
   }, [question, startLabel, endLabel, id, video_url, videoLinkStatus]);
 
   useEffect(() => {
-    image && addImagePreview({ target: { files: [image] } });
+    if (image) {
+      typeof image === "string"
+        ? addImagePreview(image)
+        : addImagePreview({ target: { files: [image] } });
+    }
   });
 
   const handleInputChange = (e) => {
@@ -442,14 +446,22 @@ export default function SurveyQuestion({
 
   const addImagePreview = (event) => {
     const reader = new FileReader();
-    reader.onload = async () => {
-      setImageSrc(reader.result);
-    };
-    reader.readAsDataURL(event.target.files[0]);
-
+    if (typeof event === "string") {
+      setImageSrc(event);
+    } else if (event.target.files.length) {
+      reader.onload = async () => {
+        setImageSrc(reader.result);
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
     const next = produce(survey.questions, (draft) => {
       const question = draft.find((question) => question.qid === id);
-      question.image = event.target.files[0];
+      question.image =
+        typeof event === "string"
+          ? event
+          : event.target.files.length
+          ? event.target.files[0]
+          : question.image;
       delete question.video_url;
     });
     dispatch({ type: "SET_QUESTIONS", value: next });

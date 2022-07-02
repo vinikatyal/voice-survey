@@ -67,29 +67,30 @@ export default function SurveyThemeSection({ logo }) {
   const uploadImagesFiles = async (imageFileArr, surveyId) => {
     const formData = new FormData();
     let count = 0;
-    imageFileArr.map(async (file, index) => {
-      if (count < 4 && index !== imageFileArr.length - 1) {
-        count++;
-        formData.append("file", file);
-      } else {
-        count = 0;
-        console.log(formData.getAll("file"));
-        const mediaType = "image"
-        await surveyService.update_survey_media(
-          surveyId,
-          formData,
-          (mediaType = "image")
-        );
-        clearFormData();
-      }
-    });
     const clearFormData = () => {
       const entries = formData.entries();
       for (var pair of entries) {
         formData.delete(pair[0]);
       }
     };
-    clearFormData();
+    const uploadImages = async () => {
+      console.log(formData.getAll("file"));
+      const mediaType = "image";
+      await surveyService.update_survey_media(
+        surveyId,
+        formData,
+        (mediaType = "image")
+      );
+      clearFormData();
+      count = 0;
+    };
+    imageFileArr.map(async (file, index) => {
+      count++;
+      formData.append("file", file);
+      if (count === 4 || index === imageFileArr.length - 1) {
+        await uploadImages();
+      }
+    });
   };
 
   const createSurvey = async () => {
@@ -126,7 +127,6 @@ export default function SurveyThemeSection({ logo }) {
       const surveyData = await surveyService.create_survey(surveyPayload);
 
       const surveyId = surveyData.code.survey_id;
-      console.log(imageArray)
       await uploadImagesFiles(imageArray, surveyId);
       const link = await surveyService.generateLink(
         surveyId,
@@ -168,10 +168,19 @@ export default function SurveyThemeSection({ logo }) {
       })
       .join(",");
 
-    const questions = survey.questions.map((obj, index) => ({
-      ...obj,
-      qid: index + 1,
-    }));
+    const imageArray = [];
+    const questions = survey.questions.map((obj, index) => {
+      obj.image && imageArray.push(renameFile(obj.image, index + 1));
+      const question = {
+        ...obj,
+        qid: index + 1,
+        answer: "",
+        status: "",
+      };
+      typeof question.image !== "string" && delete question.image;
+      !question.video_url && delete question.video_url;
+      return question;
+    });
 
     const surveyPayload = {
       survey_title: survey.surveyTitle,
@@ -182,6 +191,7 @@ export default function SurveyThemeSection({ logo }) {
     };
 
     try {
+      await uploadImagesFiles(imageArray, survey.surveyEditId);
       await surveyService.edit_survey(survey.surveyEditId, surveyPayload);
       toast.success("Survey edited successfully", {
         position: toast.POSITION.TOP_RIGHT,
