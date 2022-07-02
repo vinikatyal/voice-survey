@@ -5,18 +5,18 @@ module.exports = {
   serverRuntimeConfig: {
     secret: "ABCD",
     server: {
-      DEV_URL: "https://surveycallback2.gnani.site",
+      DEV_URL: "https://surveycallback.gnani.site",
     },
   },
   publicRuntimeConfig: {
     apiUrl:
       process.env.NODE_ENV === "development"
-        ? "https://surveycallback2.gnani.site" // development api
-        : "https://surveycallback2.gnani.site", // production api
+        ? "https://surveycallback.gnani.site" // development api
+        : "https://surveycallback.gnani.site", // production api
 
     server: {
-      DEV_URL: "https://surveyv3.gnani.site",
-      SHARE_URL: "https://surveyv3.gnani.site"
+      DEV_URL: "https://surveyv2.gnani.site",
+      SHARE_URL: "https://app.getvoiceit.com",
     },
   },
   reactStrictMode: true,

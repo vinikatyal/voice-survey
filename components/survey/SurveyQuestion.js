@@ -317,7 +317,7 @@ export default function SurveyQuestion({
         ? addImagePreview(image)
         : addImagePreview({ target: { files: [image] } });
     }
-  });
+  }, []);
 
   const handleInputChange = (e) => {
     const next = produce(survey.questions, (draft) => {
