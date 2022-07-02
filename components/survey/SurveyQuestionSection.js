@@ -133,6 +133,8 @@ export default function SurveyQuestionSection({ questions }) {
               endLabel={get(question, "end_label")}
               startCount={get(question, "start_count", 1)}
               endCount={get(question, "end_count", 5)}
+              image={get(question, "image", "")}
+              video_url={get(question, "video_url", "")}
               multiChoiceOptions={get(question, "multiChoiceOptions", [])}
               expandStatus={question.expandStatus}
               required={question.required}
@@ -146,7 +148,6 @@ export default function SurveyQuestionSection({ questions }) {
         <StyledButton
           type="submit"
           variant="contained"
-          disabled={!isDirty || !isValid}
           onClick={handleSubmit(goToThemeScreen)}
           sx={{ ml: 3 }}
         >

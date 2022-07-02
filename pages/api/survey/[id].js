@@ -1,4 +1,9 @@
-const BASE_URL = "https://surveycallback.gnani.site";
+import getConfig from "next/config";
+
+const { serverRuntimeConfig } = getConfig();
+
+const BASE_URL = serverRuntimeConfig.server.DEV_URL;
+
 export default async function handler(req, res) {
   const { id } = req.query;
   const resData = await fetch(`${BASE_URL}/get_survey_details_link/${id}`).then(

@@ -29,12 +29,31 @@ export const surveyService = {
   getSurveyResponseCount,
   getQuestionLevelAnalytics,
   getSurveyLevelAnalytics,
+  update_survey_media,
 };
 
 async function update_user_answer(uniqueId, data) {
   return await fetchWrapper
     .postFormDataWithoutHeader(
       `${baseUrl}/update_user_answer/${uniqueId}`,
+      data
+    )
+    .then((res) => {
+      if (get(res, "code") === 200) {
+        return res;
+      } else {
+        errorHandler({}, res);
+      }
+    })
+    .catch((error) => {
+      return error;
+    });
+}
+
+async function update_survey_media(uniqueId, data, mediaType) {
+  return await fetchWrapper
+    .postFormDataWithoutHeader(
+      `${baseUrl}/update_survey_media/${uniqueId}?media_type=` + mediaType,
       data
     )
     .then((res) => {
@@ -234,7 +253,6 @@ async function generateLink(survey_id, survey_type, url) {
 }
 
 // Reporting
-
 
 async function getSurveyLevelAnalytics(id, data) {
   const token = await getAccessToken();

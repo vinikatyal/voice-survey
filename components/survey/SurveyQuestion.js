@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import produce from "immer";
 import isEmpty from "lodash.isempty";
 import debounce from "lodash.debounce";
 import dayjs from "dayjs";
+
+import Image from "next/image";
 
 // UI
 import Accordion from "@mui/material/Accordion";
@@ -20,14 +22,16 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
+import IconButton from "@mui/material/IconButton";
 
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 
 // icons
-import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
+import ImageIcon from "@mui/icons-material/Image";
+import VideocamIcon from "@mui/icons-material/Videocam";
 
 // constants
 import { surveyTypes } from "@/helpers/constants";
@@ -71,7 +75,7 @@ const StyledQuestionHead = styled("div")({
   display: "flex",
   justifyContent: "flex-start",
   alignItems: "center",
-  width: "70%",
+  width: "60%",
 });
 const StyledQuestionHeadEndSlot = styled(Grid)({
   display: "flex",
@@ -115,6 +119,44 @@ const OptionContainer = styled("div")(() => ({
   width: "100%",
   display: "flex",
   alignItems: "center",
+}));
+
+const Input = styled("input")({
+  display: "none",
+});
+
+const ImageDiv = styled("div")(() => ({
+  position: "relative",
+  width: "100%",
+  border: "2px dashed gray",
+  borderRadius: "5px",
+}));
+const VideoDiv = styled("div")(() => ({
+  position: "relative",
+  width: "100%",
+  borderRadius: "5px",
+}));
+const ImageDivCancelButton = styled(IconButton)(() => ({
+  backgroundColor: "#0A23FB",
+  color: "white",
+  position: "absolute",
+  top: "-10px",
+  right: "-10px",
+  "&:hover": {
+    backgroundColor: "#0A23FB",
+    color: "white",
+  },
+}));
+
+const ImageText = styled("div")(() => ({
+  color: "#707070",
+  fontSize: "1em",
+  marginTop: "10px",
+}));
+
+const IconButtonIm = styled(IconButton)(() => ({
+  backgroundColor: "#E3E6FF",
+  marginRight: "10px",
 }));
 
 const MultiChoiceRadio = ({
@@ -233,6 +275,8 @@ export default function SurveyQuestion({
   handleExpanded,
   deleteQuestion,
   handleAddQuestion,
+  video_url,
+  image,
 }) {
   const {
     register,
@@ -241,6 +285,9 @@ export default function SurveyQuestion({
     formState: { errors },
   } = useForm();
 
+  const [imageSrc, setImageSrc] = useState("");
+  const imageRef = useRef();
+  const [videoLinkStatus, setVideoLinkStatus] = useState(false);
   const survey = useSurvey();
   const dispatch = useDispatchSurvey();
   const [open, setOpen] = useState(false);
@@ -256,7 +303,21 @@ export default function SurveyQuestion({
     setValue("endLabel", endLabel, {
       shouldDirty: true,
     });
-  }, [question, startLabel, endLabel, id]);
+    setValue("videoLink", video_url, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+    video_url && setVideoLinkStatus(true);
+  }, [question, startLabel, endLabel, id, video_url, videoLinkStatus]);
+
+  useEffect(() => {
+    if (image) {
+      typeof image === "string"
+        ? addImagePreview(image)
+        : addImagePreview({ target: { files: [image] } });
+    }
+  }, []);
 
   const handleInputChange = (e) => {
     const next = produce(survey.questions, (draft) => {
@@ -310,6 +371,10 @@ export default function SurveyQuestion({
     handleEndLabel(e);
   }, 600);
 
+  const videoLinkDebounced = debounce((e) => {
+    onVideoLink(e);
+  }, 600);
+
   const handleAnswerTypeChange = (_, value) => {
     const next = produce(survey.questions, (draft) => {
       const question = draft.find((question) => question.qid === id);
@@ -359,7 +424,6 @@ export default function SurveyQuestion({
   const handleAddOption = (optionId, option) => {
     const next = produce(survey.questions, (draft) => {
       const question = draft.find((question) => question.qid === id);
-      console.log(question);
       question.multiChoiceOptions.push({
         id: optionId,
         option,
@@ -378,6 +442,61 @@ export default function SurveyQuestion({
       question.multiChoiceOptions[index].option = value;
     });
     dispatch({ type: "SET_QUESTIONS", value: next });
+  };
+
+  const addImagePreview = (event) => {
+    const reader = new FileReader();
+    if (typeof event === "string") {
+      setImageSrc(event);
+    } else if (event.target.files.length) {
+      reader.onload = async () => {
+        setImageSrc(reader.result);
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+    const next = produce(survey.questions, (draft) => {
+      const question = draft.find((question) => question.qid === id);
+      question.image =
+        typeof event === "string"
+          ? event
+          : event.target.files.length
+          ? event.target.files[0]
+          : question.image;
+      delete question.video_url;
+    });
+    dispatch({ type: "SET_QUESTIONS", value: next });
+    setVideoLinkStatus(false);
+  };
+
+  const removeImagePreview = () => {
+    imageRef.current.value = "";
+    const next = produce(survey.questions, (draft) => {
+      const question = draft.find((question) => question.qid === id);
+      delete question.image;
+    });
+    dispatch({ type: "SET_QUESTIONS", value: next });
+    setImageSrc("");
+  };
+
+  const addVideoLink = () => {
+    removeImagePreview();
+    setVideoLinkStatus(true);
+  };
+  const onVideoLink = (event) => {
+    const next = produce(survey.questions, (draft) => {
+      const question = draft.find((question) => question.qid === id);
+      question.video_url = event.target.value;
+    });
+    dispatch({ type: "SET_QUESTIONS", value: next });
+  };
+
+  const removeVideoLink = () => {
+    const next = produce(survey.questions, (draft) => {
+      const question = draft.find((question) => question.qid === id);
+      delete question.video_url;
+    });
+    dispatch({ type: "SET_QUESTIONS", value: next });
+    setVideoLinkStatus(false);
   };
 
   return (
@@ -407,6 +526,27 @@ export default function SurveyQuestion({
               </Typography>
             </StyledQuestionHead>
             <StyledQuestionHeadEndSlot>
+              <label htmlFor={`${id}_image_file`}>
+                <Input
+                  ref={imageRef}
+                  accept="image/*"
+                  id={`${id}_image_file`}
+                  type="file"
+                  onChange={addImagePreview}
+                />
+                <IconButtonIm aria-label="upload picture" component="span">
+                  <ImageIcon />
+                </IconButtonIm>
+              </label>
+
+              <IconButtonIm
+                onClick={addVideoLink}
+                aria-label="video link"
+                component="span"
+              >
+                <VideocamIcon />
+              </IconButtonIm>
+
               <FormControlLabel
                 control={
                   <RequiredCheckbox
@@ -585,6 +725,61 @@ export default function SurveyQuestion({
                   <TextField {...params} placeholder="Select one" />
                 )}
               />
+              {imageSrc && (
+                <Grid fullWidth>
+                  <ImageText>Image Preview</ImageText>
+                  <ImageDiv>
+                    <Image
+                      width="100%"
+                      height="100%"
+                      layout="responsive"
+                      objectFit="contain"
+                      src={imageSrc}
+                      unoptimized={false}
+                    />
+                    <ImageDivCancelButton
+                      size="small"
+                      onClick={removeImagePreview}
+                    >
+                      <ClearOutlinedIcon fontSize="10" />
+                    </ImageDivCancelButton>
+                  </ImageDiv>
+                </Grid>
+              )}
+              {videoLinkStatus && (
+                <Grid fullWidth>
+                  <ImageText>Video link</ImageText>
+                  <VideoDiv>
+                    <TextField
+                      name="videoLink"
+                      id="outlined-basic"
+                      placeholder="Enter video link here"
+                      fullWidth
+                      error={!isEmpty(errors.videoLink)}
+                      {...register("videoLink", {
+                        required: "You need to add link",
+                        onChange: async () => {
+                          await trigger("videoLink");
+                        },
+                      })}
+                      onInput={videoLinkDebounced}
+                      variant="outlined"
+                      sx={{ backgroundColor: "#f7f7f7" }}
+                    />
+                    {errors.videoLink && (
+                      <Typography color="red">
+                        {errors.videoLink.message}
+                      </Typography>
+                    )}
+                    <ImageDivCancelButton
+                      size="small"
+                      onClick={removeVideoLink}
+                    >
+                      <ClearOutlinedIcon fontSize="10" />
+                    </ImageDivCancelButton>
+                  </VideoDiv>
+                </Grid>
+              )}
             </AnswerSection>
           </QuestionAccordionBody>
         </AccordionDetails>

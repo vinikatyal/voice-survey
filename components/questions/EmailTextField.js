@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import Image from "next/image";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
 import isEmpty from "lodash.isempty";
@@ -11,6 +12,30 @@ import Typography from "@mui/material/Typography";
 import StyledButton from "../StyledButton";
 
 import { useForm } from "react-hook-form";
+
+
+import styled from "@emotion/styled";
+
+const ImageLayout = styled("div")`
+  width: 100%;
+  height: 300px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    height: 200px;
+  }
+`;
+
+const Video = styled("video")`
+  width: 400px;
+  height: 300px;
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    height: 200px;
+  }
+`;
 
 function EmailTextField({
   title,
@@ -24,6 +49,8 @@ function EmailTextField({
   nextRoute,
   handleEndSurvey,
   handleResponse,
+  image,
+  video
 }) {
   const {
     register,
@@ -63,6 +90,27 @@ function EmailTextField({
         <Typography variant="h2" fontWeight={550}>
           {title}
         </Typography>
+      </Grid>
+      <Grid
+        item
+        xs={12}
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+      >
+        {image && (
+          <ImageLayout>
+            <Image src={image} layout="fill" objectFit="contain" />
+          </ImageLayout>
+        )}
+        {video && (
+          <Video
+            controls
+            disablePictureInPicture
+            controlsList="nodownload noplaybackrate"
+            src={video}
+          />
+        )}
       </Grid>
 
       {/*Input Section  */}

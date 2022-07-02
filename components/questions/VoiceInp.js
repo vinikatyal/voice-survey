@@ -4,6 +4,8 @@ import get from "lodash.get";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
 
+import Image from "next/image";
+
 import WaveSurfer from "wavesurfer.js";
 import MicrophonePlugin from "wavesurfer.js/dist/plugin/wavesurfer.microphone";
 
@@ -37,6 +39,27 @@ const Small = styled("div")`
   font-size: 10px;
 `;
 
+const ImageLayout = styled("div")`
+  width: 100%;
+  height: 300px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    height: 200px;
+  }
+`;
+
+const Video = styled("video")`
+  width: 400px;
+  height: 300px;
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    height: 200px;
+  }
+`;
+
 const recorder = new vmsg.Recorder({
   wasmURL: "https://unpkg.com/vmsg@0.3.0/vmsg.wasm",
 });
@@ -51,6 +74,8 @@ function VoiceInp({
   nextRoute,
   handleEndSurvey,
   handleResponse,
+  image,
+  video,
 }) {
   const [isBlocked, setIsBlocked] = useState(false);
   const [error, setError] = useState(false);
@@ -82,8 +107,6 @@ function VoiceInp({
   const stopRecording = async () => {
     try {
       const blob = await recorder.stopRecording();
-      console.log(blob);
-
       setBlob(blob);
 
       setRecordStatus("stopped");
@@ -174,9 +197,6 @@ function VoiceInp({
     }
 
     if (mediaFile) {
-      console.log(mediaFile);
-      console.log(blob);
-
       const uniqueId =
         Date.now().toString(36) + Math.random().toString(36).substring(2);
 
@@ -221,6 +241,28 @@ function VoiceInp({
         <Typography variant="h2" fontWeight={550}>
           {title}
         </Typography>
+      </Grid>
+
+      <Grid
+        item
+        xs={12}
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+      >
+        {image && (
+          <ImageLayout>
+            <Image src={image} layout="fill" objectFit="contain" />
+          </ImageLayout>
+        )}
+        {video && (
+          <Video
+            controls
+            disablePictureInPicture
+            controlsList="nodownload noplaybackrate"
+            src={video}
+          />
+        )}
       </Grid>
 
       {/*Input Section  */}

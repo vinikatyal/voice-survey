@@ -361,22 +361,6 @@ export default function report() {
                 </StyledContainer>
               )}
             </Grid>
-            {/* <Grid item xs={12} sm={4}>
-              {loading ? (
-                <SkeletonTheme
-                  baseColor="#e6e8ed"
-                  highlightColor="#f7f7f7"
-                  height="240px"
-                >
-                  <Skeleton count={1} />
-                </SkeletonTheme>
-              ) : (
-                <StyledContainer>
-                  <Typography variant="h4">Average time to complete</Typography>
-                  <Time>00:00:00</Time>
-                </StyledContainer>
-              )}
-            </Grid> */}
             <Grid item xs={12} sm={4}>
               {loading ? (
                 <SkeletonTheme
