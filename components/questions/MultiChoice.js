@@ -32,7 +32,7 @@ const ImageLayout = styled("div")`
   }
 `;
 
-const Video = styled("video")`
+const Video = styled("iframe")`
   width: 400px;
   height: 300px;
   @media only screen and (max-width: 768px) {
@@ -109,9 +109,8 @@ function MultiChoice({
         )}
         {video && (
           <Video
-            controls
-            disablePictureInPicture
-            controlsList="nodownload noplaybackrate"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
             src={video}
           />
         )}

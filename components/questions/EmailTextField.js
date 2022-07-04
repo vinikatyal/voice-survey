@@ -13,7 +13,6 @@ import StyledButton from "../StyledButton";
 
 import { useForm } from "react-hook-form";
 
-
 import styled from "@emotion/styled";
 
 const ImageLayout = styled("div")`
@@ -28,7 +27,7 @@ const ImageLayout = styled("div")`
   }
 `;
 
-const Video = styled("video")`
+const Video = styled("iframe")`
   width: 400px;
   height: 300px;
   @media only screen and (max-width: 768px) {
@@ -50,7 +49,7 @@ function EmailTextField({
   handleEndSurvey,
   handleResponse,
   image,
-  video
+  video,
 }) {
   const {
     register,
@@ -105,9 +104,8 @@ function EmailTextField({
         )}
         {video && (
           <Video
-            controls
-            disablePictureInPicture
-            controlsList="nodownload noplaybackrate"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
             src={video}
           />
         )}
