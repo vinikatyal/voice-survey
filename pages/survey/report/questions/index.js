@@ -123,11 +123,14 @@ export default function index() {
           <Container maxWidth="lg" sx={{ marginTop: "30px" }}>
             <Label>Questions</Label>
             {loading ? (
-              <PreparingResults>Preparing your results please wait...</PreparingResults>
+              <PreparingResults>
+                Preparing your results please wait...
+              </PreparingResults>
             ) : (
               get(reportData, "survey_questions", []).length &&
               get(reportData, "survey_questions", []).map((q, index) => (
                 <SurveyQuestionsSection
+                  key={index}
                   index={index}
                   question={q}
                   reportData={reportData}
