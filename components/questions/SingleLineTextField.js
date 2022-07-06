@@ -57,6 +57,7 @@ function SingleLineTextField({
     trigger,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm();
   const router = useRouter();
@@ -71,6 +72,19 @@ function SingleLineTextField({
   const handleNext = async () => {
     const isLastAnswer = +id === totalQuestions ? true : false;
     const res = await handleResponse(watchInput, isLastAnswer);
+    reset(
+      {
+        input: "",
+      },
+      {
+        keepErrors: true,
+        keepDirty: true,
+        keepIsSubmitted: false,
+        keepTouched: false,
+        keepIsValid: false,
+        keepSubmitCount: false,
+      }
+    );
     if (isLastAnswer) {
       res && handleEndSurvey();
     } else {

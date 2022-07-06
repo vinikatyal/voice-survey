@@ -444,6 +444,19 @@ export default function SurveyQuestion({
     dispatch({ type: "SET_QUESTIONS", value: next });
   };
 
+  const getRealURL = (url) => {
+    const regExp =
+      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    if (match) {
+      return match && match[2].length === 11
+        ? "https://www.youtube.com/embed/" + match[2]
+        : url;
+    } else {
+      return url;
+    }
+  };
+
   const addImagePreview = (event) => {
     const reader = new FileReader();
     if (typeof event === "string") {
@@ -485,7 +498,7 @@ export default function SurveyQuestion({
   const onVideoLink = (event) => {
     const next = produce(survey.questions, (draft) => {
       const question = draft.find((question) => question.qid === id);
-      question.video_url = event.target.value;
+      question.video_url = getRealURL(event.target.value);
     });
     dispatch({ type: "SET_QUESTIONS", value: next });
   };
@@ -748,16 +761,18 @@ export default function SurveyQuestion({
               )}
               {videoLinkStatus && (
                 <Grid fullWidth>
-                  <ImageText>Video link</ImageText>
+                  <ImageText>Paste video URL</ImageText>
                   <VideoDiv>
                     <TextField
                       name="videoLink"
                       id="outlined-basic"
+                      multiline
+                      minRows={3}
                       placeholder="Enter video link here"
                       fullWidth
                       error={!isEmpty(errors.videoLink)}
                       {...register("videoLink", {
-                        required: "You need to add link",
+                        required: "You need to add a video url",
                         onChange: async () => {
                           await trigger("videoLink");
                         },
