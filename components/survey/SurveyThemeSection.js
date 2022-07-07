@@ -170,14 +170,16 @@ export default function SurveyThemeSection({ logo }) {
 
     const imageArray = [];
     const questions = survey.questions.map((obj, index) => {
-      obj.image && imageArray.push(renameFile(obj.image, index + 1));
+      if (typeof obj.image === "object") {
+        obj.image && imageArray.push(renameFile(obj.image, index + 1));
+      }
       const question = {
         ...obj,
         qid: index + 1,
         answer: "",
         status: "",
       };
-      typeof question.image !== "string" && delete question.image;
+      delete question.image;
       !question.video_url && delete question.video_url;
       return question;
     });
@@ -191,7 +193,10 @@ export default function SurveyThemeSection({ logo }) {
     };
 
     try {
-      await uploadImagesFiles(imageArray, survey.surveyEditId);
+      if (imageArray.length) {
+        await uploadImagesFiles(imageArray, survey.surveyEditId);
+      }
+
       await surveyService.edit_survey(survey.surveyEditId, surveyPayload);
       toast.success("Survey edited successfully", {
         position: toast.POSITION.TOP_RIGHT,
