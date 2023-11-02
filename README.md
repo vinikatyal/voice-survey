@@ -1,4 +1,4 @@
-# gnani-survey-frontend
+# Voice Survey
 
 
 ## Getting started
