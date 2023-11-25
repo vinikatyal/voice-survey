@@ -1,6 +1,6 @@
 const FormData = require("form-data");
 
-const BASE_URL = "https://surveycallback.gnani.site";
+const BASE_URL = "https://someapi.com";
 
 export default async function handler(req, res) {
   const { id } = req.query;

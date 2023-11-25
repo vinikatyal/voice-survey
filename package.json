@@ -22,7 +22,7 @@
     "materialui-daterange-picker": "^1.1.92",
     "mic-recorder-to-mp3": "^2.2.2",
     "next": "12.0.8",
-    "next-auth": "^4.2.1",
+    "next-auth": "^4.24.5",
     "prop-types": "^15.8.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
