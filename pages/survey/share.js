@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react";
 
 import Image from "next/image";
@@ -22,7 +24,6 @@ import facebook from "../../images/svg/facebook.svg";
 
 import styled from "@emotion/styled";
 import { useSurvey } from "../../context/SurveyState";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 const ShareSection = styled(Container)(({ theme }) => ({
@@ -53,16 +54,10 @@ const IconSection = styled("div")(({ theme }) => ({
 export default function Share() {
   const router = useRouter();
   const survey = useSurvey();
-  const { status } = useSession();
 
   React.useEffect(() => {
-    if (status === "loading") return;
-    else if (status === "unauthenticated") {
-      router.push("/login");
-      return;
-    }
     if (!survey.surveyShareLink) router.push("/dashboard");
-  }, [status]);
+  }, []);
 
   const copyToClipBoard = async () => {
     try {
