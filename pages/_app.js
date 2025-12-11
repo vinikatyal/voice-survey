@@ -12,6 +12,7 @@ import { responsiveFontSizes } from "@mui/material";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ClerkProvider, useAuth } from "@clerk/nextjs";
 import { SurveyProvider } from "../context/SurveyState";
 
 const responsiveTheme = responsiveFontSizes(theme);
@@ -29,12 +30,20 @@ export default function MyApp(props) {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <ThemeProvider theme={responsiveTheme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-        <SurveyProvider>
-          <CssBaseline />
-            <Component {...pageProps} />
-          <ToastContainer />
-        </SurveyProvider>
+        <ClerkProvider>
+          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+          <SurveyProvider>
+            <CssBaseline />
+            {Component.auth ? (
+              <Auth>
+                <Component {...pageProps} />
+              </Auth>
+            ) : (
+              <Component {...pageProps} />
+            )}
+            <ToastContainer />
+          </SurveyProvider>
+        </ClerkProvider>
       </ThemeProvider>
     </>
   );
@@ -47,14 +56,13 @@ MyApp.propTypes = {
 
 function Auth({ children }) {
   const router = useRouter();
-  const { data: session, status, token } = useSession();
-  const isUser = !!session?.user;
+  const auth = useAuth();
+  const userId = auth.userId;
   useEffect(() => {
-    if (status === "loading") return; // Do nothing while loading
-    if (!isUser) router.push("/login"); //Redirect to login
-  }, [isUser, status]);
+    if (auth.isSignedIn) router.push("/login"); //Redirect to login
+  }, [userId]);
 
-  if (isUser) {
+  if (userId) {
     return children;
   }
   // Session is being fetched, or no user.

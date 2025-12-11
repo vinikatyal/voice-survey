@@ -129,28 +129,64 @@ export default function Create() {
   }, []);
 
   const getSurveyTypes = () => {
-    surveyService
-      .get_survey_template_metadata()
-      .then((res) => {
-        const surveyTypes = res.data.map((survey) => ({
-          name: survey.name,
-          title: survey.name.split("_").map(capitalize).join(" "),
-          description: survey.description,
-          noOfQuestions: survey.no_of_ques,
-        }));
-        surveyTypes.push({
-          name: "custom",
-          title: "Custom Feedback",
-          description: "Create Custom Survey",
-          noOfQuestions: 1,
-        });
-        setQuestionTypes(surveyTypes);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-      });
+    // Mocking survey types for development/testing
+    const dummySurveyTypes = [
+      {
+        name: "customer_satisfaction",
+        title: "Customer Satisfaction",
+        description: "A survey to measure customer satisfaction",
+        noOfQuestions: 5,
+      },
+      {
+        name: "employee_feedback",
+        title: "Employee Feedback",
+        description: "Gathering feedback from employees",
+        noOfQuestions: 7,
+      },
+      {
+        name: "market_research",
+        title: "Market Research",
+        description: "Understanding the market trends",
+        noOfQuestions: 10,
+      },
+    ];
+
+    // Adding a custom feedback option
+    dummySurveyTypes.push({
+      name: "custom",
+      title: "Custom Feedback",
+      description: "Create Custom Survey",
+      noOfQuestions: 1,
+    });
+
+    // Set the mock data
+    setQuestionTypes(dummySurveyTypes);
+    setLoading(false);
   };
+
+  // const getSurveyTypes = () => {
+  //   surveyService
+  //     .get_survey_template_metadata()
+  //     .then((res) => {
+  //       const surveyTypes = res.data.map((survey) => ({
+  //         name: survey.name,
+  //         title: survey.name.split("_").map(capitalize).join(" "),
+  //         description: survey.description,
+  //         noOfQuestions: survey.no_of_ques,
+  //       }));
+  //       surveyTypes.push({
+  //         name: "custom",
+  //         title: "Custom Feedback",
+  //         description: "Create Custom Survey",
+  //         noOfQuestions: 1,
+  //       });
+  //       setQuestionTypes(surveyTypes);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       setLoading(false);
+  //     });
+  // };
 
   const getTeamMembers = () => {
     authService

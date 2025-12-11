@@ -13,7 +13,7 @@ export default function ThemeItem({ theme, selectedValue, handleChange }) {
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardActionArea onClick={() => handleChange(theme)}>
-        <Image src={theme.theme} alt="theme-1" />
+        <Image src={theme.theme} alt="theme-1"  />
         <CardContent>
           <Grid
             container

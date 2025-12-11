@@ -120,9 +120,6 @@ export default function SurveyQuestionsSection({
   reportData,
   dropOff,
 }) {
-  const ReactWordcloud = dynamic(() => import("react-wordcloud"), {
-    ssr: false,
-  });
   const sentimentPer =
     reportData.sentiment_res &&
     reportData.sentiment_res.survey_questions[index] &&
@@ -252,27 +249,6 @@ export default function SurveyQuestionsSection({
                     </SentimentDivPer>
                   </Sentiment>
                   <Phrases>
-                    {get(question, "key_phrases") && (
-                      <ReactWordcloud
-                        size={[200, 200]}
-                        options={{
-                          enableTooltip: true,
-                          deterministic: true,
-                          fontStyle: "normal",
-                          fontWeight: "normal",
-                          padding: 1,
-                          rotations: 3,
-                          rotationAngles: [0, 0],
-                          scale: "sqrt",
-                          spiral: "archimedean",
-                          transitionDuration: 1000,
-                          fontFamily:
-                            '"Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
-                          fontSizes: [16, 20],
-                        }}
-                        words={objectify(get(question, "key_phrases", []))}
-                      />
-                    )}
                   </Phrases>
                 </StyledAnswerRow>
               </StyledAnswerTableBody>

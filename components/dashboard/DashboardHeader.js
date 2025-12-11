@@ -2,7 +2,7 @@ import * as React from "react";
 
 import get from "lodash.get";
 
-import { signOut } from "next-auth/react";
+import { useUser, useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import Image from "next/image";
 
@@ -17,6 +17,7 @@ import Header from "@/components/Header";
 import LogoutIcon from "@mui/icons-material/Logout";
 
 import styled from "@emotion/styled";
+import { useAuth } from "@clerk/clerk-react";
 
 const BoxCustom = styled(Container)(({}) => ({
   width: "100%",
@@ -51,6 +52,8 @@ const LogOff = styled(LogoutIcon)({
 });
 
 export default function DashboardHeader() {
+  const user = useUser()
+  const clerk = useClerk()
   const router = useRouter();
 
   const handleClickOpen = () => {
@@ -62,13 +65,13 @@ export default function DashboardHeader() {
   };
 
   const logoutSite = async () => {
-    const data = await signOut({
-      redirect: false,
-      callbackUrl: `/login`,
-    });
-
-    if (get(data, "url")) {
-      router.push(`/login`);
+    try {
+      await clerk.signOut();
+      // Optionally redirect to a different page after logout
+      router.push('/login');
+      console.log('Logged out successfully');
+    } catch (error) {
+      console.error('Failed to log out', error);
     }
   };
   return (
@@ -94,12 +97,6 @@ export default function DashboardHeader() {
             underline="hover"
           >
             All Surveys
-          </NavLink>
-          <NavLink
-            onClick={() => openLink("/dashboard/shared-surveys")}
-            underline="hover"
-          >
-            Shared with me
           </NavLink>
           <NavLink
             onClick={() => openLink("/dashboard/settings")}

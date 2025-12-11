@@ -112,7 +112,7 @@ function SingleLineTextField({
       >
         {image && (
           <ImageLayout>
-            <Image src={image} layout="fill" objectFit="contain" />
+            <Image src={image} layout="fill" objectFit="contain" alt="single" />
           </ImageLayout>
         )}
         {video && (

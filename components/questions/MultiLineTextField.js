@@ -113,7 +113,7 @@ function MultiLineTextField({
       >
         {image && (
           <ImageLayout>
-            <Image src={image} layout="fill" objectFit="contain" />
+            <Image src={image} layout="fill" objectFit="contain" alt="multi" />
           </ImageLayout>
         )}
         {video && (

@@ -99,7 +99,7 @@ function DateField({
       >
         {image && (
           <ImageLayout>
-            <Image src={image} layout="fill" objectFit="contain" />
+            <Image src={image} layout="fill" objectFit="contain" alt="vid" />
           </ImageLayout>
         )}
         {video && (

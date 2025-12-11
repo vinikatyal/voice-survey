@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import PropTypes from "prop-types";
 
 import WaveSurfer from "wavesurfer.js";
-import MicrophonePlugin from "wavesurfer.js/dist/plugin/wavesurfer.microphone";
+import RecordPlugin from "wavesurfer.js/dist/plugins/record.esm.js";
 
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
@@ -17,8 +17,6 @@ import Fab from "@mui/material/Fab";
 import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
 import DeleteIcon from "@mui/icons-material/Delete";
-
-import MicRecorder from "mic-recorder-to-mp3";
 
 import Waveform from "./Waveform";
 
@@ -55,145 +53,149 @@ function VoiceInputNew({
   const [file, setFile] = useState(null);
   const [mediaFile, setMediaFile] = useState("");
 
-  const [status, setRecordStatus] = useState("idle");
+  const [status, setRecordStatus] = useState("idle"); // idle | recording | stopped
 
   const router = useRouter();
 
-  const waveSurferRef = useRef();
-  const containerRef = useRef();
-
-  const [Mp3Recorder, setMp3Recorder] = useState(
-    new MicRecorder({ bitRate: 128 })
-  );
-  let timeout;
+  const waveSurferRef = useRef(null);
+  const recordPluginRef = useRef(null);
+  const containerRef = useRef(null);
+  const timeoutRef = useRef(null);
 
   const startRecording = () => {
-    // Start recording. Browser will request permission to use your microphone.
+    if (typeof navigator === "undefined") return;
 
-    // Older browsers might not implement mediaDevices at all, so we set an empty object first
-    if (navigator.mediaDevices === undefined) {
-      navigator.mediaDevices = {};
+    // Basic permission check (RecordPlugin will also request mic access)
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setIsBlocked(true);
+      setError(true);
+      setErrorMessage("Microphone not supported in this browser.");
+      return;
     }
 
-    // Some browsers partially implement mediaDevices. We can't just assign an object
-    // with getUserMedia as it would overwrite existing properties.
-    // Here, we will just add the getUserMedia property if it's missing.
-    if (navigator.mediaDevices.getUserMedia === undefined) {
-      navigator.mediaDevices.getUserMedia = function (constraints) {
-        // First get ahold of the legacy getUserMedia, if present
-        var getUserMedia =
-          navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-
-        // Some browsers just don't implement it - return a rejected promise with an error
-        // to keep a consistent interface
-        if (!getUserMedia) {
-          console.log("Permission Denied");
-          setIsBlocked(true);
-          return Promise.reject(
-            new Error("getUserMedia is not implemented in this browser")
-          );
-        }
-
-        // Otherwise, wrap the call to the old navigator.getUserMedia with a Promise
-        return new Promise(function (resolve, reject) {
-          getUserMedia.call(navigator, constraints, resolve, reject);
-        });
-      };
-    }
     navigator.mediaDevices
       .getUserMedia({ audio: true })
-      .then(function (stream) {
-        console.log("Permission Granted");
+      .then(() => {
         setIsBlocked(false);
+        setError(false);
+        setErrorMessage("");
+        setRecordStatus("recording");
       })
-      .catch(function (err) {
-        console.log("Permission Denied");
+      .catch(() => {
+        console.log("Permission denied");
         setIsBlocked(true);
+        setError(true);
+        setErrorMessage("Microphone permission denied.");
       });
-
-    if (isBlocked) {
-      console.log("Permission Denied");
-    } else {
-      Mp3Recorder.start()
-        .then(() => {
-          setRecordStatus("recording");
-          // something else
-        })
-        .catch((e) => {
-          console.error(e);
-        });
-    }
   };
 
   const stopRecording = () => {
-    // Once you are done singing your best song, stop and get the mp3.
-    Mp3Recorder.stop()
-      .getMp3()
-      .then(([buffer, blob]) => {
+    if (recordPluginRef.current && recordPluginRef.current.isRecording()) {
+      recordPluginRef.current.stopRecording();
+    }
+  };
+
+  // Setup WaveSurfer + RecordPlugin when status changes
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    if (status === "recording") {
+      // 1. Create WaveSurfer instance for live waveform
+      waveSurferRef.current = WaveSurfer.create({
+        container: containerRef.current,
+        responsive: true,
+        height: 80,
+        waveColor: "#fd0d1b",
+        progressColor: "#fd0d1b",
+        cursorWidth: 0,
+        barWidth: 2,
+        barGap: 2,
+      });
+
+      // 2. Register Record plugin
+      recordPluginRef.current = waveSurferRef.current.registerPlugin(
+        RecordPlugin.create({
+          // optional configs:
+          // scrollingWaveform: true,
+          // continuousWaveform: true,
+        })
+      );
+
+      const record = recordPluginRef.current;
+
+      // 3. Handle record events
+      const unsubEnd = record.on("record-end", (blob) => {
+        // We get the recorded audio as a Blob
         setBlob(blob);
 
         const uniqueId =
           Date.now().toString(36) + Math.random().toString(36).substring(2);
 
-        const file = new File(buffer, `${uniqueId}.mp3`, {
-          type: blob.type,
+        const file = new File([blob], `${uniqueId}.webm`, {
+          type: blob.type || "audio/webm",
           lastModified: Date.now(),
         });
 
         setFile(file);
-
         const blobURL = URL.createObjectURL(file);
         setMediaFile(blobURL);
         setRecordStatus("stopped");
-      })
-      .catch((e) => {
-        alert("We could not retrieve your message");
-        console.log(e);
-      });
-  };
-
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-  useEffect(() => {
-    if (status === "recording") {
-      waveSurferRef.current = WaveSurfer.create({
-        container: containerRef.current,
-        responsive: true,
-        barWidth: 2,
-        height: 80,
-        barHeight: 3,
-        barMinHeight: 1,
-        barRadius: 3,
-        barWidth: 3,
-        barGap: 5,
-        cursorWidth: 0,
-        waveColor: "red",
-        plugins: [MicrophonePlugin.create()],
       });
 
-      const microphone = waveSurferRef.current.microphone;
-      timeout = setTimeout(() => {
-        microphone.stop();
-        stopRecording();
-        waveSurferRef.current.destroy();
-      }, 60000);
-      microphone.start();
+      const unsubError = record.on("record-start", () => {
+        // You can add some UI change here if needed
+      });
+
+      // 4. Actually start recording
+      record
+        .startRecording()
+        .then(() => {
+          // auto-stop after 60s
+          timeoutRef.current = setTimeout(() => {
+            stopRecording();
+          }, 60000);
+        })
+        .catch((err) => {
+          console.error("RecordPlugin start error:", err);
+          setError(true);
+          setErrorMessage("Unable to start recording.");
+          setRecordStatus("idle");
+        });
+
+      // Cleanup function for this effect
+      return () => {
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+          timeoutRef.current = null;
+        }
+        try {
+          unsubEnd && unsubEnd();
+          unsubError && unsubError();
+        } catch (_) {}
+
+        if (recordPluginRef.current) {
+          try {
+            recordPluginRef.current.stopRecording();
+            recordPluginRef.current.destroy();
+          } catch (_) {}
+          recordPluginRef.current = null;
+        }
+        if (waveSurferRef.current) {
+          try {
+            waveSurferRef.current.destroy();
+          } catch (_) {}
+          waveSurferRef.current = null;
+        }
+      };
     }
+
     if (status === "stopped") {
-      const microphone = waveSurferRef.current.microphone;
-      microphone.stop();
-      waveSurferRef.current.destroy();
-      clearTimeout(timeout);
-    }
-
-    return () => {
-      if (status === "recording") {
-        const microphone = waveSurferRef.current.microphone;
-        microphone.stop();
-        waveSurferRef.current.destroy();
-        clearTimeout(timeout);
+      // stop + cleanup happens via record-end handler / cleanup above
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
       }
-    };
+    }
   }, [status]);
 
   const handleNext = async () => {
@@ -209,19 +211,15 @@ function VoiceInputNew({
       return;
     }
 
-    if (["recording", "paused"].includes(status)) {
+    if (["recording"].includes(status)) {
       setError(true);
       setErrorMessage("Please stop the recording");
       return;
     }
 
     if (mediaFile && file) {
-      console.log(mediaFile);
-      console.log(blob);
-      console.log(file);
-
       const audiofile = file;
-      const isLastAnswer = +id === totalQuestions ? true : false;
+      const isLastAnswer = +id === totalQuestions;
       const res = await handleResponse(audiofile, isLastAnswer);
       if (isLastAnswer) {
         res && handleEndSurvey();
@@ -262,7 +260,8 @@ function VoiceInputNew({
       <Grid item md={2} xs={0}></Grid>
       <Grid item md={8} xs={12}>
         {mediaFile && <Waveform audio={mediaFile} />}
-        {["recording", "paused"].includes(status) && (
+
+        {status === "recording" && (
           <Grid container>
             <Grid item xs={12} ref={containerRef}></Grid>
           </Grid>
@@ -293,13 +292,15 @@ function VoiceInputNew({
             <Small>Speak close to the microphone for better response.</Small>
           </>
         )}
-        {["recording", "paused"].includes(status) && (
+
+        {status === "recording" && (
           <>
             <FabAudio aria-label="add" onClick={stopRecording}>
               <StopIcon />
             </FabAudio>
           </>
         )}
+
         {error && (
           <Typography mt={2} color="red">
             {errorMessage}

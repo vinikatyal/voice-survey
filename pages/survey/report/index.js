@@ -115,9 +115,6 @@ const Statics = ({ value, staticTitle }) => (
 );
 
 export default function report() {
-  const ReactWordcloud = dynamic(() => import("react-wordcloud"), {
-    ssr: false,
-  });
   const router = useRouter();
   const { data: session, status } = useSession();
 
@@ -533,28 +530,7 @@ export default function report() {
                   <Typography variant="h4" mb={2}>
                     Key phrases
                   </Typography>
-                  {get(surveyData, "survey_responses[0].key_phrases") && (
-                    <ReactWordcloud
-                      options={{
-                        enableTooltip: true,
-                        deterministic: true,
-                        fontStyle: "normal",
-                        fontWeight: "normal",
-                        padding: 1,
-                        rotations: 3,
-                        rotationAngles: [0, 0],
-                        scale: "sqrt",
-                        spiral: "archimedean",
-                        transitionDuration: 1000,
-                        fontFamily:
-                          '"Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
-                        fontSizes: [16, 30],
-                      }}
-                      words={objectifyAndSlice(
-                        get(surveyData, "survey_responses[0].key_phrases", [])
-                      )}
-                    />
-                  )}
+                
                 </StyledContainer>
               )}
             </Grid>

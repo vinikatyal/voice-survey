@@ -111,6 +111,7 @@ export default function AddLogo({ logo, updateLogo, error }) {
         {imageSrc && (
           <Grid container>
             <Image
+              alt="logo"
               height={140}
               width={140}
               src={imageSrc}

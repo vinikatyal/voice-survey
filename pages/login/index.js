@@ -1,31 +1,22 @@
-import React, { useEffect } from "react";
-
-import { signIn, getCsrfToken, useSession } from "next-auth/react";
-
+import React from "react";
+import { useSignIn } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
-import router from "next/router";
-
-import isEmpty from "lodash.isempty";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-
-// internal components
+import Button from "@mui/material/Button";
 import Layout from "../../components/Layout";
 import Limiter from "../../components/Limiter";
 import StyledButton from "../../components/StyledButton";
-
 import styled from "@emotion/styled";
-import { useDispatchSurvey, useSurvey } from "../../context/SurveyState";
+import { useDispatchSurvey } from "../../context/SurveyState";
 
 const Item = styled(Paper)(({ theme }) => ({
   padding: "30px",
@@ -40,6 +31,7 @@ const BannerSection = styled(Grid)({
   justifyContent: "space-around",
   alignItems: "flex-start",
 });
+
 const FormSection = styled(Grid)({
   minHeight: "80vh",
   display: "flex",
@@ -48,12 +40,6 @@ const FormSection = styled(Grid)({
   justifyContent: "center",
   alignItems: "center",
 });
-
-const GoogleSignin = styled(Button)(({ theme }) => ({
-  border: "1px solid #00063e",
-  borderRadius: "5px",
-  color: "#00063e",
-}));
 
 const LoginFormLabel = styled(FormLabel)(({ theme }) => ({
   marginBottom: "10px",
@@ -69,50 +55,29 @@ const SignInText = styled(Typography)({
   marginBottom: "40px",
 });
 
-export default function Index({ csrfToken }) {
-  const { data: session, status } = useSession();
+export default function Index() {
+  const { signIn } = useSignIn();
   const {
     register,
     handleSubmit,
-    trigger,
     setValue,
     formState: { errors, isDirty, isValid },
   } = useForm();
 
-  const survey = useSurvey();
   const dispatch = useDispatchSurvey();
 
-  useEffect(() => {
-    // if (status === "loading") return;
-    // else if (status === "authenticated") {
-      router.push("/dashboard");
-    // }
-
-    if (survey.userEmail) {
-      setValue("email", survey.userEmail, {
-        shouldDirty: true,
-      });
-    }
-  }, [status]);
   const onSubmit = async (data) => {
-    dispatch({ type: "SET_USER_EMAIL", value: data.email });
-    const res = await signIn("credentials", {
-      redirect: false,
-      email: data.email,
-      password: data.password,
-    });
-
-    if (res?.error) {
-      toast.error(res.error, {
+    try {
+      const { email, password } = data;
+      await signIn.create({ identifier: email, password });
+      router.push("/dashboard");
+    } catch (error) {
+      toast.error(error.message, {
         position: toast.POSITION.TOP_RIGHT,
       });
-      return;
-    }
-
-    if (res.status === 200) {
-      router.push("/dashboard");
     }
   };
+
   return (
     <Layout bgColor="#f7fafc">
       <Limiter>
@@ -128,7 +93,7 @@ export default function Index({ csrfToken }) {
               src={"/images/logo.png"}
               width={150}
               height={61}
-              alt="background"
+              alt="logo"
             />
             <Image
               src={"/images/bck.png"}
@@ -137,13 +102,7 @@ export default function Index({ csrfToken }) {
               alt="background"
             />
           </BannerSection>
-          <FormSection
-            display="flex"
-            justifyContent="center"
-            item
-            md={6}
-            lg={6}
-          >
+          <FormSection item md={6} lg={6}>
             <Item elevation={4}>
               <Typography align="left" variant="h4">
                 Welcome back!
@@ -153,32 +112,21 @@ export default function Index({ csrfToken }) {
               </SignInText>
               <Box
                 component="form"
-                noValidate
-                onSubmit={(e) => e.preventDefault()}
+                onSubmit={handleSubmit(onSubmit)}
                 sx={{ mt: 1 }}
               >
-                <input
-                  name="csrfToken"
-                  type="hidden"
-                  defaultValue={csrfToken}
-                />
                 <FormControl fullWidth>
                   <LoginFormLabel>Email Address</LoginFormLabel>
                   <TextField
                     required
                     fullWidth
-                    error={!isEmpty(errors.email)}
+                    error={!!errors.email}
                     id="email"
-                    name="email"
                     {...register("email", {
                       required: "Email is required",
                       pattern: {
-                        value:
-                          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                         message: "Please enter a valid email",
-                      },
-                      onChange: async (e) => {
-                        await trigger("email");
                       },
                     })}
                     autoComplete="email"
@@ -188,27 +136,21 @@ export default function Index({ csrfToken }) {
                     <ErrorLabel>{errors.email.message}</ErrorLabel>
                   )}
                 </FormControl>
-
                 <FormControl fullWidth>
                   <LoginFormLabel>Password</LoginFormLabel>
                   <TextField
                     required
                     fullWidth
-                    error={!isEmpty(errors.password)}
+                    error={!!errors.password}
                     id="password"
-                    name="password"
-                    autoComplete="password"
+                    type="password"
                     {...register("password", {
                       required: "You must specify a password",
                       minLength: {
                         value: 5,
                         message: "Password must have at least 5 characters",
                       },
-                      onChange: async (e) => {
-                        await trigger("password");
-                      },
                     })}
-                    type="password"
                     placeholder="Enter your password"
                   />
                   {errors.password && (
@@ -216,13 +158,12 @@ export default function Index({ csrfToken }) {
                   )}
                 </FormControl>
                 <StyledButton
-                  disabled={!isDirty || !isValid} // here
-                  onClick={handleSubmit(onSubmit)}
+                  disabled={!isDirty || !isValid}
                   fullWidth
                   sx={{ mt: 3, mb: 2 }}
+                  type="submit"
                 >
-                  {" "}
-                  Sign In{" "}
+                  Sign In
                 </StyledButton>
                 <Grid container>
                   <Grid item xs>
@@ -237,22 +178,6 @@ export default function Index({ csrfToken }) {
                     <Link href="/login/forgotpassword" variant="body2">
                       Forgot your password
                     </Link>
-                    {/* <GoogleSignin
-                      type="submit"
-                      variant="outlined"
-                      fullWidth
-                      startIcon={
-                        <Image
-                          src={google}
-                          width={30}
-                          height={30}
-                          alt="google"
-                        />
-                      }
-                      sx={{ mt: 3, mb: 2 }}
-                    >
-                      Login with google
-                    </GoogleSignin> */}
                   </Grid>
                 </Grid>
               </Box>
@@ -262,14 +187,4 @@ export default function Index({ csrfToken }) {
       </Limiter>
     </Layout>
   );
-}
-
-// This is the recommended way for Next.js 9.3 or newer
-export async function getServerSideProps(context) {
-  const csrfToken = await getCsrfToken(context);
-  return {
-    props: {
-      csrfToken: csrfToken,
-    },
-  };
 }

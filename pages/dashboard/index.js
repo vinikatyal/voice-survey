@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 
 import { useRouter } from "next/router";
 
-
 import get from "lodash.get";
 import dayjs from "dayjs";
 import Image from "next/image";
@@ -133,6 +132,8 @@ export default function Index() {
 
   useEffect(() => {
 
+    // check if authenticated with clerk here or use middleware?
+
     dispatch({ type: "RESET_SURVEY" });
     getSurveyTypes(page);
     getSurveysCount();
@@ -200,8 +201,6 @@ export default function Index() {
         type: "SET_TITLE",
         value: surveyDetails.data.survey_title,
       });
-
-      console.log(dayjs(surveyDetails.data.created_date).toDate());
 
       dispatch({
         type: "SET_CREATE_DATE",

@@ -1,49 +1,26 @@
-import React, { useEffect } from "react";
-
-import get from "lodash.get";
-import isEmpty from "lodash.isempty";
+import React from "react";
+import { useSignUp } from "@clerk/nextjs";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import { useSession, signIn, getCsrfToken } from "next-auth/react";
-
 import Image from "next/image";
 import Link from "next/link";
 import router from "next/router";
-
-// components
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import PhoneInput from "react-phone-input-2";
-import Select from "react-select";
-
-// custom components
 import Layout from "@/components/Layout";
 import Limiter from "@/components/Limiter";
 import StyledButton from "@/components/StyledButton";
-
 import styled from "@emotion/styled";
-import "react-phone-input-2/lib/material.css";
-
-import { useDispatchSurvey, useSurvey } from "@/context/SurveyState";
-
-import { countryList } from "@/helpers/countryList";
 
 const Item = styled(Paper)(({ theme }) => ({
   padding: "30px",
   maxWidth: "450px",
   borderRadius: "20px",
-}));
-
-const GoogleSignin = styled(Button)(({ theme }) => ({
-  border: "1px solid #00063e",
-  borderRadius: "5px",
-  color: "#00063e",
 }));
 
 const BannerSection = styled(Grid)({
@@ -53,6 +30,7 @@ const BannerSection = styled(Grid)({
   justifyContent: "space-around",
   alignItems: "flex-start",
 });
+
 const FormSection = styled(Grid)({
   height: "80%",
   display: "flex",
@@ -72,81 +50,40 @@ const ErrorLabel = styled("div")({
   marginTop: "5px",
 });
 
-const PhoneFormControl = styled(FormControl)`
-  font-size: 16px !important;
-  .special-label {
-    display: none !important;
-  }
-
-  .form-control {
-    width: 100% !important;
-  }
-`;
-
-const Phone = styled(PhoneInput)``;
-
 const SignInText = styled(Typography)({
   marginBottom: "10px",
 });
 
-export default function Index({ csrfToken }) {
-  const [mobile, setMobile] = React.useState("");
-  const [country, setCountry] = React.useState("India");
-  const { data: session, status } = useSession();
-
+export default function Index() {
+  const { signUp } = useSignUp();
   const {
     register,
     handleSubmit,
     watch,
     trigger,
-    setValue,
     formState: { errors, isDirty, isValid },
   } = useForm();
-
-  const survey = useSurvey();
-  const dispatch = useDispatchSurvey();
-
-  useEffect(() => {
-    // redirect to home if already logged in
-    if (status === "loading") return;
-    else if (status === "authenticated") {
-      router.push("/dashboard");
-    }
-
-    if (survey.userEmail) {
-      setValue("email", survey.userEmail, {
-        shouldDirty: true,
-      });
-    }
-  }, [status]);
 
   const handleCountryInput = (e) => {
     setCountry(e.label);
   };
 
   const onSubmit = async (data) => {
-    dispatch({ type: "SET_USER_EMAIL", value: data.email });
-    const res = await signIn("credentials", {
-      redirect: false,
-      email: data.email,
-      password: data.password,
-      country: country,
-      mobile,
-      isNew: true,
-    });
-
-    if (res?.error) {
-      toast.error(res.error, {
+    try {
+      const { email, password } = data;
+      await signUp.create({
+        identifier: email,
+        password,
+      });
+      toast.success("Account created successfully!");
+      router.push("/dashboard");
+    } catch (error) {
+      toast.error(error.errors[0].message, {
         position: toast.POSITION.TOP_RIGHT,
       });
-      return;
-    }
-
-    if (res.status === 200) {
-      // get return url from query parameters or default to '/'
-      router.push("/details");
     }
   };
+
   return (
     <Layout bgColor="#f7fafc">
       <Limiter>
@@ -162,7 +99,7 @@ export default function Index({ csrfToken }) {
               src={"/images/logo.png"}
               width={150}
               height={61}
-              alt="background"
+              alt="logo"
             />
             <Image
               src={"/images/bck.png"}
@@ -181,30 +118,20 @@ export default function Index({ csrfToken }) {
               </SignInText>
               <Box
                 component="form"
-                noValidate
-                onSubmit={(e) => e.preventDefault()}
+                onSubmit={handleSubmit(onSubmit)}
                 sx={{ mt: 1 }}
               >
-                <input
-                  name="csrfToken"
-                  type="hidden"
-                  defaultValue={csrfToken}
-                />
                 <FormControl fullWidth>
                   <LoginFormLabel>Email</LoginFormLabel>
                   <TextField
                     required
                     fullWidth
-                    error={!isEmpty(errors.email)}
+                    error={!!errors.email}
                     {...register("email", {
                       required: "Email is required",
                       pattern: {
-                        value:
-                          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                         message: "Please enter a valid email",
-                      },
-                      onChange: async (e) => {
-                        await trigger("email");
                       },
                     })}
                     id="email"
@@ -220,7 +147,7 @@ export default function Index({ csrfToken }) {
                   <LoginFormLabel>Create Password</LoginFormLabel>
                   <TextField
                     fullWidth
-                    error={!isEmpty(errors.password)}
+                    error={!!errors.password}
                     id="password"
                     name="password"
                     type="password"
@@ -230,11 +157,6 @@ export default function Index({ csrfToken }) {
                         value: 5,
                         message: "Password must have at least 5 characters",
                       },
-                      onChange: async (e) => {
-                        await trigger("password");
-                        watch("confirmpassword", "").length > 0 &&
-                          (await trigger("confirmpassword"));
-                      },
                     })}
                     autoComplete="password"
                     placeholder="Set your password"
@@ -243,29 +165,8 @@ export default function Index({ csrfToken }) {
                     <ErrorLabel>{errors.password.message}</ErrorLabel>
                   )}
                 </FormControl>
-                <FormControl fullWidth>
-                  <LoginFormLabel>Confirm Password</LoginFormLabel>
-                  <TextField
-                    fullWidth
-                    error={!isEmpty(errors.confirmpassword)}
-                    id="confirmpassword"
-                    name="confirmpassword"
-                    type="password"
-                    {...register("confirmpassword", {
-                      validate: (value) =>
-                        value === watch("password", "") ||
-                        "The passwords do not match",
-                      onChange: async (e) => {
-                        await trigger("confirmpassword");
-                      },
-                    })}
-                    placeholder="Confirm your password"
-                  />
-                  {errors.confirmpassword && (
-                    <ErrorLabel>{errors.confirmpassword.message}</ErrorLabel>
-                  )}
-                </FormControl>
-                <FormControl fullWidth>
+                {/* Optionally handle country and phone number */}
+                {/* <FormControl fullWidth>
                   <LoginFormLabel>Choose Country</LoginFormLabel>
                   <Select
                     id="country"
@@ -288,44 +189,23 @@ export default function Index({ csrfToken }) {
                     id="mobile"
                     value={mobile}
                     onChange={setMobile}
-                  ></Phone>
-                </PhoneFormControl>
+                  />
+                </PhoneFormControl> */}
                 <StyledButton
                   type="submit"
                   fullWidth
                   variant="contained"
                   disabled={!isDirty || !isValid}
-                  onClick={handleSubmit(onSubmit)}
                   sx={{ mt: 3, mb: 2 }}
                 >
                   Submit
                 </StyledButton>
                 <Grid container>
                   <Grid item xs>
-                    If you already have account,{" "}
+                    If you already have an account,{" "}
                     <Link href="/login" variant="body2">
                       Login
                     </Link>
-                  </Grid>
-                </Grid>
-                <Grid container>
-                  <Grid item xs>
-                    {/* <GoogleSignin
-                      type="submit"
-                      variant="outlined"
-                      fullWidth
-                      startIcon={
-                        <Image
-                          src={google}
-                          width={30}
-                          height={30}
-                          alt="google"
-                        />
-                      }
-                      sx={{ mt: 3, mb: 2 }}
-                    >
-                      Signin with google
-                    </GoogleSignin> */}
                   </Grid>
                 </Grid>
               </Box>
@@ -335,14 +215,4 @@ export default function Index({ csrfToken }) {
       </Limiter>
     </Layout>
   );
-}
-
-// This is the recommended way for Next.js 9.3 or newer
-export async function getServerSideProps(context) {
-  const csrfToken = await getCsrfToken(context);
-  return {
-    props: {
-      csrfToken: csrfToken,
-    },
-  };
 }

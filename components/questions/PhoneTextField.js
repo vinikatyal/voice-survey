@@ -103,7 +103,7 @@ function PhoneTextField({
       >
         {image && (
           <ImageLayout>
-            <Image src={image} layout="fill" objectFit="contain" />
+            <Image src={image} layout="fill" objectFit="contain" alt="phone" />
           </ImageLayout>
         )}
         {video && (
