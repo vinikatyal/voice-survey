@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import { useSession } from "next-auth/react";
 
 // common components
 import Layout from "../../../components/Layout";
@@ -20,7 +19,6 @@ import { authService } from "../../../services/auth.service";
 
 export default function create() {
   const [logo, setLogo] = useState("");
-  const { data: session, status } = useSession();
 
   const router = useRouter();
   const survey = useSurvey();
@@ -29,18 +27,13 @@ export default function create() {
   const { id } = router.query;
 
   useEffect(async () => {
-    if (status === "loading") return;
-    else if (status === "unauthenticated") {
-      router.push("/login");
-      return;
-    }
     if (!survey.surveyType) {
       router.push("/survey/create");
       return;
     }
 
-    const profile = await authService.get_user_profile();
-    profile.data.logo && setLogo(profile.data.logo);
+    // call clerk here to get user details
+
 
     if (survey.previousSurveyType !== survey.surveyType) {
       const res = await surveyService.get_survey_template_data({
@@ -66,7 +59,7 @@ export default function create() {
       dispatch({ type: "SET_QUESTIONS", value: modifiedArr });
       dispatch({ type: "SET_PREV_SURVEYTYPE", value: survey.surveyType });
     }
-  }, [status, survey.surveyType]);
+  }, [survey.surveyType]);
 
   const handleChangeTab = (currentTab) => {
     router.push(`/survey/create/${currentTab}`);

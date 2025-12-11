@@ -12,7 +12,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 import { useRouter } from "next/router";
 
-import { DateRangePicker } from "materialui-daterange-picker";
+// import { DateRangePicker } from "materialui-daterange-picker";
 
 import TextField from "@mui/material/TextField";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -320,7 +320,7 @@ export default function report() {
                 })}
               ></TextField>
               <DateWrapper>
-                <DateRangePicker
+                {/* <DateRangePicker
                   open={datePickerStatus}
                   toggle={toggle}
                   initialDateRange={{
@@ -329,7 +329,7 @@ export default function report() {
                   }}
                   onChange={handleDateChange}
                   definedRanges={dateShortcuts}
-                />
+                /> */}
               </DateWrapper>
             </Grid>
             <Grid item xs={12} sm={6}></Grid>

@@ -15,7 +15,7 @@ const SurveyDiv = styled("div")(({}) => ({
 export default function NoSurveyScreen() {
   return (
     <SurveyDiv>
-      <Image src={"/images/satisfaction.svg"} width={123} height={123} />
+      <Image alt="no-survey" src={"/images/satisfaction.svg"} width={123} height={123} />
       <h3>No Surveys created</h3>
     </SurveyDiv>
   );

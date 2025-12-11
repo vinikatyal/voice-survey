@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import Image from "next/image";
 
 import WaveSurfer from "wavesurfer.js";
-import MicrophonePlugin from "wavesurfer.js/dist/plugin/wavesurfer.microphone";
+import MicrophonePlugin from "wavesurfer.js";
 
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";

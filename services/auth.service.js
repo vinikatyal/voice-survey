@@ -19,15 +19,6 @@ export const authService = {
   getAll,
 };
 
-export const getAccessToken = async () => {
-  const res = await fetch("/api/auth/session");
-  const session = await res.json()
-  if (res.ok) {
-    return session.accessToken
-  } else {
-    return null
-  }
-};
 
 function signup(email, password, mobile) {
   return fetchWrapper
@@ -47,7 +38,6 @@ function signup(email, password, mobile) {
 }
 
 async function add_user_details(data) {
-  const token = await getAccessToken();
   return fetchWrapper
     .postFormData(`${baseUrl}/add_user_profile`, data, {
       token,
@@ -66,7 +56,6 @@ async function add_user_details(data) {
 }
 
 async function update_user_details(data) {
-  const token = await getAccessToken();
   return fetchWrapper
     .postFormData(`${baseUrl}/update_user_profile`, data, {
       token,
@@ -85,7 +74,6 @@ async function update_user_details(data) {
 }
 
 async function get_user_profile() {
-  const token = await getAccessToken();
   return await fetchWrapper
     .get(`${baseUrl}/get_user_profile`, { token })
     .then((res) => {
@@ -102,7 +90,6 @@ async function get_user_profile() {
 }
 
 async function get_user_logo() {
-  const token = await getAccessToken();
   return fetchWrapper
     .get(`${baseUrl}/get_user_logo`, { token })
     .then((res) => {
@@ -119,7 +106,6 @@ async function get_user_logo() {
 }
 
 async function send_invite(data) {
-  const token = await getAccessToken();
   return fetchWrapper
     .post(`${baseUrl}/send_invite`, data, { token })
     .then((res) => {
@@ -137,7 +123,6 @@ async function send_invite(data) {
 }
 
 async function get_team_members() {
-  const token = await getAccessToken();
   return await fetchWrapper
     .get(`${baseUrl}/get_team_members`, { token })
     .then((res) => {
@@ -170,7 +155,6 @@ function forgot_password(email) {
 }
 
 async function reset_password(email, old_password, new_password) {
-  const token = await getAccessToken();
   return fetchWrapper
     .post(
       `${baseUrl}/reset_password`,

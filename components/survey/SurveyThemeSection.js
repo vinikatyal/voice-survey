@@ -75,7 +75,7 @@ export default function SurveyThemeSection({ logo }) {
     };
     const uploadImages = async () => {
       console.log(formData.getAll("file"));
-      const mediaType = "image";
+      let mediaType = "image";
       await surveyService.update_survey_media(
         surveyId,
         formData,

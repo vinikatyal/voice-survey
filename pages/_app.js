@@ -12,10 +12,7 @@ import { responsiveFontSizes } from "@mui/material";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { authService } from "../services/auth.service";
 import { SurveyProvider } from "../context/SurveyState";
-
-import { SessionProvider } from "next-auth/react";
 
 const responsiveTheme = responsiveFontSizes(theme);
 
@@ -35,15 +32,7 @@ export default function MyApp(props) {
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <SurveyProvider>
           <CssBaseline />
-          <SessionProvider session={session}>
-            {Component.auth ? (
-              <Auth>
-                <Component {...pageProps} />
-              </Auth>
-            ) : (
-              <Component {...pageProps} />
-            )}
-          </SessionProvider>
+            <Component {...pageProps} />
           <ToastContainer />
         </SurveyProvider>
       </ThemeProvider>

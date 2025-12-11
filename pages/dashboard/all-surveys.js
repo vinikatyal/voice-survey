@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import get from "lodash.get";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 
 import Image from "next/image";
 
@@ -110,7 +109,6 @@ export default function Index() {
   const [surveys, setAllSurveys] = useState([]);
   const [page, setPage] = useState(1);
   const [count, setSurveyCount] = useState(0);
-  const { data: session, status } = useSession();
   const [loading, setLoading] = useState(true);
 
   const dispatch = useDispatchSurvey();
@@ -126,15 +124,10 @@ export default function Index() {
   };
 
   useEffect(() => {
-    if (status === "loading") return;
-    else if (status === "unauthenticated") {
-      router.push("/login");
-      return;
-    }
     dispatch({ type: "RESET_SURVEY" });
     getSurveyTypes(1);
     getSurveysCount();
-  }, [status]);
+  }, []);
 
   const getSurveyTypes = (page) => {
     surveyService

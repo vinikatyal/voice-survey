@@ -83,10 +83,10 @@ export default function Index({ csrfToken }) {
   const dispatch = useDispatchSurvey();
 
   useEffect(() => {
-    if (status === "loading") return;
-    else if (status === "authenticated") {
+    // if (status === "loading") return;
+    // else if (status === "authenticated") {
       router.push("/dashboard");
-    }
+    // }
 
     if (survey.userEmail) {
       setValue("email", survey.userEmail, {

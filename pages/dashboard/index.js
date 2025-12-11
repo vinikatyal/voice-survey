@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
-import { toast } from "react-toastify";
 
 import get from "lodash.get";
 import dayjs from "dayjs";
@@ -121,7 +119,6 @@ export default function Index() {
   const [page, setPage] = useState(1);
   const [surveyId, setSurveyId] = useState("");
   const [count, setSurveyCount] = useState(0);
-  const { data: session, status } = useSession();
   const [loading, setLoading] = useState(true);
 
   const router = useRouter();
@@ -135,19 +132,11 @@ export default function Index() {
   };
 
   useEffect(() => {
-    if (status === "loading") return;
-    else if (status === "unauthenticated") {
-      router.push("/login");
-      return;
-    }
 
-    if (get(session, "user.pwd_flag") === "Y") {
-      router.push("/dashboard/resetpassword");
-    }
     dispatch({ type: "RESET_SURVEY" });
     getSurveyTypes(page);
     getSurveysCount();
-  }, [status]);
+  }, []);
 
   const handleClose = () => {
     setOpen(false);
@@ -160,9 +149,6 @@ export default function Index() {
         setMySurveys(res.data);
       })
       .catch((error) => {
-        toast.error(error.message, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
         setLoading(false);
       });
   };
@@ -176,9 +162,6 @@ export default function Index() {
         setLoading(false);
       })
       .catch((error) => {
-        toast.error(error.message, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
         setLoading(false);
       });
   };
@@ -192,9 +175,6 @@ export default function Index() {
   const deleteSurveyAccept = async () => {
     if (surveyId) {
       await surveyService.delete_survey(surveyId);
-      toast.success("Survey deleted successfully", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
       setSurveyId("");
       setOpen(false);
       getSurveyTypes(page);
@@ -265,9 +245,6 @@ export default function Index() {
       });
       router.push(route);
     } catch (error) {
-      toast.error(error.message, {
-        position: toast.POSITION.TOP_RIGHT,
-      });
     }
   };
   return (

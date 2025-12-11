@@ -1,26 +1,23 @@
 module.exports = {
   images: {
-    domains: ["gnanispeechprod.blob.core.windows.net"],
+    domains: ["your-image-domain.com"], // Add actual domains
   },
   serverRuntimeConfig: {
-    secret: "ABCD",
+    secret: process.env.SECRET || "defaultSecret", // Use environment variable
     server: {
-      DEV_URL: "https://vercel.site",
+      DEV_URL: process.env.DEV_URL || "https://dev.yourdomain.com",
     },
   },
   publicRuntimeConfig: {
     apiUrl:
-      process.env.NODE_ENV === "development"
-        ? "https://vercel.site" // development api
-        : "https://vercel.site", // production api
-
+      process.env.API_URL ||
+      (process.env.NODE_ENV === "development"
+        ? "https://dev-api.yourdomain.com"
+        : "https://api.yourdomain.com"),
     server: {
-      DEV_URL: "https://vercel.site",
-      SHARE_URL: "https://vercel.site",
+      DEV_URL: process.env.DEV_URL || "https://dev.yourdomain.com",
+      SHARE_URL: process.env.SHARE_URL || "https://share.yourdomain.com",
     },
   },
-  reactStrictMode: true,
-  experimental: {
-    outputStandalone: true,
-  },
+  reactStrictMode: true
 };

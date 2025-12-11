@@ -54,7 +54,7 @@ export default function index() {
     if (!survey.surveyEditId) router.push("/dashboard");
     if (status === "loading") return;
     else if (status === "unauthenticated") {
-      router.push("/login");
+      router.push("/dashboard");
       return;
     }
     // redirect to home if already logged in
@@ -129,6 +129,7 @@ export default function index() {
               get(reportData, "survey_questions", []).map((q, index) => (
                 <SurveyQuestionsSection
                   index={index}
+                  key={index}
                   question={q}
                   reportData={reportData}
                   dropOff={get(
